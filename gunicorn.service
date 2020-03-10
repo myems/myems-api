@@ -1,0 +1,17 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+PIDFile=/run/gunicorn/pid
+User=root
+Group=root
+WorkingDirectory=/feed-rest-api
+ExecStart=/usr/local/bin/gunicorn --pid /run/gunicorn/pid --timeout 600 --workers=4 app:api
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
