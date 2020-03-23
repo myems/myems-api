@@ -1,6 +1,7 @@
 import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
+import datasource
 import user
 import privilege
 
@@ -12,6 +13,15 @@ cors = CORS(allow_all_origins=True,
             allow_all_headers=True,
             allow_all_methods=True)
 api = falcon.API(middleware=[cors.middleware, MultipartMiddleware()])
+
+api.add_route('/datasources',
+              datasource.DataSourceCollection())
+api.add_route('/datasources/{id_}',
+              datasource.DataSourceItem())
+api.add_route('/datasources/{id_}/points',
+              datasource.DataSourcePointCollection())
+api.add_route('/datasources/status',
+              datasource.DataSourceStatusCollection())
 
 api.add_route('/users',
               user.UserCollection())

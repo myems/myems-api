@@ -21,8 +21,46 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 ```
 
 ## API List
+[Data Source](#Data-Source)
 [User](#User) | [Privilege](#Privilege)
 
+
+### Data Source
+* GET Data Source by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Complex ID                                |
+| name          | string    | Complex name                              |
+| uuid          | string    | Complex UUID                              |
+| protocol      | string    | Protocol Type Supported: bacnet-ip, modbus-tcp, s7, opc-ua, control-logix, |
+| connection    | json      | Connection data in JSON. BACnet/IP example: {"host":"10.1.2.88"}, Modbus TCP example: {"host":"10.1.2.88", "port":502}, S7 example: {"host":"10.1.2.202", "port":102, "rack": 0, "slot": 2}, ControlLogix example: {"host":"10.1.2.88","port":44818,"processorslot":3} OPC UA example: {"url":"opc.tcp://10.1.2.5:49320/OPCUA/SimulationServer/"} |
+
+```bash
+$ curl -i -X GET http://BASE_URL/datasources/{id}
+```
+* GET all Data Sources
+```bash
+$ curl -i -X GET http://BASE_URL/datasources
+```
+* DELETE Data Source by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/datasources/{id}
+```
+* POST Data Source
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Modbus1", "protocol":"modbus-tcp", "connection":"{\"host\":\"10.1.2.88\", \"port\":502}"}}' http://BASE_URL/datasources
+```
+* PUT Data Source
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus1", "protocol":"modbus-tcp", "connection":"{\"host\":\"10.1.2.99\", \"port\":502}"}}' http://BASE_URL/datasources/{id}
+```
+* GET all points of the Data Source by ID
+```bash
+$ curl -i -X GET http://BASE_URL/datasources/{id}/points
+```
 
 ### User
 * GET User by ID
