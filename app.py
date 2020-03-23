@@ -5,6 +5,7 @@ import datasource
 import user
 import privilege
 import point
+import meter
 
 
 # https://github.com/lwcolton/falcon-cors
@@ -23,6 +24,16 @@ api.add_route('/datasources/{id_}/points',
               datasource.DataSourcePointCollection())
 api.add_route('/datasources/status',
               datasource.DataSourceStatusCollection())
+
+
+api.add_route('/meters',
+              meter.MeterCollection())
+api.add_route('/meters/{id_}',
+              meter.MeterItem())
+api.add_route('/meters/{id_}/points',
+              meter.MeterPointCollection())
+api.add_route('/meters/{id_}/points/{pid}',
+              meter.MeterPointItem())
 
 api.add_route('/points',
               point.PointCollection())
