@@ -22,11 +22,32 @@ $ cd simplejson
 $ sudo python3 setup.py install 
 ```
 
+* Install MySQL Connector
+
+  refer to http://dev.mysql.com/downloads/connector/python/
+  
+  select Platform:Platform Independent
+  
+  and select 'Platform Independent (Architecture Independent), Compressed TAR Archive Python' in list
+```
+  $ cd ~/tools
+  $ wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-8.0.18.tar.gz
+  $ tar xzf mysql-connector-python-8.0.18.tar.gz
+  $ cd ~/tools/mysql-connector-python-8.0.18
+  $ sudo python3 setup.py install
+```
+
 * Install Falcon,
+
   if you are behind proxy, use --proxy parameter
-  Refer to https://falconframework.org/
-           https://github.com/lwcolton/falcon-cors
-           https://github.com/yohanboniface/falcon-multipart
+
+  Refer to 
+  
+  https://falconframework.org/
+
+  https://github.com/lwcolton/falcon-cors
+
+  https://github.com/yohanboniface/falcon-multipart
 ```
   $ mkdir ~/tools/falcon && cd ~/tools/falcon
   $ pip3 download cython falcon falcon-cors falcon-multipart
@@ -79,6 +100,8 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 ## API List
 [Data Source](#Data-Source) | [Point](#Point)
 
+[Meter](#Meter) | 
+
 [User](#User) | [Privilege](#Privilege)
 
 
@@ -117,6 +140,51 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus
 * GET all points of the Data Source by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/datasources/{id}/points
+```
+
+
+### Meter
+* GET Meter by ID
+
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Meter ID                                  |
+| name          | string    | Meter name                                |
+| uuid          | string    | Meter UUID                                |
+| is_counted    | boolean   | Meter is counted in associated unit       |
+
+```bash
+$ curl -i -X GET http://BASE_URL/meters/{id}
+```
+* GET All Meters
+```bash
+$ curl -i -X GET http://BASE_URL/meters
+```
+* DELETE Meter by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/meters/{id}
+```
+* POST Meter
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "is_counted": true}}' http://BASE_URL/meters
+```
+* PUT Meter
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "is_counted": true}}' http://BASE_URL/meters/{id}
+```
+* GET All Points associated with Meter ID
+```bash
+$ curl -i -X GET http://BASE_URL/meters/{id}/points
+```
+* POST Meter Point Relation
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":"3"}}' http://BASE_URL/meters/{id}/points
+```
+* DELETE Meter Point Relation
+```bash
+$ curl -i -X DELETE http://BASE_URL/meters/{id}/points/{pid}
 ```
 
 ### Privilege
