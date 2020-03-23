@@ -2,6 +2,7 @@ import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
 import user
+import privilege
 
 
 # https://github.com/lwcolton/falcon-cors
@@ -25,9 +26,9 @@ api.add_route('/users/resetpassword',
 api.add_route('/users/changepassword',
               user.ChangePassword())
 api.add_route('/privileges',
-              user.PrivilegeCollection())
+              privilege.PrivilegeCollection())
 api.add_route('/privileges/{id_}',
-              user.PrivilegeItem())
+              privilege.PrivilegeItem())
 
 # from waitress import serve
 # serve(api, host='0.0.0.0', port=8886)

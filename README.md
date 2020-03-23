@@ -21,7 +21,7 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 ```
 
 ## API List
-[User](#markdown-header-user)
+[User](#User) | [Privilege](#Privilege)
 
 
 ### User
@@ -43,7 +43,7 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"johns
 ```
 * PUT User Profile
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnson", "display_name":"约翰逊", "email":"johnson@myems.io"}}' http://BASE_URL/users/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnson", "display_name":"约翰逊", "is_admin":true, "email":"johnson@myems.io"}}' http://BASE_URL/users/{id}
 ```
 * PUT User Login
 ```bash
@@ -60,4 +60,27 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"password":"Ne
 * PUT User reset any user's password called by administrator
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnson","password":"NewPassword1"}}' --cookie "user_uuid=793f1bb4-6e25-4242-8cdc-2f662b25484f;token=a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" http://BASE_URL/users/resetpassword
+```
+
+
+### Privilege
+* GET Privilege by ID
+```bash
+$ curl -i -X GET http://BASE_URL/privileges/{id}
+```
+* GET All Privileges
+```bash
+$ curl -i -X GET http://BASE_URL/privileges
+```
+* DELETE Privilege by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/privileges/{id}
+```
+* POST New Privilege
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"superusers","data":"{\"spaces\":[1,2,3,5]}"}}' http://BASE_URL/privileges
+```
+* PUT Privilege
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"superusers", "data":"{\"spaces\":[1, 3]}"}}' http://BASE_URL/privileges/{id}
 ```
