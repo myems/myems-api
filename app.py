@@ -4,6 +4,7 @@ from falcon_multipart.middleware import MultipartMiddleware
 import datasource
 import user
 import privilege
+import point
 
 
 # https://github.com/lwcolton/falcon-cors
@@ -23,6 +24,16 @@ api.add_route('/datasources/{id_}/points',
 api.add_route('/datasources/status',
               datasource.DataSourceStatusCollection())
 
+api.add_route('/points',
+              point.PointCollection())
+api.add_route('/points/{id_}',
+              point.PointItem())
+
+api.add_route('/privileges',
+              privilege.PrivilegeCollection())
+api.add_route('/privileges/{id_}',
+              privilege.PrivilegeItem())
+
 api.add_route('/users',
               user.UserCollection())
 api.add_route('/users/{id_}',
@@ -35,10 +46,7 @@ api.add_route('/users/resetpassword',
               user.ResetPassword())
 api.add_route('/users/changepassword',
               user.ChangePassword())
-api.add_route('/privileges',
-              privilege.PrivilegeCollection())
-api.add_route('/privileges/{id_}',
-              privilege.PrivilegeItem())
+
 
 # from waitress import serve
 # serve(api, host='0.0.0.0', port=8886)
