@@ -7,6 +7,7 @@ import meter
 import privilege
 import point
 import tariff
+import timezone
 import user
 
 
@@ -60,6 +61,11 @@ api.add_route('/tariffs',
               tariff.TariffCollection())
 api.add_route('/tariffs/{id_}',
               tariff.TariffItem())
+
+api.add_route('/timezones',
+              timezone.TimezoneCollection())
+api.add_route('/timezones/{id_}',
+              timezone.TimezoneItem())
 
 api.add_route('/users',
               user.UserCollection())
