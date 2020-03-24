@@ -100,12 +100,57 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 ## API List
 [Data Source](#Data-Source) | [Point](#Point)
 
-[Tariff](#Tariff) | 
+[Tariff](#Tariff) | [Cost Center](#Cost-Center)
 
 [Meter](#Meter) | 
 
 [User](#User) | [Privilege](#Privilege)
 
+
+
+### Cost Center
+* GET Cost Center by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Cost Center ID                            |
+| name          | string    | Cost Center name                          |
+| uuid          | string    | Cost Center UUID                          |
+| external_id   | string    | Cost Center External ID ( For example, ID in SAP, ERP...) |
+
+```bash
+$ curl -i -X GET http://BASE_URL/costcenters/{id}
+```
+* GET all Cost Centers
+```bash
+$ curl -i -X GET http://BASE_URL/costcenters
+```
+* DELETE Cost Center by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/costcenters/{id}
+```
+* POST Create a Cost Center
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"动力中心", "external_id":"21829198980001"}}' http://BASE_URL/costcenters
+```
+* PUT Update a Cost Center
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"动力中心2", "external_id":"21829198980002"}}' http://BASE_URL/costcenters/{id}
+```
+* GET All Tariffs associated with Cost Center ID
+```bash
+$ curl -i -X GET http://BASE_URL/costcenters/{id}/tariffs
+```
+* POST a Cost Center and Tariff Relation
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"tariff_id":"3"}}' http://BASE_URL/costcenters/{id}/tariffs
+```
+* DELETE a Cost Center and Tariff Relation
+```bash
+$ curl -i -X DELETE http://BASE_URL/costcenters/{id}/tariffs/{pid}
+```
 
 ### Data Source
 * GET Data Source by ID
