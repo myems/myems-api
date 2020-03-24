@@ -370,6 +370,19 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"2020åˆ
 ```
 
 
+### Timezone
+* GET a Timezone by ID
+```bash
+$ curl -i -X GET http://BASE_URL/timezones/{id}
+```
+* GET all Timezones
+```bash
+$ curl -i -X GET http://BASE_URL/timezones
+```
+* PUT Update a Timezone by ID
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Hawaiian Standard Time","description":"(GMT-10:00) Hawaii", "utc_offset":"-10:00"}}' http://BASE_URL/timezones/{id}
+```
 
 ### User
 * GET User by ID
