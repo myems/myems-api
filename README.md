@@ -100,6 +100,8 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 ## API List
 [Data Source](#Data-Source) | [Point](#Point)
 
+[Tariff](#Tariff) | 
+
 [Meter](#Meter) | 
 
 [User](#User) | [Privilege](#Privilege)
@@ -263,6 +265,65 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Modbu
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"ModbusPoint1", "data_source_id":1, "object_type": "ENERGY_VALUE", "units":"kWh", "low_limit":0, "hi_limit":999999999, "is_trend":true, "address":"{\"slave_id\":1, \"function_code\":3, \"offset\":1, \"number_of_registers\":2, \"data_format\":\"float\"}"}}' http://BASE_URL/points/{id}
 ```
+
+
+### Tariff
+* GET Tariff by id
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Tariff ID                                 |
+| name          | string    | Tariff name                               |
+| uuid          | string    | Tariff UUID                               |
+| unit_of_price | string    | Unit of Price                             |
+| valid_from    | float     | Valid From (POSIX timestamp * 1000)       |
+| valid_through | float     | Valid Through (POSIX timestamp * 1000)    |
+| tariff_type   | string    | Tariff type (timeofuse or block)          |
+| timeofuse[]   | json array| Time Of Use items                         |
+| ├             | integer   | array index                               |
+|  ├ start_time_of_day  | string    | Start time of day                 |
+|  ├ end_time_of_day    | string    | End time of day                   |
+|  ├ peak_type  | string    | Peak type: toppeak,onpeak,midpeak,offpeak |
+|  └ price      | decimal   | Price                                     |
+| block[]       | json array| Block items                               |
+| ├             | integer   | array index                               |
+|  ├ start_amount | decimal | Start amount                              |
+|  ├ end_amount | decimal   | End amount                                |
+|  └ price      | decimal   | Price                                     |
+
+```bash
+$ curl -i -X GET http://BASE_URL/tariffs/{id}
+```
+* GET All Tariffs
+```bash
+$ curl -i -X GET http://BASE_URL/tariffs
+```
+* DELETE Tariff by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/tariffs/{id}
+```
+* POST Create a Tariff
+To POST a block tariff:
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"阶梯电价","energy_category":{"id":"1"}, "tariff_type":"block", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2021-01-01T00:00:00", "block":[{"start_amount":"0", "end_amount":"10000", "price":"0.567"}, {"start_amount":"10000", "end_amount":"30000", "price":"0.678"}, {"start_amount":"30000", "end_amount":"100000", "price":"0.789"}]}}' http://BASE_URL/tariffs
+```
+To POST a time of use tariff:
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"2020分时电价1-6","energy_category":{"id":"1"}, "tariff_type":"timeofuse", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2020-07-01T00:00:00", "timeofuse":[{"start_time_of_day":"00:00:00", "end_time_of_day":"05:59:59", "peak_type":"offpeak", "price":0.345}, {"start_time_of_day":"06:00:00", "end_time_of_day":"07:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"08:00:00", "end_time_of_day":"10:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"11:00:00", "end_time_of_day":"17:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"18:00:00", "end_time_of_day":"20:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"21:00:00", "end_time_of_day":"21:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"22:00:00", "end_time_of_day":"23:59:59", "peak_type":"offpeak", "price":0.345}]}}' http://BASE_URL/tariffs
+```
+
+* PUT Update a Tariff
+To update a block tariff:
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"阶梯电价","energy_category":{"id":"1"}, "tariff_type":"block", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2021-01-01T00:00:00", "block":[{"start_amount":"0", "end_amount":"20000", "price":"0.567"}, {"start_amount":"20000", "end_amount":"30000", "price":"0.678"}, {"start_amount":"30000", "end_amount":"100000", "price":"0.789"}]}}' http://BASE_URL/tariffs/{id}
+```
+To update a time of use tariff:
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"2020分时电价1-6","energy_category":{"id":"1"}, "tariff_type":"timeofuse", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2020-07-01T00:00:00", "timeofuse":[{"start_time_of_day":"00:00:00", "end_time_of_day":"05:59:59", "peak_type":"offpeak", "price":0.456}, {"start_time_of_day":"06:00:00", "end_time_of_day":"07:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"08:00:00", "end_time_of_day":"10:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"11:00:00", "end_time_of_day":"17:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"18:00:00", "end_time_of_day":"20:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"21:00:00", "end_time_of_day":"21:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"22:00:00", "end_time_of_day":"23:59:59", "peak_type":"offpeak", "price":0.345}]}}' http://BASE_URL/tariffs/{id}
+```
+
 
 
 ### User

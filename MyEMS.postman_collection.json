@@ -6,276 +6,8 @@
 	},
 	"item": [
 		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Get All Users",
-					"request": {
-						"auth": {
-							"type": "apikey"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/users",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create User",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"johnson\", \"display_name\":\"Mr. Johnson\", \"email\":\"johnson@myems.io\", \"is_admin\":false, \"password\":\"!MyEMS1\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "User Login",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"username\":\"administrator\", \"password\":\"!MyEMS1\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE User",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/users/2",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT User Profile",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"administrator1\", \"display_name\":\"Administrator1\", \"is_admin\":true, \"email\":\"admin1@myems.io\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/1",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "User Logout",
-					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "addTokenTo",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/users/logout",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"logout"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "User Logout",
-							"originalRequest": {
-								"method": "PUT",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/users/logout",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"users",
-										"logout"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Server",
-									"value": "gunicorn/19.9.0"
-								},
-								{
-									"key": "Date",
-									"value": "Thu, 19 Mar 2020 01:31:00 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "close"
-								},
-								{
-									"key": "content-length",
-									"value": "0"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=UTF-8"
-								},
-								{
-									"key": "set-cookie",
-									"value": "user_uuid=\"\"; Domain=127.0.0.1; Path=/"
-								},
-								{
-									"key": "set-cookie",
-									"value": "token=\"\"; Domain=127.0.0.1; Path=/"
-								}
-							],
-							"cookie": [],
-							"body": null
-						}
-					]
-				},
-				{
-					"name": "User Change Password",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"password\":\"NewPassword1\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/changepassword",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"changepassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Reset Password",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"johnson\",\"password\":\"NewPassword2\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/resetpassword",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"resetpassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create Privilege",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/privileges",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges"
-							]
-						}
-					},
-					"response": []
-				}
-			],
+			"name": "Cost Center",
+			"item": [],
 			"protocolProfileBehavior": {}
 		},
 		{
@@ -323,7 +55,7 @@
 					"response": []
 				},
 				{
-					"name": "PUT Privilege Data",
+					"name": "PUT Update Privilege Data",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -526,7 +258,7 @@
 					"response": []
 				},
 				{
-					"name": "Create Point",
+					"name": "POST Create Point",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -680,7 +412,7 @@
 					"response": []
 				},
 				{
-					"name": "DELETE Meter",
+					"name": "DELETE Meter by ID",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -754,6 +486,439 @@
 								"1",
 								"points",
 								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Virtual Meter",
+			"item": [],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Space",
+			"item": [],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "apikey"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"johnson\", \"display_name\":\"Mr. Johnson\", \"email\":\"johnson@myems.io\", \"is_admin\":false, \"password\":\"!MyEMS1\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT User Login",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"username\":\"administrator\", \"password\":\"!MyEMS1\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"administrator1\", \"display_name\":\"Administrator1\", \"is_admin\":true, \"email\":\"admin1@myems.io\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT User Logout",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "User Logout",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/logout",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "gunicorn/19.9.0"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 19 Mar 2020 01:31:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "content-length",
+									"value": "0"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=UTF-8"
+								},
+								{
+									"key": "set-cookie",
+									"value": "user_uuid=\"\"; Domain=127.0.0.1; Path=/"
+								},
+								{
+									"key": "set-cookie",
+									"value": "token=\"\"; Domain=127.0.0.1; Path=/"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "User Change Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"password\":\"NewPassword1\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/changepassword",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"changepassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Reset Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"johnson\",\"password\":\"NewPassword2\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/resetpassword",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"resetpassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Privilege",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/privileges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"privileges"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Offline Meter",
+			"item": [],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tariff",
+			"item": [
+				{
+					"name": "GET All Tariffs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tariffs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tariffs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create a Tariff (block)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test阶梯电价\",\"energy_category\":{\"id\":\"1\"}, \"tariff_type\":\"block\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2021-01-01T00:00:00\", \"block\":[{\"start_amount\":\"0\", \"end_amount\":\"10000\", \"price\":\"0.567\"}, {\"start_amount\":\"10000\", \"end_amount\":\"30000\", \"price\":\"0.678\"}, {\"start_amount\":\"30000\", \"end_amount\":\"100000\", \"price\":\"0.789\"}]}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tariffs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tariffs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Tariff by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tariffs/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tariffs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Tariff (block)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test阶梯电价\",\"energy_category\":{\"id\":\"1\"}, \"tariff_type\":\"block\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2021-01-01T00:00:00\", \"block\":[{\"start_amount\":\"0\", \"end_amount\":\"20000\", \"price\":\"0.567\"}, {\"start_amount\":\"20000\", \"end_amount\":\"30000\", \"price\":\"0.678\"}, {\"start_amount\":\"30000\", \"end_amount\":\"100000\", \"price\":\"0.789\"}]}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tariffs/16",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tariffs",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create a Tariff (time of use)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test2020分时电价1-6\",\"energy_category\":{\"id\":\"1\"}, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tariffs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tariffs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Tariff (time of use)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"2020分时电价1-6\",\"energy_category\":{\"id\":\"1\"}, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.456}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tariffs/17",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tariffs",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Tariff",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tariffs/16",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tariffs",
+								"16"
 							]
 						}
 					},
