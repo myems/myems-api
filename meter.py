@@ -43,7 +43,7 @@ class MeterCollection:
 
         cursor.close()
         cnx.disconnect()
-        resp.body = json.dumps(result, use_decimal=True)
+        resp.body = json.dumps(result)
 
     @staticmethod
     def on_post(req, resp):
@@ -53,7 +53,7 @@ class MeterCollection:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8', use_decimal=True)
+        new_values = json.loads(raw_json, encoding='utf-8')
 
         if 'energy_category_id' not in new_values['data'].keys() or new_values['data']['energy_category_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -127,7 +127,7 @@ class MeterItem:
                                       "unit_of_measure": row_meter[6], "kgce": row_meter[7], "kgco2e": row_meter[8]},
                   "is_counted": True if row_meter[9] else False}
 
-        resp.body = json.dumps(result, use_decimal=True)
+        resp.body = json.dumps(result)
 
     @staticmethod
     def on_delete(req, resp, id_):
@@ -208,7 +208,7 @@ class MeterItem:
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST', description='API.INVALID_METER_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8', use_decimal=True)
+        new_values = json.loads(raw_json, encoding='utf-8')
 
         if 'energy_category_id' not in new_values['data'].keys() or new_values['data']['energy_category_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -295,7 +295,7 @@ class MeterPointCollection:
                                "address": row[5]}
                 result.append(meta_result)
 
-        resp.body = json.dumps(result, use_decimal=True)
+        resp.body = json.dumps(result)
 
     @staticmethod
     def on_post(req, resp, id_):
@@ -309,7 +309,7 @@ class MeterPointCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_METER_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8', use_decimal=True)
+        new_values = json.loads(raw_json, encoding='utf-8')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()

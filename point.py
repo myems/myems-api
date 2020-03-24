@@ -40,7 +40,7 @@ class PointCollection:
                                "ratio": float(row[9]) if row[9] is not None else None}
                 result.append(meta_result)
 
-        resp.body = json.dumps(result, use_decimal=True)
+        resp.body = json.dumps(result)
 
     @staticmethod
     def on_post(req, resp):
@@ -50,7 +50,7 @@ class PointCollection:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, 'API.ERROR', ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8', use_decimal=True)
+        new_values = json.loads(raw_json, encoding='utf-8')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -113,7 +113,7 @@ class PointItem:
                   "is_trend": row[7],
                   "address": row[8],
                   "ratio": row[9]}
-        resp.body = json.dumps(result, use_decimal=True)
+        resp.body = json.dumps(result)
 
     @staticmethod
     def on_delete(req, resp, id_):
@@ -167,7 +167,7 @@ class PointItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_POINT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8', use_decimal=True)
+        new_values = json.loads(raw_json, encoding='utf-8')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()

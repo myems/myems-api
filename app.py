@@ -2,10 +2,11 @@ import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
 import datasource
-import user
+import meter
 import privilege
 import point
-import meter
+import tariff
+import user
 
 
 # https://github.com/lwcolton/falcon-cors
@@ -44,6 +45,11 @@ api.add_route('/privileges',
               privilege.PrivilegeCollection())
 api.add_route('/privileges/{id_}',
               privilege.PrivilegeItem())
+
+api.add_route('/tariffs',
+              tariff.TariffCollection())
+api.add_route('/tariffs/{id_}',
+              tariff.TariffItem())
 
 api.add_route('/users',
               user.UserCollection())
