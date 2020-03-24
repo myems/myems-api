@@ -1,6 +1,7 @@
 import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
+import costcenter
 import datasource
 import meter
 import privilege
@@ -16,6 +17,15 @@ cors = CORS(allow_all_origins=True,
             allow_all_headers=True,
             allow_all_methods=True)
 api = falcon.API(middleware=[cors.middleware, MultipartMiddleware()])
+
+api.add_route('/costcenters',
+              costcenter.CostCenterCollection())
+api.add_route('/costcenters/{id_}',
+              costcenter.CostCenterItem())
+api.add_route('/costcenters/{id_}/tariffs',
+              costcenter.CostCenterTariffCollection())
+api.add_route('/costcenters/{id_}/tariffs/{tid}',
+              costcenter.CostCenterTariffItem())
 
 api.add_route('/datasources',
               datasource.DataSourceCollection())
