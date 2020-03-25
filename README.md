@@ -102,9 +102,10 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 
 [Tariff](#Tariff) | [Cost Center](#Cost-Center)
 
-[Meter](#Meter) | 
+[Meter](#Meter) | [Virtual Meter](#Virtual-Meter) 
 
 [User](#User) | [Privilege](#Privilege)
+
 
 
 
@@ -352,21 +353,21 @@ $ curl -i -X DELETE http://BASE_URL/tariffs/{id}
 * POST Create a Tariff
 To POST a block tariff:
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"阶梯电价","energy_category":{"id":"1"}, "tariff_type":"block", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2021-01-01T00:00:00", "block":[{"start_amount":"0", "end_amount":"10000", "price":"0.567"}, {"start_amount":"10000", "end_amount":"30000", "price":"0.678"}, {"start_amount":"30000", "end_amount":"100000", "price":"0.789"}]}}' http://BASE_URL/tariffs
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"阶梯电价","energy_category_id":1, "tariff_type":"block", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2021-01-01T00:00:00", "block":[{"start_amount":"0", "end_amount":"10000", "price":"0.567"}, {"start_amount":"10000", "end_amount":"30000", "price":"0.678"}, {"start_amount":"30000", "end_amount":"100000", "price":"0.789"}]}}' http://BASE_URL/tariffs
 ```
 To POST a time of use tariff:
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"2020分时电价1-6","energy_category":{"id":"1"}, "tariff_type":"timeofuse", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2020-07-01T00:00:00", "timeofuse":[{"start_time_of_day":"00:00:00", "end_time_of_day":"05:59:59", "peak_type":"offpeak", "price":0.345}, {"start_time_of_day":"06:00:00", "end_time_of_day":"07:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"08:00:00", "end_time_of_day":"10:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"11:00:00", "end_time_of_day":"17:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"18:00:00", "end_time_of_day":"20:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"21:00:00", "end_time_of_day":"21:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"22:00:00", "end_time_of_day":"23:59:59", "peak_type":"offpeak", "price":0.345}]}}' http://BASE_URL/tariffs
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"2020分时电价1-6","energy_category_id":1, "tariff_type":"timeofuse", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2020-07-01T00:00:00", "timeofuse":[{"start_time_of_day":"00:00:00", "end_time_of_day":"05:59:59", "peak_type":"offpeak", "price":0.345}, {"start_time_of_day":"06:00:00", "end_time_of_day":"07:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"08:00:00", "end_time_of_day":"10:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"11:00:00", "end_time_of_day":"17:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"18:00:00", "end_time_of_day":"20:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"21:00:00", "end_time_of_day":"21:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"22:00:00", "end_time_of_day":"23:59:59", "peak_type":"offpeak", "price":0.345}]}}' http://BASE_URL/tariffs
 ```
 
 * PUT Update a Tariff
 To update a block tariff:
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"阶梯电价","energy_category":{"id":"1"}, "tariff_type":"block", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2021-01-01T00:00:00", "block":[{"start_amount":"0", "end_amount":"20000", "price":"0.567"}, {"start_amount":"20000", "end_amount":"30000", "price":"0.678"}, {"start_amount":"30000", "end_amount":"100000", "price":"0.789"}]}}' http://BASE_URL/tariffs/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"阶梯电价","energy_category_id":1, "tariff_type":"block", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2021-01-01T00:00:00", "block":[{"start_amount":"0", "end_amount":"20000", "price":"0.567"}, {"start_amount":"20000", "end_amount":"30000", "price":"0.678"}, {"start_amount":"30000", "end_amount":"100000", "price":"0.789"}]}}' http://BASE_URL/tariffs/{id}
 ```
 To update a time of use tariff:
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"2020分时电价1-6","energy_category":{"id":"1"}, "tariff_type":"timeofuse", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2020-07-01T00:00:00", "timeofuse":[{"start_time_of_day":"00:00:00", "end_time_of_day":"05:59:59", "peak_type":"offpeak", "price":0.456}, {"start_time_of_day":"06:00:00", "end_time_of_day":"07:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"08:00:00", "end_time_of_day":"10:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"11:00:00", "end_time_of_day":"17:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"18:00:00", "end_time_of_day":"20:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"21:00:00", "end_time_of_day":"21:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"22:00:00", "end_time_of_day":"23:59:59", "peak_type":"offpeak", "price":0.345}]}}' http://BASE_URL/tariffs/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"2020分时电价1-6","energy_category_id":1, "tariff_type":"timeofuse", "unit_of_price":"元/千瓦时", "valid_from":"2020-01-01T00:00:00", "valid_through":"2020-07-01T00:00:00", "timeofuse":[{"start_time_of_day":"00:00:00", "end_time_of_day":"05:59:59", "peak_type":"offpeak", "price":0.456}, {"start_time_of_day":"06:00:00", "end_time_of_day":"07:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"08:00:00", "end_time_of_day":"10:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"11:00:00", "end_time_of_day":"17:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"18:00:00", "end_time_of_day":"20:59:59", "peak_type":"onpeak", "price":1.159}, {"start_time_of_day":"21:00:00", "end_time_of_day":"21:59:59", "peak_type":"midpeak", "price":0.708}, {"start_time_of_day":"22:00:00", "end_time_of_day":"23:59:59", "peak_type":"offpeak", "price":0.345}]}}' http://BASE_URL/tariffs/{id}
 ```
 
 
@@ -422,3 +423,52 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"password":"Ne
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnson","password":"NewPassword1"}}' --cookie "user_uuid=793f1bb4-6e25-4242-8cdc-2f662b25484f;token=a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" http://BASE_URL/users/resetpassword
 ```
 
+
+### Virtual Meter
+* GET a Virtual Meter by ID
+
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Virtual Meter ID                          |
+| name          | string    | Virtual Meter name                        |
+| uuid          | string    | Virtual Meter UUID                        |
+| energy_category   | json  | Energy Category                           |
+| ├ id          | integer   | Energy Category ID                        |
+| ├ name        | string    | Energy Category name                      |
+| ├ uuid        | string    | Energy Category UUID                      |
+| ├ unit_of_measure | string| Unit of measure                           |
+| ├ kgce        | string    | KG coal equivalent                        |
+| └ kgco2e      | string    | KG Carbon dioxide equivalent              |
+| is_counted    | boolean   | the Virtual Meter is counted in           |
+| expression    | json      | Expression                                |
+|  ├ id         | integer   | Expression ID                             |
+|  ├ uuid       | string    | Expression UUID                           |
+|  ├ equation   | string    | Expression Equation                       |
+|  └ variables[]| json array| Expression Variables                      |
+|  ├            | integer   | array index                               |
+|   ├ id        | integer   | Variable ID                               |
+|   ├ name      | string    | Variable Name                             |
+|   ├ meter_type| string    | Meter Type ('meter', 'offline_meter', 'virtual_meter' |
+|   ├ meter_name| string    | Meter Name                                |
+
+```bash
+$ curl -i -X GET http://BASE_URL/virtualmeters/{id}
+```
+* GET All Virtual Meters
+```bash
+$ curl -i -X GET http://BASE_URL/virtualmeters
+```
+* DELETE a Virtual Meter by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/virtualmeters/{id}
+```
+* POST Create New Virtual Meter
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM20", "energy_category_id":1, "is_counted": true, "expression": {"equation":"x1+x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":1},{"name":"x2", "meter_type":"meter", "meter_id":2},{"name":"x3", "meter_type":"meter", "meter_id":3}]}}}' http://BASE_URL/virtualmeters
+```
+* PUT Update a Virtual Meter by ID
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM20", "energy_category_id":1, "is_counted": true, "expression": {"equation":"x1+x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":1},{"name":"x2", "meter_type":"meter", "meter_id":2},{"name":"x3", "meter_type":"meter", "meter_id":3}]}}}' http://BASE_URL/virtualmeters/{id}
+```
