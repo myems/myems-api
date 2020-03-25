@@ -9,6 +9,7 @@ import point
 import tariff
 import timezone
 import user
+import virtualmeter
 
 
 # https://github.com/lwcolton/falcon-cors
@@ -80,6 +81,10 @@ api.add_route('/users/resetpassword',
 api.add_route('/users/changepassword',
               user.ChangePassword())
 
+api.add_route('/virtualmeters',
+              virtualmeter.VirtualMeterCollection())
+api.add_route('/virtualmeters/{id_}',
+              virtualmeter.VirtualMeterItem())
 
 # from waitress import serve
 # serve(api, host='0.0.0.0', port=8886)

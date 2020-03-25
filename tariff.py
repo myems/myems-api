@@ -138,7 +138,7 @@ class TariffCollection:
                    " VALUES (%s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_row, (new_values['data']['name'],
                                  str(uuid.uuid4()),
-                                 new_values['data']['energy_category']['id'],
+                                 new_values['data']['energy_category_id'],
                                  new_values['data']['tariff_type'],
                                  new_values['data']['unit_of_price'],
                                  valid_from,
@@ -359,7 +359,7 @@ class TariffItem:
                       "     valid_from_datetime_utc = %s , valid_through_datetime_utc = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['energy_category']['id'],
+                                    new_values['data']['energy_category_id'],
                                     new_values['data']['tariff_type'],
                                     new_values['data']['unit_of_price'],
                                     valid_from,
