@@ -191,6 +191,42 @@ $ curl -i -X GET http://BASE_URL/datasources/{id}/points
 ```
 
 
+### Energy Category
+* GET an Energy Category by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Energy Category ID                        |
+| name          | string    | Energy Category name                      |
+| uuid          | string    | Energy Category UUID                      |
+| unit_of_measure   | string| Unit of measure                           |
+| kgce          | string    | KG coal equivalent                        |
+| kgco2e        | string    | KG Carbon dioxide equivalent              |
+
+
+```bash
+$ curl -i -X GET http://BASE_URL/energycategories/{id}
+```
+* GET All Energy Categories
+```bash
+$ curl -i -X GET http://BASE_URL/energycategories
+```
+* DELETE Energy Category by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/energycategories/{id}
+```
+* POST Create an Energy Category
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"电","unit_of_measure":"kWh", "kgce":0.1229 , "kgco2e":0.8825}}' http://BASE_URL/energycategories
+```
+* PUT Update an Energy Category
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"电","unit_of_measure":"kWh", "kgce":0.1329 , "kgco2e":0.9825}}' http://BASE_URL/energycategories/{id}
+```
+
+
 ### Meter
 * GET Meter by ID
 
