@@ -102,7 +102,7 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 
 [Tariff](#Tariff) | [Cost Center](#Cost-Center)
 
-[Meter](#Meter) | [Virtual Meter](#Virtual-Meter) 
+[Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) 
 
 [User](#User) | [Privilege](#Privilege)
 
@@ -201,7 +201,12 @@ Result
 | id            | integer   | Meter ID                                  |
 | name          | string    | Meter name                                |
 | uuid          | string    | Meter UUID                                |
+| energy_category| Object   | Energy Category Object                    |
 | is_counted    | boolean   | Meter is counted in associated unit       |
+| max_hourly_value | decimal(18,3)   | Maximum energy consumption per hour|
+| energy_item   | Object   | Energy Item Object                         |
+| location      | string    | Meter location                            |
+| description   | string    | Meter description                         |
 
 ```bash
 $ curl -i -X GET http://BASE_URL/meters/{id}
@@ -214,13 +219,13 @@ $ curl -i -X GET http://BASE_URL/meters
 ```bash
 $ curl -i -X DELETE http://BASE_URL/meters/{id}
 ```
-* POST Meter
+* POST Create a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "is_counted": true}}' http://BASE_URL/meters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
 ```
-* PUT Meter
+* PUT Update a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "is_counted": true}}' http://BASE_URL/meters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
 ```
 * GET All Points associated with Meter ID
 ```bash
@@ -234,6 +239,45 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":"3
 ```bash
 $ curl -i -X DELETE http://BASE_URL/meters/{id}/points/{pid}
 ```
+
+
+### Offline Meter
+* GET Offline Meter by ID
+
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Offline Meter ID                          |
+| name          | string    | Offline Meter name                        |
+| uuid          | string    | Offline Meter UUID                        |
+| energy_category| Object   | Energy Category Object                    |
+| is_counted    | boolean   | Offline Meter is counted in associated unit   |
+| max_hourly_value | decimal(18,3)   | Maximum energy consumption per hour|
+| energy_item   | Object   | Energy Item Object                         |
+| location      | string    | Offline Meter location                    |
+| description   | string    | Offline Meter description                 |
+
+```bash
+$ curl -i -X GET http://BASE_URL/offlinemeters/{id}
+```
+* GET All Offline Meters
+```bash
+$ curl -i -X GET http://BASE_URL/offlinemeters
+```
+* DELETE Offline Meter by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/offlinemeters/{id}
+```
+* POST Create a Offline Meter
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters
+```
+* PUT Update a Offline Meter
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":9999.99, "is_counted":true, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
+```
+
 
 ### Privilege
 * GET Privilege by ID

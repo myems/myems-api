@@ -4,6 +4,7 @@ from falcon_multipart.middleware import MultipartMiddleware
 import costcenter
 import datasource
 import meter
+import offlinemeter
 import privilege
 import point
 import tariff
@@ -47,6 +48,11 @@ api.add_route('/meters/{id_}/points',
               meter.MeterPointCollection())
 api.add_route('/meters/{id_}/points/{pid}',
               meter.MeterPointItem())
+
+api.add_route('/offlinemeters',
+              offlinemeter.OfflineMeterCollection())
+api.add_route('/offlinemeters/{id_}',
+              offlinemeter.OfflineMeterItem())
 
 api.add_route('/points',
               point.PointCollection())
