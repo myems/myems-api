@@ -536,7 +536,7 @@ class MeterPointCollection:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.METER_POINT_RELATIONSHIP_EXISTED')
+                                   description='API.METER_POINT_RELATION_EXISTED')
 
         add_row = (" INSERT INTO tbl_meters_points (meter_id, point_id) "
                    " VALUES (%s, %s) ")
@@ -595,7 +595,7 @@ class MeterPointItem:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.METER_POINT_RELATIONSHIP_NOT_FOUND')
+                                   description='API.METER_POINT_RELATION_NOT_FOUND')
 
         cursor.execute(" DELETE FROM tbl_meters_points WHERE meter_id = %s AND point_id = %s ", (id_, pid))
         cnx.commit()

@@ -1354,6 +1354,108 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Energy Category",
+			"item": [
+				{
+					"name": "GET All Energy Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energycategories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energycategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Energy Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energycategories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energycategories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create an Energy Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"柴油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energycategories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energycategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Energy Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"柴油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energycategories/10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energycategories",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Energy Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energycategories/9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energycategories",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"protocolProfileBehavior": {}

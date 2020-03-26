@@ -3,6 +3,7 @@ from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
 import costcenter
 import datasource
+import energycategory
 import meter
 import offlinemeter
 import privilege
@@ -39,6 +40,10 @@ api.add_route('/datasources/{id_}/points',
 api.add_route('/datasources/status',
               datasource.DataSourceStatusCollection())
 
+api.add_route('/energycategories',
+              energycategory.EnergyCategoryCollection())
+api.add_route('/energycategories/{id_}',
+              energycategory.EnergyCategoryItem())
 
 api.add_route('/meters',
               meter.MeterCollection())
