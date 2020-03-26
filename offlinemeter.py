@@ -5,7 +5,7 @@ import config
 import uuid
 
 
-class MeterCollection:
+class OfflineMeterCollection:
     @staticmethod
     def __init__():
         pass
@@ -50,7 +50,7 @@ class MeterCollection:
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, max_hourly_value, "
                  "        energy_item_id, location, description "
-                 " FROM tbl_meters "
+                 " FROM tbl_offline_meters "
                  " ORDER BY id ")
         cursor.execute(query)
         rows_meters = cursor.fetchall()
@@ -89,7 +89,7 @@ class MeterCollection:
                 not isinstance(new_values['data']['name'], str) or \
                 len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_METER_NAME')
+                                   description='API.INVALID_OFFLINE_METER_NAME')
         name = str.strip(new_values['data']['name'])
 
         if 'energy_category_id' not in new_values['data'].keys() or \
@@ -130,13 +130,13 @@ class MeterCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_meters "
+                       " FROM tbl_offline_meters "
                        " WHERE name = %s ", (name,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                   description='API.METER_NAME_IS_ALREADY_IN_USE')
+                                   description='API.OFFLINE_METER_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_energy_categories "
@@ -165,7 +165,7 @@ class MeterCollection:
                     raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                            description='API.ENERGY_ITEM_IS_NOT_BELONG_TO_ENERGY_CATEGORY')
 
-        add_values = (" INSERT INTO tbl_meters "
+        add_values = (" INSERT INTO tbl_offline_meters "
                       "    (name, uuid, energy_category_id, is_counted, max_hourly_value, "
                       "     energy_item_id, location, description) "
                       " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ")
@@ -186,7 +186,7 @@ class MeterCollection:
         resp.location = '/meters/' + str(new_id)
 
 
-class MeterItem:
+class OfflineMeterItem:
     @staticmethod
     def __init__():
         pass
@@ -199,7 +199,7 @@ class MeterItem:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_METER_ID')
+                                   description='API.INVALID_OFFLINE_METER_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
@@ -235,7 +235,7 @@ class MeterItem:
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, max_hourly_value, "
                  "        energy_item_id, location, description "
-                 " FROM tbl_meters "
+                 " FROM tbl_offline_meters "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
         row = cursor.fetchone()
@@ -244,7 +244,7 @@ class MeterItem:
 
         if row is None:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.METER_NOT_FOUND')
+                                   description='API.OFFLINE_METER_NOT_FOUND')
         else:
             energy_category = energy_category_dict.get(row['energy_category_id'], None)
             energy_item = energy_item_dict.get(row['energy_item_id'], None)
@@ -264,23 +264,25 @@ class MeterItem:
     def on_delete(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_METER_ID')
+                                   description='API.INVALID_OFFLINE_METER_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        cursor.execute(" SELECT name FROM tbl_meters WHERE id = %s ", (id_,))
+        cursor.execute(" SELECT name "
+                       " FROM tbl_offline_meters "
+                       " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.METER_NOT_FOUND')
+                                   description='API.OFFLINE_METER_NOT_FOUND')
 
-        # check if this meter is being used by virtual meters
+        # check if this offline meter is being used by virtual meters
         cursor.execute(" SELECT vm.name "
                        " FROM tbl_variables va, tbl_expressions ex, tbl_virtual_meters vm "
-                       " WHERE va.meter_id = %s AND va.meter_type = 'meter' AND va.expression_id = ex.id "
-                       "       AND ex.virtual_meter_id = vm.id ",
+                       " WHERE va.meter_id = %s AND va.meter_type = 'offline_meter' AND va.expression_id = ex.id "
+                       " AND ex.virtual_meter_id = vm.id ",
                        (id_,))
         row_virtual_meter = cursor.fetchone()
         if row_virtual_meter is not None:
@@ -288,36 +290,36 @@ class MeterItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THIS_METER_IS_BEING_USED_BY_A_VIRTUAL_METER' + row_virtual_meter[0])
+                                   description='API.THIS_OFFLINE_METER_IS_BEING_USED_BY_A_VIRTUAL_METER')
 
         # check relationship with spaces
         cursor.execute(" SELECT id "
-                       " FROM tbl_spaces_meters "
-                       " WHERE meter_id = %s ", (id_,))
+                       " FROM tbl_spaces_offline_meters "
+                       " WHERE offline_meter_id = %s ", (id_,))
         rows_companies = cursor.fetchall()
         if rows_companies is not None and len(rows_companies) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATIONSHIP_WITH_SPACES')
+                                   description='API.THERE_IS_RELATION_WITH_SPACES')
 
-        # check relationship with tenants
+        # check relations with tenants
         cursor.execute(" SELECT id "
-                       " FROM tbl_tenants_meters "
-                       " WHERE meter_id = %s ", (id_,))
+                       " FROM tbl_tenants_offline_meters "
+                       " WHERE offline_meter_id = %s ", (id_,))
         rows_lines = cursor.fetchall()
         if rows_lines is not None and len(rows_lines) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATIONSHIP_WITH_TENANTS')
+                                   description='API.THERE_IS_RELATION_WITH_TENANTS')
 
-        # check relationship with equipments
+        # check relations with equipments
         cursor.execute(" SELECT id "
-                       " FROM tbl_equipments_meters "
-                       " WHERE meter_id = %s ", (id_,))
+                       " FROM tbl_equipments_offline_meters "
+                       " WHERE offline_meter_id = %s ", (id_,))
         rows_equipments = cursor.fetchall()
         if rows_equipments is not None and len(rows_equipments) > 0:
             cursor.close()
@@ -326,7 +328,7 @@ class MeterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATIONSHIP_WITH_EQUIPMENTS')
 
-        cursor.execute(" DELETE FROM tbl_meters WHERE id = %s ", (id_,))
+        cursor.execute(" DELETE FROM tbl_offline_meters WHERE id = %s ", (id_,))
         cnx.commit()
 
         cursor.close()
@@ -343,7 +345,8 @@ class MeterItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
         if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST', description='API.INVALID_METER_ID')
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_OFFLINE_METER_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -351,7 +354,7 @@ class MeterItem:
                 not isinstance(new_values['data']['name'], str) or \
                 len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_METER_NAME')
+                                   description='API.INVALID_OFFLINE_METER_NAME')
         name = str.strip(new_values['data']['name'])
 
         if 'energy_category_id' not in new_values['data'].keys() or \
@@ -392,13 +395,13 @@ class MeterItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_meters "
+                       " FROM tbl_offline_meters "
                        " WHERE name = %s AND id != %s ", (name, id_))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                   description='API.METER_NAME_IS_ALREADY_IN_USE')
+                                   description='API.OFFLINE_METER_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_energy_categories "
@@ -427,7 +430,7 @@ class MeterItem:
                     raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                            description='API.ENERGY_ITEM_IS_NOT_BELONG_TO_ENERGY_CATEGORY')
 
-        update_row = (" UPDATE tbl_meters "
+        update_row = (" UPDATE tbl_offline_meters "
                       " SET name = %s, energy_category_id = %s, max_hourly_value = %s, is_counted = %s, "
                       "     energy_item_id = %s, location = %s, description = %s "
                       " WHERE id = %s ")
@@ -445,163 +448,4 @@ class MeterItem:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_200
-
-
-class MeterPointCollection:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp, id_):
-        resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_get(req, resp, id_):
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_METER_ID')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_meters "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.METER_NOT_FOUND')
-
-        query = (" SELECT p.id, p.name, "
-                 "        ds.id, ds.name, ds.uuid, "
-                 "        p.address "
-                 " FROM tbl_points p, tbl_meters_points mp, tbl_data_sources ds "
-                 " WHERE mp.meter_id = %s AND p.id = mp.point_id AND p.data_source_id = ds.id "
-                 " ORDER BY p.name ")
-        cursor.execute(query, (id_,))
-        rows = cursor.fetchall()
-
-        result = list()
-        if rows is not None and len(rows) > 0:
-            for row in rows:
-                meta_result = {"id": row[0], "name": row[1],
-                               "data_source": {"id": row[2], "name": row[3], "uuid": row[4]},
-                               "address": row[5]}
-                result.append(meta_result)
-
-        resp.body = json.dumps(result)
-
-    @staticmethod
-    def on_post(req, resp, id_):
-        """Handles POST requests"""
-        try:
-            raw_json = req.stream.read().decode('utf-8')
-        except Exception as ex:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
-
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_METER_ID')
-
-        new_values = json.loads(raw_json, encoding='utf-8')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " from tbl_meters "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.METER_NOT_FOUND')
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_points "
-                       " WHERE id = %s ", (new_values['data']['point_id'],))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.POINT_NOT_FOUND')
-
-        query = (" SELECT id " 
-                 " FROM tbl_meters_points "
-                 " WHERE meter_id = %s AND point_id = %s")
-        cursor.execute(query, (id_, new_values['data']['point_id'],))
-        if cursor.fetchone() is not None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.METER_POINT_RELATIONSHIP_EXISTED')
-
-        add_row = (" INSERT INTO tbl_meters_points (meter_id, point_id) "
-                   " VALUES (%s, %s) ")
-        cursor.execute(add_row, (id_, new_values['data']['point_id'],))
-        new_id = cursor.lastrowid
-        cnx.commit()
-        cursor.close()
-        cnx.disconnect()
-
-        resp.status = falcon.HTTP_201
-        resp.location = '/meters/' + str(id_) + '/points/' + str(new_values['data']['point_id'])
-
-
-class MeterPointItem:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp, id_, pid):
-            resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_delete(req, resp, id_, pid):
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_METER_ID')
-
-        if not pid.isdigit() or int(pid) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_POINT_ID')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_meters "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.METER_NOT_FOUND')
-
-        cursor.execute(" SELECT name from tbl_points WHERE id = %s ", (pid,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.POINT_NOT_FOUND')
-
-        cursor.execute(" SELECT id "
-                       " FROM tbl_meters_points "
-                       " WHERE meter_id = %s AND point_id = %s ", (id_, pid))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.METER_POINT_RELATIONSHIP_NOT_FOUND')
-
-        cursor.execute(" DELETE FROM tbl_meters_points WHERE meter_id = %s AND point_id = %s ", (id_, pid))
-        cnx.commit()
-
-        cursor.close()
-        cnx.disconnect()
-
-        resp.status = falcon.HTTP_204
 

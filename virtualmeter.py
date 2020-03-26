@@ -393,8 +393,8 @@ class VirtualMeterItem:
         cursor.execute(" SELECT id "
                        " FROM tbl_spaces_virtual_meters "
                        " WHERE virtual_meter_id = %s ", (id_,))
-        rows_factories = cursor.fetchall()
-        if rows_factories is not None and len(rows_factories) > 0:
+        rows_spaces = cursor.fetchall()
+        if rows_spaces is not None and len(rows_spaces) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,

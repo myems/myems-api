@@ -531,7 +531,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"is_counted\": true}}",
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -549,13 +549,16 @@
 					"response": []
 				},
 				{
-					"name": "PUT Update Meter",
+					"name": "PUT Update a Meter",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":2, \"is_counted\": true}}"
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/meters/1",
@@ -645,6 +648,114 @@
 								"1",
 								"points",
 								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Offline Meter",
+			"item": [
+				{
+					"name": "GET All Offline Meters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Offline Meter by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/offlinemeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Offline Meter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"OfflinePM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Offline Meter",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"OfflinePM20\", \"energy_category_id\":1, \"max_hourly_value\":9999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/offlinemeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Offline Meter by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/offlinemeters/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeters",
+								"2"
 							]
 						}
 					},
@@ -1031,11 +1142,6 @@
 					"response": []
 				}
 			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Offline Meter",
-			"item": [],
 			"protocolProfileBehavior": {}
 		},
 		{
