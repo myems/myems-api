@@ -112,17 +112,22 @@ class VirtualMeterCollection:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        if 'name' not in new_values['data'].keys() or len(new_values['data']['name']) == 0:
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_VIRTUAL_METER_NAME')
+        name = str.strip(new_values['data']['name'])
 
         if 'energy_category_id' not in new_values['data'].keys() or new_values['data']['energy_category_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_ENERGY_CATEGORY_ID')
+        energy_category_id = new_values['data']['energy_category_id']
 
         if 'is_counted' not in new_values['data'].keys() or not isinstance(new_values['data']['is_counted'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_IS_COUNTED_VALUE')
+        is_counted = new_values['data']['is_counted']
 
         if 'expression' not in new_values['data'].keys():
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -159,17 +164,17 @@ class VirtualMeterCollection:
 
         cursor.execute(" SELECT name "
                        " FROM tbl_virtual_meters "
-                       " WHERE name = %s ", (new_values['data']['name'],))
+                       " WHERE name = %s ", (name,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.VIRTUAL_METER_NAME_ALREADY_EXISTS')
+                                   description='API.VIRTUAL_METER_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_energy_categories "
                        " WHERE id = %s ",
-                       (new_values['data']['energy_category_id'],))
+                       (energy_category_id,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
@@ -211,10 +216,10 @@ class VirtualMeterCollection:
         add_values = (" INSERT INTO tbl_virtual_meters "
                       "     (name, uuid, energy_category_id, is_counted) "
                       " VALUES (%s, %s, %s, %s) ")
-        cursor.execute(add_values, (new_values['data']['name'],
+        cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
-                                    new_values['data']['energy_category_id'],
-                                    new_values['data']['is_counted']))
+                                    energy_category_id,
+                                    is_counted))
         new_id = cursor.lastrowid
         cnx.commit()
 
@@ -446,13 +451,22 @@ class VirtualMeterItem:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_VIRTUAL_METER_NAME')
+        name = str.strip(new_values['data']['name'])
+
         if 'energy_category_id' not in new_values['data'].keys() or new_values['data']['energy_category_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_ENERGY_CATEGORY_ID')
+        energy_category_id = new_values['data']['energy_category_id']
 
         if 'is_counted' not in new_values['data'].keys() or not isinstance(new_values['data']['is_counted'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_IS_COUNTED_VALUE')
+        is_counted = new_values['data']['is_counted']
 
         if 'expression' not in new_values['data'].keys():
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -497,9 +511,18 @@ class VirtualMeterItem:
                                    description='API.VIRTUAL_METER_NOT_FOUND')
 
         cursor.execute(" SELECT name "
+                       " FROM tbl_virtual_meters "
+                       " WHERE name = %s AND id != %s ", (name, id_))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.VIRTUAL_METER_NAME_IS_ALREADY_IN_USE')
+
+        cursor.execute(" SELECT name "
                        " FROM tbl_energy_categories "
                        " WHERE id = %s ",
-                       (new_values['data']['energy_category_id'],))
+                       (energy_category_id,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
@@ -541,9 +564,9 @@ class VirtualMeterItem:
         update_row = (" UPDATE tbl_virtual_meters "
                       " SET name = %s, energy_category_id = %s, is_counted = %s "
                       " WHERE id = %s ")
-        cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['energy_category_id'],
-                                    new_values['data']['is_counted'],
+        cursor.execute(update_row, (name,
+                                    energy_category_id,
+                                    is_counted,
                                     id_,))
         cnx.commit()
 

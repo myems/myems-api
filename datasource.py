@@ -47,9 +47,12 @@ class DataSourceCollection:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        if 'name' not in new_values['data'].keys() or len(new_values['data']['name']) == 0:
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_NAME')
+        name = str.strip(new_values['data']['name'])
 
         if 'protocol' not in new_values['data'].keys() \
                 or new_values['data']['protocol'] not in \
@@ -60,6 +63,16 @@ class DataSourceCollection:
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_data_sources "
+                       " WHERE name = %s ", (name,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.DATA_SOURCE_NAME_IS_ALREADY_IN_USE')
+
         add_values = (" INSERT INTO tbl_data_sources (name, uuid, protocol, connection) "
                       " VALUES (%s, %s, %s, %s) ")
         cursor.execute(add_values, (new_values['data']['name'],
