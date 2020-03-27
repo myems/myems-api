@@ -87,7 +87,9 @@ class TimezoneItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        cursor.execute(" SELECT name FROM tbl_timezones WHERE id = %s ", (id_,))
+        cursor.execute(" SELECT name "
+                       " FROM tbl_timezones "
+                       " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()

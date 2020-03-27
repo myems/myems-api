@@ -59,14 +59,70 @@ class UserCollection:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$',
-                         new_values['data']['email'])
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_USER_NAME')
+        name = str.strip(new_values['data']['name'])
+
+        if 'display_name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['display_name'], str) or \
+                len(str.strip(new_values['data']['display_name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_DISPLAY_NAME')
+        display_name = str.strip(new_values['data']['display_name'])
+
+        if 'email' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['email'], str) or \
+                len(str.strip(new_values['data']['email'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_EMAIL')
+        email = str.strip(new_values['data']['email'])
+
+        match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
         if match is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_EMAIL')
 
+        if 'is_admin' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_admin'], bool):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_IS_ADMIN_VALUE')
+        is_admin = new_values['data']['is_admin']
+
+        if 'privilege_id' in new_values['data'].keys():
+            if not isinstance(new_values['data']['privilege_id'], int) or \
+                    new_values['data']['privilege_id'] <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_PRIVILEGE_ID')
+            privilege_id = new_values['data']['privilege_id']
+        else:
+            privilege_id = None
+
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_users "
+                       " WHERE name = %s ", (name,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.USER_NAME_IS_ALREADY_IN_USE')
+
+        if privilege_id is not None:
+            cursor.execute(" SELECT name "
+                           " FROM tbl_privileges "
+                           " WHERE id = %s ",
+                           (privilege_id,))
+            if cursor.fetchone() is None:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                       description='API.PRIVILEGE_NOT_FOUND')
+
         add_row = (" INSERT INTO tbl_users "
                    "     (name, uuid, display_name, email, salt, password, is_admin, privilege_id) "
                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ")
@@ -74,15 +130,15 @@ class UserCollection:
         salt = uuid.uuid4().hex
         password = new_values['data']['password']
         hashed_password = hashlib.sha512(salt.encode() + password.encode()).hexdigest()
-        cursor.execute(add_row, (new_values['data']['name'],
+
+        cursor.execute(add_row, (name,
                                  str(uuid.uuid4()),
-                                 new_values['data']['display_name'],
-                                 new_values['data']['email'],
+                                 display_name,
+                                 email,
                                  salt,
                                  hashed_password,
-                                 new_values['data']['is_admin'],
-                                 new_values['data']['privilege_id']
-                                 if "privilege_id" in new_values['data'].keys() else None))
+                                 is_admin,
+                                 privilege_id))
         new_id = cursor.lastrowid
         cnx.commit()
         cursor.close()
@@ -170,11 +226,46 @@ class UserItem:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$',
-                         new_values['data']['email'])
-        if match is None:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_USER_NAME')
+        name = str.strip(new_values['data']['name'])
+
+        if 'display_name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['display_name'], str) or \
+                len(str.strip(new_values['data']['display_name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_DISPLAY_NAME')
+        display_name = str.strip(new_values['data']['display_name'])
+
+        if 'email' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['email'], str) or \
+                len(str.strip(new_values['data']['email'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_EMAIL')
+        email = str.strip(new_values['data']['email'])
+
+        match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
+        if match is None:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_EMAIL')
+
+        if 'is_admin' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_admin'], bool):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_IS_ADMIN_VALUE')
+        is_admin = new_values['data']['is_admin']
+
+        if 'privilege_id' in new_values['data'].keys():
+            if not isinstance(new_values['data']['privilege_id'], int) or \
+                    new_values['data']['privilege_id'] <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_PRIVILEGE_ID')
+            privilege_id = new_values['data']['privilege_id']
+        else:
+            privilege_id = None
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -188,16 +279,35 @@ class UserItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.USER_NOT_FOUND')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_users "
+                       " WHERE name = %s AND id != %s ", (name, id_))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.USER_NAME_IS_ALREADY_IN_USE')
+
+        if privilege_id is not None:
+            cursor.execute(" SELECT name "
+                           " FROM tbl_privileges "
+                           " WHERE id = %s ",
+                           (privilege_id,))
+            if cursor.fetchone() is None:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                       description='API.PRIVILEGE_NOT_FOUND')
+
         update_row = (" UPDATE tbl_users "
                       " SET name = %s, display_name = %s, email = %s, "
                       "     is_admin = %s, privilege_id = %s "
                       " WHERE id = %s ")
-        cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['display_name'],
-                                    new_values['data']['email'],
-                                    new_values['data']['is_admin'],
-                                    new_values['data']['privilege_id']
-                                    if "privilege_id" in new_values['data'].keys() else None,
+        cursor.execute(update_row, (name,
+                                    display_name,
+                                    email,
+                                    is_admin,
+                                    privilege_id,
                                     id_,))
         cnx.commit()
 

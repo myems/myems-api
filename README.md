@@ -516,11 +516,11 @@ $ curl -i -X DELETE http://BASE_URL/users/{id}
 ```
 * POST New User
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"johnson", "display_name":"约翰逊", "email":"johnson@myems.io", "is_admin":true, password":"Thi$Pa$$w0rd"}}' http://BASE_URL/users
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"albert", "display_name":"Mr. Albert", "email":"albert@myems.io", "is_admin":false, "password":"!MyEMS1"}}' http://BASE_URL/users
 ```
 * PUT User Profile
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnson", "display_name":"约翰逊", "is_admin":true, "email":"johnson@myems.io"}}' http://BASE_URL/users/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"albert", "display_name":"Mr. Albert", "email":"albert@myems.io", "is_admin":false, "privilege_id":1, "password":"!MyEMS1"}}' http://BASE_URL/users/{id}
 ```
 * PUT User Login
 ```bash

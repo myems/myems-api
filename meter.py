@@ -347,7 +347,8 @@ class MeterItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
         if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST', description='API.INVALID_METER_ID')
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_METER_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -397,6 +398,15 @@ class MeterItem:
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_meters "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.METER_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_meters "
