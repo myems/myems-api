@@ -402,6 +402,15 @@ class OfflineMeterItem:
 
         cursor.execute(" SELECT name "
                        " FROM tbl_offline_meters "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.OFFLINE_METER_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_offline_meters "
                        " WHERE name = %s AND id != %s ", (name, id_))
         if cursor.fetchone() is not None:
             cursor.close()

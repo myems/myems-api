@@ -178,7 +178,8 @@ class PointItem:
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.POINT_NOT_FOUND')
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.POINT_NOT_FOUND')
 
         update_row = (" UPDATE tbl_points "
                       " SET name = %s, data_source_id = %s, "

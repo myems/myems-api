@@ -202,6 +202,15 @@ class CostCenterItem:
 
         cursor.execute(" SELECT name "
                        " FROM tbl_cost_centers "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COST_CENTER_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_cost_centers "
                        " WHERE name = %s AND id != %s ",
                        (new_values['data']['name'], id_, ))
         if cursor.fetchone() is not None:
