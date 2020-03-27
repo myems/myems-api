@@ -809,7 +809,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM20\", \"energy_category_id\":1, \"is_counted\": true, \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":1},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":2},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":3}] } }}"
+							"raw": "{\"data\":{\"name\":\"VM30\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
 							"raw": "{{base_url}}/virtualmeters",
@@ -830,7 +830,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM21\", \"energy_category_id\":1, \"is_counted\": true, \"expression\": {\"equation\":\"x1+x2+x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}]}}}"
+							"raw": "{\"data\":{\"name\":\"VM21\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
 							"raw": "{{base_url}}/virtualmeters/1",
@@ -1376,7 +1376,7 @@
 					"response": []
 				},
 				{
-					"name": "GET a Energy Category",
+					"name": "GET an Energy Category",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1421,16 +1421,19 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"柴油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}"
+							"raw": "{\"data\":{\"name\":\"汽油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
-							"raw": "{{base_url}}/energycategories/10",
+							"raw": "{{base_url}}/energycategories/9",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"energycategories",
-								"10"
+								"9"
 							]
 						}
 					},
@@ -1449,6 +1452,111 @@
 							"path": [
 								"energycategories",
 								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Energy Item",
+			"item": [
+				{
+					"name": "GET All Energy Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyitems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Energy Item",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyitems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create an Energy Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"租户用电\",\"energy_category_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyitems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Energy Item",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"空调用\",\"energy_category_id\":1}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/energyitems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Energy Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyitems/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems",
+								"4"
 							]
 						}
 					},
