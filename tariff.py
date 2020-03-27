@@ -99,13 +99,26 @@ class TariffCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        # todo: check post data
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_METER_NAME')
+        name = str.strip(new_values['data']['name'])
+
+        if 'energy_category_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['energy_category_id'], int) or \
+                new_values['data']['energy_category_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_ENERGY_CATEGORY_ID')
+        energy_category_id = new_values['data']['energy_category_id']
 
         if 'tariff_type' not in new_values['data'].keys() \
-           or new_values['data']['tariff_type'] not in ('block', 'timeofuse'):
+           or str.strip(new_values['data']['tariff_type']) not in ('block', 'timeofuse'):
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
                                    description='API.INVALID_TARIFF_TYPE')
+        tariff_type = str.strip(new_values['data']['tariff_type'])
 
         if new_values['data']['tariff_type'] == 'block':
             if new_values['data']['block'] is None:
@@ -117,13 +130,38 @@ class TariffCollection:
                 raise falcon.HTTPError(falcon.HTTP_400,
                                        title='API.BAD_REQUEST',
                                        description='API.INVALID_TARIFF_TIME_OF_USE_PRICING')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        if 'unit_of_price' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['unit_of_price'], str) or \
+                len(str.strip(new_values['data']['unit_of_price'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_UNIT_OF_PRICE')
+        unit_of_price = str.strip(new_values['data']['unit_of_price'])
 
         timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
         if config.utc_offset[0] == '-':
             timezone_offset = -timezone_offset
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_tariffs "
+                       " WHERE name = %s ", (name,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.TARIFF_NAME_IS_ALREADY_IN_USE')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_energy_categories "
+                       " WHERE id = %s ",
+                       (new_values['data']['energy_category_id'],))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.ENERGY_CATEGORY_NOT_FOUND')
 
         valid_from = datetime.strptime(new_values['data']['valid_from'], '%Y-%m-%dT%H:%M:%S')
         valid_from = valid_from.replace(tzinfo=timezone.utc)
@@ -136,17 +174,17 @@ class TariffCollection:
                    "             (name, uuid, energy_category_id, tariff_type, unit_of_price, "
                    "              valid_from_datetime_utc, valid_through_datetime_utc ) "
                    " VALUES (%s, %s, %s, %s, %s, %s, %s) ")
-        cursor.execute(add_row, (new_values['data']['name'],
+        cursor.execute(add_row, (name,
                                  str(uuid.uuid4()),
-                                 new_values['data']['energy_category_id'],
-                                 new_values['data']['tariff_type'],
-                                 new_values['data']['unit_of_price'],
+                                 energy_category_id,
+                                 tariff_type,
+                                 unit_of_price,
                                  valid_from,
                                  valid_through))
         new_id = cursor.lastrowid
         cnx.commit()
         # insert block prices
-        if new_values['data']['tariff_type'] == 'block':
+        if tariff_type == 'block':
             for block in new_values['data']['block']:
                 add_block = (" INSERT INTO tbl_tariffs_blocks "
                              "             (tariff_id, start_amount, end_amount, price) "
@@ -154,7 +192,7 @@ class TariffCollection:
                 cursor.execute(add_block, (new_id, block['start_amount'], block['end_amount'], block['price']))
                 cnx.commit()
         # insert time of use prices
-        elif new_values['data']['tariff_type'] == 'timeofuse':
+        elif tariff_type == 'timeofuse':
             for timeofuse in new_values['data']['timeofuse']:
                 add_timeofuse = (" INSERT INTO tbl_tariffs_timeofuses "
                                  "             (tariff_id, start_time_of_day, end_time_of_day, peak_type, price) "
@@ -322,9 +360,48 @@ class TariffItem:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        if new_values['data']['tariff_type'] not in ('block', 'timeofuse'):
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_METER_NAME')
+        name = str.strip(new_values['data']['name'])
+
+        if 'energy_category_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['energy_category_id'], int) or \
+                new_values['data']['energy_category_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_ENERGY_CATEGORY_ID')
+        energy_category_id = new_values['data']['energy_category_id']
+
+        if 'tariff_type' not in new_values['data'].keys() \
+           or str.strip(new_values['data']['tariff_type']) not in ('block', 'timeofuse'):
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
                                    description='API.INVALID_TARIFF_TYPE')
+        tariff_type = str.strip(new_values['data']['tariff_type'])
+
+        if new_values['data']['tariff_type'] == 'block':
+            if new_values['data']['block'] is None:
+                raise falcon.HTTPError(falcon.HTTP_400,
+                                       title='API.BAD_REQUEST',
+                                       description='API.INVALID_TARIFF_BLOCK_PRICING')
+        elif new_values['data']['tariff_type'] == 'timeofuse':
+            if new_values['data']['timeofuse'] is None:
+                raise falcon.HTTPError(falcon.HTTP_400,
+                                       title='API.BAD_REQUEST',
+                                       description='API.INVALID_TARIFF_TIME_OF_USE_PRICING')
+
+        if 'unit_of_price' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['unit_of_price'], str) or \
+                len(str.strip(new_values['data']['unit_of_price'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_UNIT_OF_PRICE')
+        unit_of_price = str.strip(new_values['data']['unit_of_price'])
+
+        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
+        if config.utc_offset[0] == '-':
+            timezone_offset = -timezone_offset
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -342,9 +419,14 @@ class TariffItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.TARIFF_NOT_FOUND')
 
-        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
-        if config.utc_offset[0] == '-':
-            timezone_offset = -timezone_offset
+        cursor.execute(" SELECT name "
+                       " FROM tbl_tariffs "
+                       " WHERE name = %s AND id != %s ", (name, id_))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.TARIFF_NAME_IS_ALREADY_IN_USE')
 
         valid_from = datetime.strptime(new_values['data']['valid_from'], '%Y-%m-%dT%H:%M:%S')
         valid_from = valid_from.replace(tzinfo=timezone.utc)
@@ -358,17 +440,17 @@ class TariffItem:
                       " SET name = %s, energy_category_id = %s, tariff_type = %s, unit_of_price = %s, "
                       "     valid_from_datetime_utc = %s , valid_through_datetime_utc = %s "
                       " WHERE id = %s ")
-        cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['energy_category_id'],
-                                    new_values['data']['tariff_type'],
-                                    new_values['data']['unit_of_price'],
+        cursor.execute(update_row, (name,
+                                    energy_category_id,
+                                    tariff_type,
+                                    unit_of_price,
                                     valid_from,
                                     valid_through,
                                     id_,))
         cnx.commit()
 
         # update prices of the tariff
-        if new_values['data']['tariff_type'] == 'block':
+        if tariff_type == 'block':
             if 'block' not in new_values['data'].keys() or new_values['data']['block'] is None:
                 cursor.close()
                 cnx.disconnect()
@@ -392,7 +474,7 @@ class TariffItem:
                                    " VALUES (%s, %s, %s, %s) ",
                                    (id_, block['start_amount'], block['end_amount'], block['price']))
                     cnx.commit()
-        elif new_values['data']['tariff_type'] == 'timeofuse':
+        elif tariff_type == 'timeofuse':
             if 'timeofuse' not in new_values['data'].keys() or new_values['data']['timeofuse'] is None:
                 cursor.close()
                 cnx.disconnect()
