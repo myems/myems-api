@@ -192,6 +192,17 @@ class EnergyCategoryItem:
                                    description='API.ENERGY_CATEGORY_USED_IN_OFFLINE_METER')
 
         cursor.execute(" SELECT id "
+                       " FROM tbl_tariffs "
+                       " WHERE energy_category_id = %s ", (id_,))
+        rows_tariffs = cursor.fetchall()
+        if rows_tariffs is not None and len(rows_tariffs) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.ENERGY_CATEGORY_USED_IN_TARIFFS')
+
+        cursor.execute(" SELECT id "
                        " FROM tbl_energy_items "
                        " WHERE energy_category_id = %s ", (id_,))
         rows_energy_items = cursor.fetchall()
