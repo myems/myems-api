@@ -112,17 +112,20 @@ class OfflineMeterCollection:
         max_hourly_value = new_values['data']['max_hourly_value']
 
         if 'energy_item_id' in new_values['data'].keys():
+            if new_values['data']['energy_item_id'] <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_ENERGY_ITEM_ID')
             energy_item_id = new_values['data']['energy_item_id']
         else:
             energy_item_id = None
 
         if 'location' in new_values['data'].keys():
-            location = new_values['data']['location']
+            location = str.strip(new_values['data']['location'])
         else:
             location = None
 
         if 'description' in new_values['data'].keys():
-            description = new_values['data']['description']
+            description = str.strip(new_values['data']['description'])
         else:
             description = None
 
@@ -377,17 +380,20 @@ class OfflineMeterItem:
         max_hourly_value = new_values['data']['max_hourly_value']
 
         if 'energy_item_id' in new_values['data'].keys():
+            if new_values['data']['energy_item_id'] <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_ENERGY_ITEM_ID')
             energy_item_id = new_values['data']['energy_item_id']
         else:
             energy_item_id = None
 
         if 'location' in new_values['data'].keys():
-            location = new_values['data']['location']
+            location = str.strip(new_values['data']['location'])
         else:
             location = None
 
         if 'description' in new_values['data'].keys():
-            description = new_values['data']['description']
+            description = str.strip(new_values['data']['description'])
         else:
             description = None
 

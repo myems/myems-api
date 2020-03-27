@@ -4,6 +4,7 @@ from falcon_multipart.middleware import MultipartMiddleware
 import costcenter
 import datasource
 import energycategory
+import energyitem
 import meter
 import offlinemeter
 import privilege
@@ -44,6 +45,11 @@ api.add_route('/energycategories',
               energycategory.EnergyCategoryCollection())
 api.add_route('/energycategories/{id_}',
               energycategory.EnergyCategoryItem())
+
+api.add_route('/energyitems',
+              energyitem.EnergyItemCollection())
+api.add_route('/energyitems/{id_}',
+              energyitem.EnergyItemItem())
 
 api.add_route('/meters',
               meter.MeterCollection())

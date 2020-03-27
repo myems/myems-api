@@ -98,6 +98,9 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 ```
 
 ## API List
+
+[Energy Category](#Energy-Category) | [Energy Item](#Energy-Item)
+
 [Data Source](#Data-Source) | [Point](#Point)
 
 [Tariff](#Tariff) | [Cost Center](#Cost-Center)
@@ -106,7 +109,7 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 
 [User](#User) | [Privilege](#Privilege)
 
-
+[Timezone](#Timezone)
 
 
 ### Cost Center
@@ -226,6 +229,39 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"电",
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"电","unit_of_measure":"kWh", "kgce":0.1329 , "kgco2e":0.9825}}' http://BASE_URL/energycategories/{id}
 ```
 
+
+### Energy Item
+* GET an Energy Item by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Energy Item ID                        |
+| name          | string    | Energy Item name                      |
+| uuid          | string    | Energy Item UUID                      |
+| Energy Category ID   | integer | Energy Category ID               |
+
+
+```bash
+$ curl -i -X GET http://BASE_URL/energyitems/{id}
+```
+* GET All Energy Items
+```bash
+$ curl -i -X GET http://BASE_URL/energyitems
+```
+* DELETE an Energy Item by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/energyitems/{id}
+```
+* POST Create an Energy Item
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"空调用电","energy_category_id":1}}' http://BASE_URL/energyitems
+```
+* PUT Update an Energy Item
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"动力用电","energy_category_id":1}}' http://BASE_URL/energyitems/{id}
+```
 
 ### Meter
 * GET Meter by ID
@@ -522,6 +558,9 @@ Result
 | ├ kgce        | string    | KG coal equivalent                        |
 | └ kgco2e      | string    | KG Carbon dioxide equivalent              |
 | is_counted    | boolean   | the Virtual Meter is counted in           |
+| energy_item   | Object   | Energy Item Object                         |
+| location      | string    | Offline Meter location                    |
+| description   | string    | Offline Meter description                 |
 | expression    | json      | Expression                                |
 |  ├ id         | integer   | Expression ID                             |
 |  ├ uuid       | string    | Expression UUID                           |
@@ -546,9 +585,9 @@ $ curl -i -X DELETE http://BASE_URL/virtualmeters/{id}
 ```
 * POST Create New Virtual Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM20", "energy_category_id":1, "is_counted": true, "expression": {"equation":"x1+x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":1},{"name":"x2", "meter_type":"meter", "meter_id":2},{"name":"x3", "meter_type":"meter", "meter_id":3}]}}}' http://BASE_URL/virtualmeters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "energy_item_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters
 ```
 * PUT Update a Virtual Meter by ID
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM20", "energy_category_id":1, "is_counted": true, "expression": {"equation":"x1+x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":1},{"name":"x2", "meter_type":"meter", "meter_id":2},{"name":"x3", "meter_type":"meter", "meter_id":3}]}}}' http://BASE_URL/virtualmeters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "energy_item_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters/{id}
 ```
