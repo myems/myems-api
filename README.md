@@ -107,10 +107,32 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 
 [Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) 
 
-[User](#User) | [Privilege](#Privilege)
+[User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
 
 [Timezone](#Timezone)
 
+
+### Contact
+* GET Contact by ID
+```bash
+$ curl -i -X GET http://BASE_URL/contacts/{id}
+```
+* GET All Contacts
+```bash
+$ curl -i -X GET http://BASE_URL/contacts
+```
+* DELETE Contact by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/contacts/{id}
+```
+* POST Create a New Contact
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"albert", "email":"albert@myems.io", "phone":"+8613888888888", "description":"contact description"}}' http://BASE_URL/contacts
+```
+* PUT Update a Contact
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"albert", "email":"albert@myems.io", "phone":"+8613888888899", "description":"contact description"}}' http://BASE_URL/contacts/{id}
+```
 
 ### Cost Center
 * GET Cost Center by ID
@@ -135,7 +157,7 @@ $ curl -i -X GET http://BASE_URL/costcenters
 ```bash
 $ curl -i -X DELETE http://BASE_URL/costcenters/{id}
 ```
-* POST Create a Cost Center
+* POST Create New Cost Center
 ```bash
 $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"动力中心", "external_id":"21829198980001"}}' http://BASE_URL/costcenters
 ```
@@ -147,13 +169,13 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"动力
 ```bash
 $ curl -i -X GET http://BASE_URL/costcenters/{id}/tariffs
 ```
-* POST a Cost Center and Tariff Relation
+* POST Create a Cost Center and Tariff Relation
 ```bash
 $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"tariff_id":"3"}}' http://BASE_URL/costcenters/{id}/tariffs
 ```
-* DELETE a Cost Center and Tariff Relation
+* DELETE a Cost Center and Tariff Relation by tid
 ```bash
-$ curl -i -X DELETE http://BASE_URL/costcenters/{id}/tariffs/{pid}
+$ curl -i -X DELETE http://BASE_URL/costcenters/{id}/tariffs/{tid}
 ```
 
 ### Data Source
@@ -216,7 +238,7 @@ $ curl -i -X GET http://BASE_URL/energycategories/{id}
 ```bash
 $ curl -i -X GET http://BASE_URL/energycategories
 ```
-* DELETE Energy Category by ID
+* DELETE an Energy Category by ID
 ```bash
 $ curl -i -X DELETE http://BASE_URL/energycategories/{id}
 ```
