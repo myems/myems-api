@@ -341,25 +341,25 @@ class MeterItem:
         cursor.execute(" SELECT id "
                        " FROM tbl_spaces_meters "
                        " WHERE meter_id = %s ", (id_,))
-        rows_companies = cursor.fetchall()
-        if rows_companies is not None and len(rows_companies) > 0:
+        rows_spaces = cursor.fetchall()
+        if rows_spaces is not None and len(rows_spaces) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATIONSHIP_WITH_SPACES')
+                                   description='API.THERE_IS_RELATION_WITH_SPACES')
 
         # check relationship with tenants
         cursor.execute(" SELECT id "
                        " FROM tbl_tenants_meters "
                        " WHERE meter_id = %s ", (id_,))
-        rows_lines = cursor.fetchall()
-        if rows_lines is not None and len(rows_lines) > 0:
+        rows_tenants = cursor.fetchall()
+        if rows_tenants is not None and len(rows_tenants) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATIONSHIP_WITH_TENANTS')
+                                   description='API.THERE_IS_RELATION_WITH_TENANTS')
 
         # check relationship with equipments
         cursor.execute(" SELECT id "
@@ -371,7 +371,7 @@ class MeterItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATIONSHIP_WITH_EQUIPMENTS')
+                                   description='API.THERE_IS_RELATION_WITH_EQUIPMENTS')
 
         cursor.execute(" DELETE FROM tbl_meters WHERE id = %s ", (id_,))
         cnx.commit()

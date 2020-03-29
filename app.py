@@ -1,6 +1,7 @@
 import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
+import contact
 import costcenter
 import datasource
 import energycategory
@@ -22,6 +23,12 @@ cors = CORS(allow_all_origins=True,
             allow_all_headers=True,
             allow_all_methods=True)
 api = falcon.API(middleware=[cors.middleware, MultipartMiddleware()])
+
+
+api.add_route('/contacts',
+              contact.ContactCollection())
+api.add_route('/contacts/{id_}',
+              contact.ContactItem())
 
 api.add_route('/costcenters',
               costcenter.CostCenterCollection())
