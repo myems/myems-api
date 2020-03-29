@@ -660,25 +660,25 @@
 					"response": []
 				},
 				{
-					"name": "PUT Update a Meter",
+					"name": "PUT Update a Sensor",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"Sensor20\", \"location\":\"sensor location\", \"description\":\"sensor description\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/meters/13",
+							"raw": "{{base_url}}/sensors/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"meters",
-								"13"
+								"sensors",
+								"1"
 							]
 						}
 					},
@@ -969,6 +969,176 @@
 							"path": [
 								"virtualmeters",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Sensor",
+			"item": [
+				{
+					"name": "GET All Sensors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Sensor by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sensors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sensors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Sensor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"Sensor10\", \"location\":\"sensor location\", \"description\":\"sensor description\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Meter",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/meters/13",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"meters",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Sensor by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sensors/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sensors",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Sensor Point Relation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"point_id\":\"2686\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/sensors/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sensors",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Points associated with Sensor ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sensors/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sensors",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Sensor Point Relation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sensors/1/points/2686",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sensors",
+								"1",
+								"points",
+								"2686"
 							]
 						}
 					},
