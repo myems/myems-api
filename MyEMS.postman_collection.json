@@ -6,6 +6,117 @@
 	},
 	"item": [
 		{
+			"name": "Contact",
+			"item": [
+				{
+					"name": "Get All Contacts",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/contacts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Contact by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/contacts/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Contact",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"albert\", \"email\":\"albert@myems.io\", \"phone\":\"+8613888888888\", \"description\":\"contact description\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/contacts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Contact",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"albert\", \"email\":\"albert@myems.io\", \"phone\":\"+8613888888899\", \"description\":\"contact description\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/contacts/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Contact by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/contacts/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Cost Center",
 			"item": [
 				{
