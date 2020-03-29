@@ -8,8 +8,9 @@ import energycategory
 import energyitem
 import meter
 import offlinemeter
-import privilege
 import point
+import privilege
+import sensor
 import tariff
 import timezone
 import user
@@ -81,6 +82,15 @@ api.add_route('/privileges',
               privilege.PrivilegeCollection())
 api.add_route('/privileges/{id_}',
               privilege.PrivilegeItem())
+
+api.add_route('/sensors',
+              sensor.SensorCollection())
+api.add_route('/sensors/{id_}',
+              sensor.SensorItem())
+api.add_route('/sensors/{id_}/points',
+              sensor.SensorPointCollection())
+api.add_route('/sensors/{id_}/points/{pid}',
+              sensor.SensorPointItem())
 
 api.add_route('/tariffs',
               tariff.TariffCollection())

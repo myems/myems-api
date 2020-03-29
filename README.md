@@ -453,6 +453,51 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus
 ```
 
 
+### Sensor
+* GET a Sensor by ID
+
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Sensor ID                                 |
+| name          | string    | Sensor name                               |
+| uuid          | string    | Sensor UUID                               |
+| location      | string    | Sensor location                           |
+| description   | string    | Sensor description                        |
+
+```bash
+$ curl -i -X GET http://BASE_URL/sensors/{id}
+```
+* GET All Sensors
+```bash
+$ curl -i -X GET http://BASE_URL/sensors
+```
+* DELETE a Sensor by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/sensors/{id}
+```
+* POST Create New Sensor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Sensor10", "location":"sensor location", "description":"sensor description"}}' http://BASE_URL/sensors
+```
+* PUT Update a Sensor
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Sensor10", "location":"sensor location", "description":"sensor description"}}' http://BASE_URL/sensors/{id}
+```
+* GET All Points associated with Sensor ID
+```bash
+$ curl -i -X GET http://BASE_URL/sensors/{id}/points
+```
+* POST Sensor Point Relation
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":"3"}}' http://BASE_URL/sensors/{id}/points
+```
+* DELETE Sensor Point Relation
+```bash
+$ curl -i -X DELETE http://BASE_URL/sensors/{id}/points/{pid}
+```
+
 ### Tariff
 * GET Tariff by id
 

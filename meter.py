@@ -337,7 +337,7 @@ class MeterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THIS_METER_IS_BEING_USED_BY_A_VIRTUAL_METER' + row_virtual_meter[0])
 
-        # check relationship with spaces
+        # check relation with spaces
         cursor.execute(" SELECT id "
                        " FROM tbl_spaces_meters "
                        " WHERE meter_id = %s ", (id_,))
@@ -349,7 +349,7 @@ class MeterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_SPACES')
 
-        # check relationship with tenants
+        # check relation with tenants
         cursor.execute(" SELECT id "
                        " FROM tbl_tenants_meters "
                        " WHERE meter_id = %s ", (id_,))
@@ -361,7 +361,7 @@ class MeterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_TENANTS')
 
-        # check relationship with equipments
+        # check relation with equipments
         cursor.execute(" SELECT id "
                        " FROM tbl_equipments_meters "
                        " WHERE meter_id = %s ", (id_,))
@@ -372,6 +372,18 @@ class MeterItem:
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_EQUIPMENTS')
+
+        # check relation with points
+        cursor.execute(" SELECT id "
+                       " FROM tbl_meters_points "
+                       " WHERE meter_id = %s ", (id_,))
+        rows_equipments = cursor.fetchall()
+        if rows_equipments is not None and len(rows_equipments) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_POINTS')
 
         cursor.execute(" DELETE FROM tbl_meters WHERE id = %s ", (id_,))
         cnx.commit()
@@ -663,7 +675,9 @@ class MeterPointItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.METER_NOT_FOUND')
 
-        cursor.execute(" SELECT name from tbl_points WHERE id = %s ", (pid,))
+        cursor.execute(" SELECT name "
+                       " FROM tbl_points "
+                       " WHERE id = %s ", (pid,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
