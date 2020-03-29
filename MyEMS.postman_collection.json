@@ -531,7 +531,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM20withcostcenter\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -555,19 +555,19 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/meters/1",
+							"raw": "{{base_url}}/meters/13",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"meters",
-								"1"
+								"13"
 							]
 						}
 					},
@@ -701,7 +701,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"OfflinePM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"OfflinePM21\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -725,7 +725,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"OfflinePM20\", \"energy_category_id\":1, \"max_hourly_value\":9999.99, \"is_counted\":true, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"OfflinePM20\", \"energy_category_id\":1, \"max_hourly_value\":9999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -809,7 +809,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM30\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"VM10\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
 							"raw": "{{base_url}}/virtualmeters",
@@ -830,16 +830,16 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM21\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"VM51\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
-							"raw": "{{base_url}}/virtualmeters/1",
+							"raw": "{{base_url}}/virtualmeters/5",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"virtualmeters",
-								"1"
+								"5"
 							]
 						}
 					},
@@ -878,7 +878,7 @@
 					"name": "Get All Users",
 					"request": {
 						"auth": {
-							"type": "apikey"
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -895,13 +895,13 @@
 					"response": []
 				},
 				{
-					"name": "POST Create User",
+					"name": "POST Create New User",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"johnson\", \"display_name\":\"Mr. Johnson\", \"email\":\"johnson@myems.io\", \"is_admin\":false, \"password\":\"!MyEMS1\"}}",
+							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -968,19 +968,19 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"administrator1\", \"display_name\":\"Administrator1\", \"is_admin\":true, \"email\":\"admin1@myems.io\"}}",
+							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":3, \"password\":\"!MyEMS1\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/users/1",
+							"raw": "{{base_url}}/users/4",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"users",
-								"1"
+								"4"
 							]
 						}
 					},
