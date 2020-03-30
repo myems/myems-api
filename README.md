@@ -99,6 +99,11 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 
 ## API List
 
+View online: https://app.getpostman.com/run-collection/a34d69ad0cbbfab2840a
+
+View in Postman: import the file MyEMS.postman_collection.json with Postman
+
+
 [Energy Category](#Energy-Category) | [Energy Item](#Energy-Item)
 
 [Data Source](#Data-Source) | [Point](#Point)
@@ -106,6 +111,8 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 [Tariff](#Tariff) | [Cost Center](#Cost-Center)
 
 [Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) 
+
+[Space](#Space)
 
 [User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
 
@@ -137,6 +144,9 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"albert
 ### Cost Center
 * GET Cost Center by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/costcenters/{id}
+```
 Result in JSON
 
 | Name          | Data Type | Description                               |
@@ -146,9 +156,6 @@ Result in JSON
 | uuid          | string    | Cost Center UUID                          |
 | external_id   | string    | Cost Center External ID ( For example, ID in SAP, ERP...) |
 
-```bash
-$ curl -i -X GET http://BASE_URL/costcenters/{id}
-```
 * GET all Cost Centers
 ```bash
 $ curl -i -X GET http://BASE_URL/costcenters
@@ -181,6 +188,9 @@ $ curl -i -X DELETE http://BASE_URL/costcenters/{id}/tariffs/{tid}
 ### Data Source
 * GET Data Source by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/datasources/{id}
+```
 Result in JSON
 
 | Name          | Data Type | Description                               |
@@ -191,9 +201,6 @@ Result in JSON
 | protocol      | string    | Protocol Type Supported: bacnet-ip, modbus-tcp, s7, opc-ua, control-logix, |
 | connection    | json      | Connection data in JSON. BACnet/IP example: {"host":"10.1.2.88"}, Modbus TCP example: {"host":"10.1.2.88", "port":502}, S7 example: {"host":"10.1.2.202", "port":102, "rack": 0, "slot": 2}, ControlLogix example: {"host":"10.1.2.88","port":44818,"processorslot":3} OPC UA example: {"url":"opc.tcp://10.1.2.5:49320/OPCUA/SimulationServer/"} |
 
-```bash
-$ curl -i -X GET http://BASE_URL/datasources/{id}
-```
 * GET all Data Sources
 ```bash
 $ curl -i -X GET http://BASE_URL/datasources
@@ -219,6 +226,9 @@ $ curl -i -X GET http://BASE_URL/datasources/{id}/points
 ### Energy Category
 * GET an Energy Category by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/energycategories/{id}
+```
 Result in JSON
 
 | Name          | Data Type | Description                               |
@@ -231,9 +241,6 @@ Result in JSON
 | kgco2e        | string    | KG Carbon dioxide equivalent              |
 
 
-```bash
-$ curl -i -X GET http://BASE_URL/energycategories/{id}
-```
 * GET All Energy Categories
 ```bash
 $ curl -i -X GET http://BASE_URL/energycategories
@@ -255,6 +262,9 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"电","
 ### Energy Item
 * GET an Energy Item by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/energyitems/{id}
+```
 Result in JSON
 
 | Name          | Data Type | Description                               |
@@ -265,9 +275,6 @@ Result in JSON
 | Energy Category ID   | integer | Energy Category ID               |
 
 
-```bash
-$ curl -i -X GET http://BASE_URL/energyitems/{id}
-```
 * GET All Energy Items
 ```bash
 $ curl -i -X GET http://BASE_URL/energyitems
@@ -288,6 +295,9 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"动力
 ### Meter
 * GET Meter by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/meters/{id}
+```
 Result
 
 | Name          | Data Type | Description                               |
@@ -303,9 +313,6 @@ Result
 | location      | string    | Meter location                            |
 | description   | string    | Meter description                         |
 
-```bash
-$ curl -i -X GET http://BASE_URL/meters/{id}
-```
 * GET All Meters
 ```bash
 $ curl -i -X GET http://BASE_URL/meters
@@ -339,6 +346,9 @@ $ curl -i -X DELETE http://BASE_URL/meters/{id}/points/{pid}
 ### Offline Meter
 * GET Offline Meter by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/offlinemeters/{id}
+```
 Result
 
 | Name          | Data Type | Description                               |
@@ -354,9 +364,6 @@ Result
 | location      | string    | Offline Meter location                    |
 | description   | string    | Offline Meter description                 |
 
-```bash
-$ curl -i -X GET http://BASE_URL/offlinemeters/{id}
-```
 * GET All Offline Meters
 ```bash
 $ curl -i -X GET http://BASE_URL/offlinemeters
@@ -403,7 +410,10 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"superu
 
 * GET Point by ID
 
-Response Result
+```bash
+$ curl -i -X GET http://BASE_URL/points/{id}
+```
+Result in JSON
 
 | Name          | Data Type | Description                               |
 |---------------|-----------|-------------------------------------------|
@@ -432,9 +442,6 @@ Response Result
 | └property_array_index| integer/null    | BACnet Property Array Index or None of Object Type is not Array   |
 
 
-```bash
-$ curl -i -X GET http://BASE_URL/points/{id}
-```
 * GET all Points
 ```bash
 $ curl -i -X GET http://BASE_URL/points
@@ -456,6 +463,9 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus
 ### Sensor
 * GET a Sensor by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/sensors/{id}
+```
 Result
 
 | Name          | Data Type | Description                               |
@@ -466,9 +476,6 @@ Result
 | location      | string    | Sensor location                           |
 | description   | string    | Sensor description                        |
 
-```bash
-$ curl -i -X GET http://BASE_URL/sensors/{id}
-```
 * GET All Sensors
 ```bash
 $ curl -i -X GET http://BASE_URL/sensors
@@ -498,9 +505,132 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":"3
 $ curl -i -X DELETE http://BASE_URL/sensors/{id}/points/{pid}
 ```
 
+
+### Space
+* GET Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Space ID                                  |
+| name          | string    | Space name                                |
+| uuid          | string    | Space UUID                                |
+| parent_space_id| integer  | Parent Space ID                           |
+| area          | decimal(18, 3) | Area                                 |
+| timezone      | Object    | Timezone Object                           |
+| is_input_counted | boolean | Indicates if the space's energy input is counted for aggregating|                        |
+| is_output_counted | boolean | Indicates if the space's energy output is counted for aggregating|                        |
+| contact       | Object    | Contact Object                            |
+| cost_center   | Object    | Cost Center Object                        |
+| location      | string    | Space location                            |
+| description   | string    | Space description                         |
+
+* GET All Spaces
+```bash
+$ curl -i -X GET http://BASE_URL/spaces
+```
+* DELETE Space by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}
+```
+* POST Create a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMSSpace", "parent_space_id":1, "area":999.99, "timezone_id":56, "is_input_counted":true, "is_output_counted":false, "contact_id":1, "cost_center_id":1, "location":"My location", "description":"Space description"}}' http://BASE_URL/spaces
+```
+* PUT Update a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMSSpace", "parent_space_id":2, "area":999.99, "timezone_id":56, "is_input_counted":true, "is_output_counted":true, "contact_id":1, "cost_center_id":1, "location":"My location", "description":"Space description"}}' http://BASE_URL/spaces/{id}
+```
+* GET All Children of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/children
+```
+* GET All Equipments of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/equipments
+```
+* POST Bind an Equipment to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"equipment_id":1}}' http://BASE_URL/spaces/{id}/equipments
+```
+* DELETE an Equipment from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/equipments/{eid}
+```
+* GET All Meters of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/meters
+```
+* POST Bind a Meter to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"meter_id":1}}' http://BASE_URL/spaces/{id}/meters
+```
+* DELETE a Meter from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/meters/{mid}
+```
+* GET All Offline Meters of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/offlinemeters
+```
+* POST Bind an Offline Meter to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"offline_meter_id":1}}' http://BASE_URL/spaces/{id}/offlinemeters
+```
+* DELETE an Offline Meter from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/offlinemeters/{mid}
+```
+* GET All Points of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/points
+```
+* POST Bind a Point to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":1}}' http://BASE_URL/spaces/{id}/points
+```
+* DELETE a Point from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/points/{pid}
+```
+* GET All Sensors of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/sensors
+```
+* POST Bind a Sensor to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"sensor_id":1}}' http://BASE_URL/spaces/{id}/sensors
+```
+* DELETE a Sensor from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/sensors/{sid}
+```
+* GET All Tenants of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/tenants
+```
+* GET All Virtual Meters of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/virtualmeters
+```
+* POST Bind an Virtual Meter to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_meter_id":1}}' http://BASE_URL/spaces/{id}/virtualmeters
+```
+* DELETE an Virtual Meter from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/virtualmeters/{mid}
+```
+
 ### Tariff
 * GET Tariff by id
 
+```bash
+$ curl -i -X GET http://BASE_URL/tariffs/{id}
+```
 Result in JSON
 
 | Name          | Data Type | Description                               |
@@ -524,9 +654,6 @@ Result in JSON
 |  ├ end_amount | decimal   | End amount                                |
 |  └ price      | decimal   | Price                                     |
 
-```bash
-$ curl -i -X GET http://BASE_URL/tariffs/{id}
-```
 * GET All Tariffs
 ```bash
 $ curl -i -X GET http://BASE_URL/tariffs
@@ -612,6 +739,9 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnso
 ### Virtual Meter
 * GET a Virtual Meter by ID
 
+```bash
+$ curl -i -X GET http://BASE_URL/virtualmeters/{id}
+```
 Result
 
 | Name          | Data Type | Description                               |
@@ -636,9 +766,6 @@ Result
 |   ├ meter_type| string    | Meter Type ('meter', 'offline_meter', 'virtual_meter' |
 |   ├ meter_name| string    | Meter Name                                |
 
-```bash
-$ curl -i -X GET http://BASE_URL/virtualmeters/{id}
-```
 * GET All Virtual Meters
 ```bash
 $ curl -i -X GET http://BASE_URL/virtualmeters

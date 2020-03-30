@@ -11,6 +11,7 @@ import offlinemeter
 import point
 import privilege
 import sensor
+import space
 import tariff
 import timezone
 import user
@@ -91,6 +92,39 @@ api.add_route('/sensors/{id_}/points',
               sensor.SensorPointCollection())
 api.add_route('/sensors/{id_}/points/{pid}',
               sensor.SensorPointItem())
+
+api.add_route('/spaces',
+              space.SpaceCollection())
+api.add_route('/spaces/{id_}',
+              space.SpaceItem())
+api.add_route('/spaces/{id_}/children',
+              space.SpaceChildrenCollection())
+api.add_route('/spaces/{id_}/equipments',
+              space.SpaceEquipmentCollection())
+api.add_route('/spaces/{id_}/equipments/{eid}',
+              space.SpaceEquipmentItem())
+api.add_route('/spaces/{id_}/meters',
+              space.SpaceMeterCollection())
+api.add_route('/spaces/{id_}/meters/{mid}',
+              space.SpaceMeterItem())
+api.add_route('/spaces/{id_}/offlinemeters',
+              space.SpaceOfflineMeterCollection())
+api.add_route('/spaces/{id_}/offlinemeters/{mid}',
+              space.SpaceOfflineMeterItem())
+api.add_route('/spaces/{id_}/points',
+              space.SpacePointCollection())
+api.add_route('/spaces/{id_}/points/{pid}',
+              space.SpacePointItem())
+api.add_route('/spaces/{id_}/sensors',
+              space.SpaceSensorCollection())
+api.add_route('/spaces/{id_}/sensors/{sid}',
+              space.SpaceSensorItem())
+api.add_route('/spaces/{id_}/tenants',
+              space.SpaceTenantCollection())
+api.add_route('/spaces/{id_}/virtualmeters',
+              space.SpaceVirtualMeterCollection())
+api.add_route('/spaces/{id_}/virtualmeters/{mid}',
+              space.SpaceVirtualMeterItem())
 
 api.add_route('/tariffs',
               tariff.TariffCollection())
