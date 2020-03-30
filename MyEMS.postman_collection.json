@@ -481,7 +481,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/datasources/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"datasources",
+								"1",
+								"points"
+							]
 						}
 					},
 					"response": []
@@ -1149,7 +1157,514 @@
 		},
 		{
 			"name": "Space",
-			"item": [],
+			"item": [
+				{
+					"name": "GET All Spaces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMSSpace\", \"parent_space_id\":1, \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"is_output_counted\":false, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Space description\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Space",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMSSpace\", \"parent_space_id\":2, \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"is_output_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Space description\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Space by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Children of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/children",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Equipments of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind an Equipment to a Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"equipment_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/1/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Equipment from Space",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/equipments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"equipments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Meters of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Meter to a Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Meter from Space",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/meters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"meters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All OfflineMeters of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind an OfflineMeter to a Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"offline_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Offline Meter from Space",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/meters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"meters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Points of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Point to a Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"point_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Point from Space",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/points/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"points",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Sensors of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Sensor to a Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"sensor_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Sensor from Space",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/sensors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"sensors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Tenants of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/2/tenants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"2",
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Virtual Meters of Space by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Virtual Meter to a Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"virtual_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Virtual Meter from Space",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/virtualmeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"virtualmeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"protocolProfileBehavior": {}
 		},
 		{
