@@ -3,9 +3,10 @@ import simplejson as json
 import mysql.connector
 import config
 import uuid
+from datetime import datetime, timedelta, timezone
 
 
-class SpaceCollection:
+class TenantCollection:
     @staticmethod
     def __init__():
         pass
@@ -19,17 +20,17 @@ class SpaceCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
-        query = (" SELECT id, name, utc_offset "
-                 " FROM tbl_timezones ")
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_tenant_types ")
         cursor.execute(query)
-        rows_timezones = cursor.fetchall()
+        rows_tenant_types = cursor.fetchall()
 
-        timezone_dict = dict()
-        if rows_timezones is not None and len(rows_timezones) > 0:
-            for row in rows_timezones:
-                timezone_dict[row['id']] = {"id": row['id'],
-                                            "name": row['name'],
-                                            "utc_offset": row['utc_offset']}
+        tenant_type_dict = dict()
+        if rows_tenant_types is not None and len(rows_tenant_types) > 0:
+            for row in rows_tenant_types:
+                tenant_type_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_contacts ")
@@ -56,9 +57,10 @@ class SpaceCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
-                 "        contact_id, cost_center_id, location, description "
-                 " FROM tbl_spaces "
+                 "        parent_space_id, buildings, floors, rooms, area, tenant_type_id, is_key_tenant, "
+                 "        lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
+                 "        contact_id, cost_center_id, description "
+                 " FROM tbl_tenants "
                  " ORDER BY id ")
         cursor.execute(query)
         rows_spaces = cursor.fetchall()
@@ -66,20 +68,25 @@ class SpaceCollection:
         result = list()
         if rows_spaces is not None and len(rows_spaces) > 0:
             for row in rows_spaces:
-                timezone = timezone_dict.get(row['timezone_id'], None)
+                tenant_type = tenant_type_dict.get(row['tenant_type_id'], None)
                 contact = contact_dict.get(row['contact_id'], None)
                 cost_center = cost_center_dict.get(row['cost_center_id'], None)
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
                                "parent_space_id": row['parent_space_id'],
+                               "buildings": row['buildings'],
+                               "floors": row['floors'],
+                               "rooms": row['rooms'],
                                "area": row['area'],
-                               "timezone": timezone,
-                               "is_input_counted": bool(row['is_input_counted']),
-                               "is_output_counted": bool(row['is_output_counted']),
+                               "tenant_type": tenant_type,
+                               "is_key_tenant": bool(row['is_key_tenant']),
+                               "lease_number": row['lease_number'],
+                               "lease_start_datetime_utc": row['lease_start_datetime_utc'].timestamp() * 1000,
+                               "lease_end_datetime_utc": row['lease_end_datetime_utc'].timestamp() * 1000,
+                               "is_in_lease": bool(row['is_in_lease']),
                                "contact": contact,
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -101,16 +108,36 @@ class SpaceCollection:
                 not isinstance(new_values['data']['name'], str) or \
                 len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_NAME')
+                                   description='API.INVALID_TENANT_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'parent_space_id' in new_values['data'].keys():
-            if new_values['data']['parent_space_id'] <= 0:
+        if 'parent_space_id' not in new_values['data'].keys() or \
+                new_values['data']['parent_space_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_PARENT_SPACE_ID')
-            parent_space_id = new_values['data']['parent_space_id']
-        else:
-            parent_space_id = None
+
+        parent_space_id = new_values['data']['parent_space_id']
+
+        if 'buildings' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['buildings'], str) or \
+                len(str.strip(new_values['data']['buildings'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_BUILDINGS_VALUE')
+        buildings = str.strip(new_values['data']['buildings'])
+
+        if 'floors' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['floors'], str) or \
+                len(str.strip(new_values['data']['floors'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_FLOORS_VALUE')
+        floors = str.strip(new_values['data']['floors'])
+
+        if 'rooms' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['rooms'], str) or \
+                len(str.strip(new_values['data']['rooms'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_ROOMS_VALUE')
+        rooms = str.strip(new_values['data']['rooms'])
 
         if 'area' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['area'], float):
@@ -118,24 +145,46 @@ class SpaceCollection:
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']
 
-        if 'timezone_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['timezone_id'], int) or \
-                new_values['data']['timezone_id'] <= 0:
+        if 'tenant_type_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['tenant_type_id'], int) or \
+                new_values['data']['tenant_type_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TIMEZONE_ID')
-        timezone_id = new_values['data']['timezone_id']
+                                   description='API.INVALID_TENANT_TYPE_ID')
+        tenant_type_id = new_values['data']['tenant_type_id']
 
-        if 'is_input_counted' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_input_counted'], bool):
+        if 'is_key_tenant' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_key_tenant'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_INPUT_COUNTED_VALUE')
-        is_input_counted = new_values['data']['is_input_counted']
+                                   description='API.INVALID_IS_KEY_TENANT_VALUE')
+        is_key_tenant = new_values['data']['is_key_tenant']
 
-        if 'is_output_counted' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_output_counted'], bool):
+        if 'lease_number' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['lease_number'], str) or \
+                len(str.strip(new_values['data']['lease_number'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_OUTPUT_COUNTED_VALUE')
-        is_output_counted = new_values['data']['is_output_counted']
+                                   description='API.INVALID_LEASE_NUMBER_VALUE')
+        lease_number = str.strip(new_values['data']['lease_number'])
+
+        if 'is_in_lease' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_in_lease'], bool):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_IS_IN_LEASE_VALUE')
+        is_in_lease = new_values['data']['is_in_lease']
+
+        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
+        if config.utc_offset[0] == '-':
+            timezone_offset = -timezone_offset
+
+        # todo: validate datetime values
+        lease_start_datetime_utc = datetime.strptime(new_values['data']['lease_start_datetime_utc'],
+                                                     '%Y-%m-%dT%H:%M:%S')
+        lease_start_datetime_utc = lease_start_datetime_utc.replace(tzinfo=timezone.utc)
+        lease_start_datetime_utc -= timedelta(minutes=timezone_offset)
+
+        lease_end_datetime_utc = datetime.strptime(new_values['data']['lease_end_datetime_utc'],
+                                                   '%Y-%m-%dT%H:%M:%S')
+        lease_end_datetime_utc = lease_end_datetime_utc.replace(tzinfo=timezone.utc)
+        lease_end_datetime_utc -= timedelta(minutes=timezone_offset)
 
         if 'contact_id' in new_values['data'].keys():
             if new_values['data']['contact_id'] <= 0:
@@ -153,11 +202,6 @@ class SpaceCollection:
         else:
             cost_center_id = None
 
-        if 'location' in new_values['data'].keys():
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys():
             description = str.strip(new_values['data']['description'])
         else:
@@ -167,35 +211,34 @@ class SpaceCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE name = %s ", (name,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                   description='API.SPACE_NAME_IS_ALREADY_IN_USE')
-
-        if parent_space_id is not None:
-            cursor.execute(" SELECT name "
-                           " FROM tbl_spaces "
-                           " WHERE id = %s ",
-                           (new_values['data']['parent_space_id'],))
-            row = cursor.fetchone()
-            if row is None:
-                cursor.close()
-                cnx.disconnect()
-                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                       description='API.PARENT_SPACE_NOT_FOUND')
+                                   description='API.TENANT_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_timezones "
+                       " FROM tbl_spaces "
                        " WHERE id = %s ",
-                       (new_values['data']['timezone_id'],))
+                       (parent_space_id,))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.PARENT_SPACE_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_tenant_types "
+                       " WHERE id = %s ",
+                       (tenant_type_id,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TIMEZONE_NOT_FOUND')
+                                   description='API.TENANT_TYPE_NOT_FOUND')
         if contact_id is not None:
             cursor.execute(" SELECT name "
                            " FROM tbl_contacts "
@@ -220,20 +263,26 @@ class SpaceCollection:
                 raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                        description='API.COST_CENTER_NOT_FOUND')
 
-        add_values = (" INSERT INTO tbl_spaces "
-                      "    (name, uuid, parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
-                      "     contact_id, cost_center_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+        add_values = (" INSERT INTO tbl_tenants "
+                      "    (name, uuid, parent_space_id, buildings, floors, rooms, area, tenant_type_id, "
+                      "    is_key_tenant, lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
+                      "     contact_id, cost_center_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     parent_space_id,
+                                    buildings,
+                                    floors,
+                                    rooms,
                                     area,
-                                    timezone_id,
-                                    is_input_counted,
-                                    is_output_counted,
+                                    tenant_type_id,
+                                    is_key_tenant,
+                                    lease_number,
+                                    lease_start_datetime_utc,
+                                    lease_end_datetime_utc,
+                                    is_in_lease,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -241,10 +290,10 @@ class SpaceCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/spaces/' + str(new_id)
+        resp.location = '/tenants/' + str(new_id)
 
 
-class SpaceItem:
+class TenantItem:
     @staticmethod
     def __init__():
         pass
@@ -262,17 +311,17 @@ class SpaceItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
-        query = (" SELECT id, name, utc_offset "
-                 " FROM tbl_timezones ")
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_tenant_types ")
         cursor.execute(query)
-        rows_timezones = cursor.fetchall()
+        rows_tenant_types = cursor.fetchall()
 
-        timezone_dict = dict()
-        if rows_timezones is not None and len(rows_timezones) > 0:
-            for row in rows_timezones:
-                timezone_dict[row['id']] = {"id": row['id'],
-                                            "name": row['name'],
-                                            "utc_offset": row['utc_offset']}
+        tenant_type_dict = dict()
+        if rows_tenant_types is not None and len(rows_tenant_types) > 0:
+            for row in rows_tenant_types:
+                tenant_type_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_contacts ")
@@ -299,9 +348,10 @@ class SpaceItem:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
-                 "        contact_id, cost_center_id, location, description "
-                 " FROM tbl_spaces "
+                 "        parent_space_id, buildings, floors, rooms, area, tenant_type_id, is_key_tenant, "
+                 "        lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
+                 "        contact_id, cost_center_id, description "
+                 " FROM tbl_tenants "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
         row = cursor.fetchone()
@@ -310,22 +360,27 @@ class SpaceItem:
 
         if row is None:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
         else:
-            timezone = timezone_dict.get(row['timezone_id'], None)
+            tenant_type = tenant_type_dict.get(row['tenant_type_id'], None)
             contact = contact_dict.get(row['contact_id'], None)
             cost_center = cost_center_dict.get(row['cost_center_id'], None)
             meta_result = {"id": row['id'],
                            "name": row['name'],
                            "uuid": row['uuid'],
                            "parent_space_id": row['parent_space_id'],
+                           "buildings": row['buildings'],
+                           "floors": row['floors'],
+                           "rooms": row['rooms'],
                            "area": row['area'],
-                           "timezone": timezone,
-                           "is_input_counted": bool(row['is_input_counted']),
-                           "is_output_counted": bool(row['is_output_counted']),
+                           "tenant_type": tenant_type,
+                           "is_key_tenant": bool(row['is_key_tenant']),
+                           "lease_number": row['lease_number'],
+                           "lease_start_datetime_utc": row['lease_start_datetime_utc'].timestamp() * 1000,
+                           "lease_end_datetime_utc": row['lease_end_datetime_utc'].timestamp() * 1000,
+                           "is_in_lease": bool(row['is_in_lease']),
                            "contact": contact,
                            "cost_center": cost_center,
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -334,50 +389,24 @@ class SpaceItem:
     def on_delete(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
-
-        # checkout relation with children spaces
-        cursor.execute(" SELECT id "
-                       " FROM tbl_spaces "
-                       " WHERE parent_space_id = %s ",
-                       (id_,))
-        rows_spaces = cursor.fetchall()
-        if rows_spaces is not None and len(rows_spaces) > 0:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_CHILDREN_SPACES')
-
-        # check relation with equipment
-        cursor.execute(" SELECT equipment_id "
-                       " FROM tbl_spaces_equipments "
-                       " WHERE space_id = %s ",
-                       (id_,))
-        rows_equipments = cursor.fetchall()
-        if rows_equipments is not None and len(rows_equipments) > 0:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_EQUIPMENT')
+                                   description='API.TENANT_NOT_FOUND')
 
         # check relation with meter
         cursor.execute(" SELECT meter_id "
-                       " FROM tbl_spaces_meters "
-                       " WHERE space_id = %s ",
+                       " FROM tbl_tenants_meters "
+                       " WHERE tenant_id = %s ",
                        (id_,))
         rows_meters = cursor.fetchall()
         if rows_meters is not None and len(rows_meters) > 0:
@@ -389,8 +418,8 @@ class SpaceItem:
 
         # check relation with offline meter
         cursor.execute(" SELECT offline_meter_id "
-                       " FROM tbl_spaces_offline_meters "
-                       " WHERE space_id = %s ",
+                       " FROM tbl_tenants_offline_meters "
+                       " WHERE tenant_id = %s ",
                        (id_,))
         rows_offline_meters = cursor.fetchall()
         if rows_offline_meters is not None and len(rows_offline_meters) > 0:
@@ -402,8 +431,8 @@ class SpaceItem:
 
         # check relation with points
         cursor.execute(" SELECT point_id "
-                       " FROM tbl_spaces_points "
-                       " WHERE space_id = %s ", (id_,))
+                       " FROM tbl_tenants_points "
+                       " WHERE tenant_id = %s ", (id_,))
         rows_points = cursor.fetchall()
         if rows_points is not None and len(rows_points) > 0:
             cursor.close()
@@ -414,8 +443,8 @@ class SpaceItem:
 
         # check relation with sensor
         cursor.execute(" SELECT sensor_id "
-                       " FROM tbl_spaces_sensors "
-                       " WHERE space_id = %s ",
+                       " FROM tbl_tenants_sensors "
+                       " WHERE tenant_id = %s ",
                        (id_,))
         rows_sensors = cursor.fetchall()
         if rows_sensors is not None and len(rows_sensors) > 0:
@@ -425,22 +454,10 @@ class SpaceItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_SENSOR')
 
-        # check relation with tenant
-        cursor.execute(" SELECT id "
-                       " FROM tbl_tenants "
-                       " WHERE parent_space_id = %s ", (id_,))
-        rows_tenants = cursor.fetchall()
-        if rows_tenants is not None and len(rows_tenants) > 0:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_TENANT')
-
         # check relation with virtual meter
         cursor.execute(" SELECT virtual_meter_id "
-                       " FROM tbl_spaces_virtual_meters "
-                       " WHERE space_id = %s ",
+                       " FROM tbl_tenants_virtual_meters "
+                       " WHERE tenant_id = %s ",
                        (id_,))
         rows_virtual_meters = cursor.fetchall()
         if rows_virtual_meters is not None and len(rows_virtual_meters) > 0:
@@ -450,7 +467,7 @@ class SpaceItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_VIRTUAL_METER')
 
-        cursor.execute(" DELETE FROM tbl_spaces WHERE id = %s ", (id_,))
+        cursor.execute(" DELETE FROM tbl_tenants WHERE id = %s ", (id_,))
         cnx.commit()
 
         cursor.close()
@@ -476,16 +493,36 @@ class SpaceItem:
                 not isinstance(new_values['data']['name'], str) or \
                 len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_NAME')
+                                   description='API.INVALID_TENANT_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'parent_space_id' in new_values['data'].keys():
-            if new_values['data']['parent_space_id'] <= 0:
-                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description='API.INVALID_PARENT_SPACE_ID')
-            parent_space_id = new_values['data']['parent_space_id']
-        else:
-            parent_space_id = None
+        if 'parent_space_id' not in new_values['data'].keys() or \
+                new_values['data']['parent_space_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_PARENT_SPACE_ID')
+
+        parent_space_id = new_values['data']['parent_space_id']
+
+        if 'buildings' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['buildings'], str) or \
+                len(str.strip(new_values['data']['buildings'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_BUILDINGS_VALUE')
+        buildings = str.strip(new_values['data']['buildings'])
+
+        if 'floors' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['floors'], str) or \
+                len(str.strip(new_values['data']['floors'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_FLOORS_VALUE')
+        floors = str.strip(new_values['data']['floors'])
+
+        if 'rooms' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['rooms'], str) or \
+                len(str.strip(new_values['data']['rooms'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_ROOMS_VALUE')
+        rooms = str.strip(new_values['data']['rooms'])
 
         if 'area' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['area'], float):
@@ -493,24 +530,46 @@ class SpaceItem:
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']
 
-        if 'timezone_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['timezone_id'], int) or \
-                new_values['data']['timezone_id'] <= 0:
+        if 'tenant_type_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['tenant_type_id'], int) or \
+                new_values['data']['tenant_type_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TIMEZONE_ID')
-        timezone_id = new_values['data']['timezone_id']
+                                   description='API.INVALID_TENANT_TYPE_ID')
+        tenant_type_id = new_values['data']['tenant_type_id']
 
-        if 'is_input_counted' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_input_counted'], bool):
+        if 'is_key_tenant' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_key_tenant'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_INPUT_COUNTED_VALUE')
-        is_input_counted = new_values['data']['is_input_counted']
+                                   description='API.INVALID_IS_KEY_TENANT_VALUE')
+        is_key_tenant = new_values['data']['is_key_tenant']
 
-        if 'is_output_counted' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_output_counted'], bool):
+        if 'lease_number' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['lease_number'], str) or \
+                len(str.strip(new_values['data']['lease_number'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_OUTPUT_COUNTED_VALUE')
-        is_output_counted = new_values['data']['is_output_counted']
+                                   description='API.INVALID_LEASE_NUMBER_VALUE')
+        lease_number = str.strip(new_values['data']['lease_number'])
+
+        if 'is_in_lease' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_in_lease'], bool):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_IS_IN_LEASE_VALUE')
+        is_in_lease = new_values['data']['is_in_lease']
+
+        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
+        if config.utc_offset[0] == '-':
+            timezone_offset = -timezone_offset
+
+        # todo: validate datetime values
+        lease_start_datetime_utc = datetime.strptime(new_values['data']['lease_start_datetime_utc'],
+                                                     '%Y-%m-%dT%H:%M:%S')
+        lease_start_datetime_utc = lease_start_datetime_utc.replace(tzinfo=timezone.utc)
+        lease_start_datetime_utc -= timedelta(minutes=timezone_offset)
+
+        lease_end_datetime_utc = datetime.strptime(new_values['data']['lease_end_datetime_utc'],
+                                                   '%Y-%m-%dT%H:%M:%S')
+        lease_end_datetime_utc = lease_end_datetime_utc.replace(tzinfo=timezone.utc)
+        lease_end_datetime_utc -= timedelta(minutes=timezone_offset)
 
         if 'contact_id' in new_values['data'].keys():
             if new_values['data']['contact_id'] <= 0:
@@ -528,11 +587,6 @@ class SpaceItem:
         else:
             cost_center_id = None
 
-        if 'location' in new_values['data'].keys():
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys():
             description = str.strip(new_values['data']['description'])
         else:
@@ -542,44 +596,43 @@ class SpaceItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE name = %s AND id != %s ", (name, id_))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                   description='API.SPACE_NAME_IS_ALREADY_IN_USE')
-
-        if parent_space_id is not None:
-            cursor.execute(" SELECT name "
-                           " FROM tbl_spaces "
-                           " WHERE id = %s ",
-                           (new_values['data']['parent_space_id'],))
-            row = cursor.fetchone()
-            if row is None:
-                cursor.close()
-                cnx.disconnect()
-                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                       description='API.PARENT_SPACE_NOT_FOUND')
+                                   description='API.TENANT_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_timezones "
+                       " FROM tbl_spaces "
                        " WHERE id = %s ",
-                       (new_values['data']['timezone_id'],))
+                       (parent_space_id,))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.PARENT_SPACE_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_tenant_types "
+                       " WHERE id = %s ",
+                       (tenant_type_id,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TIMEZONE_NOT_FOUND')
+                                   description='API.TENANT_TYPE_NOT_FOUND')
         if contact_id is not None:
             cursor.execute(" SELECT name "
                            " FROM tbl_contacts "
@@ -604,20 +657,26 @@ class SpaceItem:
                 raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                        description='API.COST_CENTER_NOT_FOUND')
 
-        update_row = (" UPDATE tbl_spaces "
-                      " SET name = %s, parent_space_id = %s, area = %s, timezone_id = %s, "
-                      "     is_input_counted = %s, is_output_counted = %s, contact_id = %s, cost_center_id = %s, "
-                      "     location = %s, description = %s "
+        update_row = (" UPDATE tbl_tenants "
+                      " SET name = %s, parent_space_id = %s, buildings = %s, floors = %s, rooms = %s, area = %s, "
+                      "     tenant_type_id = %s, is_key_tenant = %s, lease_number = %s, lease_start_datetime_utc = %s, "
+                      "     lease_end_datetime_utc = %s, is_in_lease = %s, contact_id = %s, cost_center_id = %s, "
+                      "     description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     parent_space_id,
+                                    buildings,
+                                    floors,
+                                    rooms,
                                     area,
-                                    timezone_id,
-                                    is_input_counted,
-                                    is_output_counted,
+                                    tenant_type_id,
+                                    is_key_tenant,
+                                    lease_number,
+                                    lease_start_datetime_utc,
+                                    lease_end_datetime_utc,
+                                    is_in_lease,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description,
                                     id_))
         cnx.commit()
@@ -628,7 +687,7 @@ class SpaceItem:
         resp.status = falcon.HTTP_200
 
 
-class SpaceChildrenCollection:
+class TenantMeterCollection:
     @staticmethod
     def __init__():
         pass
@@ -641,230 +700,23 @@ class SpaceChildrenCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
-
-        query = (" SELECT id, name, uuid "
-                 " FROM tbl_spaces "
-                 " WHERE parent_space_id = %s "
-                 " ORDER BY id ")
-        cursor.execute(query, (id_,))
-        rows = cursor.fetchall()
-
-        result = list()
-        if rows is not None and len(rows) > 0:
-            for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
-                result.append(meta_result)
-
-        resp.body = json.dumps(result)
-
-
-class SpaceEquipmentCollection:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp, id_):
-        resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_get(req, resp, id_):
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
-
-        query = (" SELECT e.id, e.name, e.uuid "
-                 " FROM tbl_spaces s, tbl_spaces_equipments se, tbl_equipments e "
-                 " WHERE se.space_id = s.id AND e.id = se.equipment_id AND s.id = %s "
-                 " ORDER BY e.id ")
-        cursor.execute(query, (id_,))
-        rows = cursor.fetchall()
-
-        result = list()
-        if rows is not None and len(rows) > 0:
-            for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
-                result.append(meta_result)
-
-        resp.body = json.dumps(result)
-
-    @staticmethod
-    def on_post(req, resp, id_):
-        """Handles POST requests"""
-        try:
-            raw_json = req.stream.read().decode('utf-8')
-        except Exception as ex:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
-
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
-
-        new_values = json.loads(raw_json, encoding='utf-8')
-
-        if 'equipment_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['equipment_id'], int) or \
-                new_values['data']['equipment_id'] <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_EQUIPMENT_ID')
-        equipment_id = new_values['data']['equipment_id']
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " from tbl_spaces "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_equipments "
-                       " WHERE id = %s ", (equipment_id,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.EQUIPMENT_NOT_FOUND')
-
-        query = (" SELECT id " 
-                 " FROM tbl_spaces_equipments "
-                 " WHERE space_id = %s AND equipment_id = %s")
-        cursor.execute(query, (id_, equipment_id,))
-        if cursor.fetchone() is not None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.SPACE_EQUIPMENT_RELATION_EXISTED')
-
-        add_row = (" INSERT INTO tbl_spaces_equipments (space_id, equipment_id) "
-                   " VALUES (%s, %s) ")
-        cursor.execute(add_row, (id_, equipment_id,))
-        new_id = cursor.lastrowid
-        cnx.commit()
-        cursor.close()
-        cnx.disconnect()
-
-        resp.status = falcon.HTTP_201
-        resp.location = '/spaces/' + str(id_) + '/equipments/' + str(equipment_id)
-
-
-class SpaceEquipmentItem:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp, id_, eid):
-            resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_delete(req, resp, id_, eid):
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
-
-        if not eid.isdigit() or int(eid) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_EQUIPMENT_ID')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_equipments "
-                       " WHERE id = %s ", (eid,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.EQUIPMENT_NOT_FOUND')
-
-        cursor.execute(" SELECT id "
-                       " FROM tbl_spaces_equipments "
-                       " WHERE space_id = %s AND equipment_id = %s ", (id_, eid))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_EQUIPMENT_RELATION_NOT_FOUND')
-
-        cursor.execute(" DELETE FROM tbl_spaces_equipments WHERE space_id = %s AND equipment_id = %s ", (id_, eid))
-        cnx.commit()
-
-        cursor.close()
-        cnx.disconnect()
-
-        resp.status = falcon.HTTP_204
-
-
-class SpaceMeterCollection:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp, id_):
-        resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_get(req, resp, id_):
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         query = (" SELECT m.id, m.name, m.uuid "
-                 " FROM tbl_spaces s, tbl_spaces_meters sm, tbl_meters m "
-                 " WHERE sm.space_id = s.id AND m.id = sm.meter_id AND s.id = %s "
+                 " FROM tbl_tenants t, tbl_tenants_meters tm, tbl_meters m "
+                 " WHERE tm.tenant_id = t.id AND m.id = tm.meter_id AND t.id = %s "
                  " ORDER BY m.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -887,7 +739,7 @@ class SpaceMeterCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -902,13 +754,13 @@ class SpaceMeterCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_spaces "
+                       " from tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_meters "
@@ -920,16 +772,16 @@ class SpaceMeterCollection:
                                    description='API.METER_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_spaces_meters "
-                 " WHERE space_id = %s AND meter_id = %s")
+                 " FROM tbl_tenants_meters "
+                 " WHERE tenant_id = %s AND meter_id = %s")
         cursor.execute(query, (id_, meter_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.SPACE_METER_RELATION_EXISTED')
+                                   description='API.TENANT_METER_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_spaces_meters (space_id, meter_id) "
+        add_row = (" INSERT INTO tbl_tenants_meters (tenant_id, meter_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, meter_id,))
         new_id = cursor.lastrowid
@@ -938,10 +790,10 @@ class SpaceMeterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/spaces/' + str(id_) + '/meters/' + str(meter_id)
+        resp.location = '/tenants/' + str(id_) + '/meters/' + str(meter_id)
 
 
-class SpaceMeterItem:
+class TenantMeterItem:
     @staticmethod
     def __init__():
         pass
@@ -954,7 +806,7 @@ class SpaceMeterItem:
     def on_delete(req, resp, id_, mid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         if not mid.isdigit() or int(mid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -964,13 +816,13 @@ class SpaceMeterItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_meters "
@@ -982,15 +834,15 @@ class SpaceMeterItem:
                                    description='API.METER_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_spaces_meters "
-                       " WHERE space_id = %s AND meter_id = %s ", (id_, mid))
+                       " FROM tbl_tenants_meters "
+                       " WHERE tenant_id = %s AND meter_id = %s ", (id_, mid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_METER_RELATION_NOT_FOUND')
+                                   description='API.TENANT_METER_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_spaces_meters WHERE space_id = %s AND meter_id = %s ", (id_, mid))
+        cursor.execute(" DELETE FROM tbl_tenants_meters WHERE tenant_id = %s AND meter_id = %s ", (id_, mid))
         cnx.commit()
 
         cursor.close()
@@ -999,7 +851,7 @@ class SpaceMeterItem:
         resp.status = falcon.HTTP_204
 
 
-class SpaceOfflineMeterCollection:
+class TenantOfflineMeterCollection:
     @staticmethod
     def __init__():
         pass
@@ -1012,23 +864,23 @@ class SpaceOfflineMeterCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         query = (" SELECT m.id, m.name, m.uuid "
-                 " FROM tbl_spaces s, tbl_spaces_offline_meters sm, tbl_offline_meters m "
-                 " WHERE sm.space_id = s.id AND m.id = sm.offline_meter_id AND s.id = %s "
+                 " FROM tbl_tenants s, tbl_tenants_offline_meters sm, tbl_offline_meters m "
+                 " WHERE sm.tenant_id = s.id AND m.id = sm.offline_meter_id AND s.id = %s "
                  " ORDER BY m.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -1051,7 +903,7 @@ class SpaceOfflineMeterCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -1066,13 +918,13 @@ class SpaceOfflineMeterCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_spaces "
+                       " from tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_offline_meters "
@@ -1084,16 +936,16 @@ class SpaceOfflineMeterCollection:
                                    description='API.OFFLINE_METER_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_spaces_offline_meters "
-                 " WHERE space_id = %s AND offline_meter_id = %s")
+                 " FROM tbl_tenants_offline_meters "
+                 " WHERE tenant_id = %s AND offline_meter_id = %s")
         cursor.execute(query, (id_, offline_meter_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.SPACE_OFFLINE_METER_RELATION_EXISTED')
+                                   description='API.TENANT_OFFLINE_METER_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_spaces_offline_meters (space_id, offline_meter_id) "
+        add_row = (" INSERT INTO tbl_tenants_offline_meters (tenant_id, offline_meter_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, offline_meter_id,))
         new_id = cursor.lastrowid
@@ -1102,10 +954,10 @@ class SpaceOfflineMeterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/spaces/' + str(id_) + '/offlinemeters/' + str(offline_meter_id)
+        resp.location = '/tenants/' + str(id_) + '/offlinemeters/' + str(offline_meter_id)
 
 
-class SpaceOfflineMeterItem:
+class TenantOfflineMeterItem:
     @staticmethod
     def __init__():
         pass
@@ -1118,7 +970,7 @@ class SpaceOfflineMeterItem:
     def on_delete(req, resp, id_, mid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         if not mid.isdigit() or int(mid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1128,13 +980,13 @@ class SpaceOfflineMeterItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_offline_meters "
@@ -1146,16 +998,16 @@ class SpaceOfflineMeterItem:
                                    description='API.OFFLINE_METER_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_spaces_offline_meters "
-                       " WHERE space_id = %s AND offline_meter_id = %s ", (id_, mid))
+                       " FROM tbl_tenants_offline_meters "
+                       " WHERE tenant_id = %s AND offline_meter_id = %s ", (id_, mid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_OFFLINE_METER_RELATION_NOT_FOUND')
+                                   description='API.TENANT_OFFLINE_METER_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_spaces_offline_meters "
-                       " WHERE space_id = %s AND offline_meter_id = %s ", (id_, mid))
+        cursor.execute(" DELETE FROM tbl_tenants_offline_meters "
+                       " WHERE tenant_id = %s AND offline_meter_id = %s ", (id_, mid))
         cnx.commit()
 
         cursor.close()
@@ -1164,7 +1016,7 @@ class SpaceOfflineMeterItem:
         resp.status = falcon.HTTP_204
 
 
-class SpacePointCollection:
+class TenantPointCollection:
     @staticmethod
     def __init__():
         pass
@@ -1177,23 +1029,23 @@ class SpacePointCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         query = (" SELECT p.id, p.name "
-                 " FROM tbl_spaces s, tbl_spaces_points sp, tbl_points p "
-                 " WHERE sp.space_id = s.id AND p.id = sp.point_id AND s.id = %s "
+                 " FROM tbl_tenants t, tbl_tenants_points tp, tbl_points p "
+                 " WHERE tp.tenant_id = t.id AND p.id = tp.point_id AND t.id = %s "
                  " ORDER BY p.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -1216,7 +1068,7 @@ class SpacePointCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -1231,13 +1083,13 @@ class SpacePointCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_spaces "
+                       " from tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_points "
@@ -1249,16 +1101,16 @@ class SpacePointCollection:
                                    description='API.POINT_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_spaces_points "
-                 " WHERE space_id = %s AND point_id = %s")
+                 " FROM tbl_tenants_points "
+                 " WHERE tenant_id = %s AND point_id = %s")
         cursor.execute(query, (id_, point_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.SPACE_POINT_RELATION_EXISTED')
+                                   description='API.TENANT_POINT_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_spaces_points (space_id, point_id) "
+        add_row = (" INSERT INTO tbl_tenants_points (tenant_id, point_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, point_id,))
         new_id = cursor.lastrowid
@@ -1267,10 +1119,10 @@ class SpacePointCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/spaces/' + str(id_) + '/points/' + str(point_id)
+        resp.location = '/tenants/' + str(id_) + '/points/' + str(point_id)
 
 
-class SpacePointItem:
+class TenantPointItem:
     @staticmethod
     def __init__():
         pass
@@ -1283,7 +1135,7 @@ class SpacePointItem:
     def on_delete(req, resp, id_, pid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         if not pid.isdigit() or int(pid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1293,13 +1145,13 @@ class SpacePointItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_points "
@@ -1311,16 +1163,16 @@ class SpacePointItem:
                                    description='API.POINT_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_spaces_points "
-                       " WHERE space_id = %s AND point_id = %s ", (id_, pid))
+                       " FROM tbl_tenants_points "
+                       " WHERE tenant_id = %s AND point_id = %s ", (id_, pid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_POINT_RELATION_NOT_FOUND')
+                                   description='API.TENANT_POINT_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_spaces_points "
-                       " WHERE space_id = %s AND point_id = %s ", (id_, pid))
+        cursor.execute(" DELETE FROM tbl_tenants_points "
+                       " WHERE tenant_id = %s AND point_id = %s ", (id_, pid))
         cnx.commit()
 
         cursor.close()
@@ -1329,7 +1181,7 @@ class SpacePointItem:
         resp.status = falcon.HTTP_204
 
 
-class SpaceSensorCollection:
+class TenantSensorCollection:
     @staticmethod
     def __init__():
         pass
@@ -1342,24 +1194,24 @@ class SpaceSensorCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
-        query = (" SELECT se.id, se.name, se.uuid "
-                 " FROM tbl_spaces sp, tbl_spaces_sensors ss, tbl_sensors se "
-                 " WHERE ss.space_id = sp.id AND se.id = ss.sensor_id AND sp.id = %s "
-                 " ORDER BY se.id ")
+        query = (" SELECT s.id, s.name, s.uuid "
+                 " FROM tbl_tenants t, tbl_tenants_sensors ts, tbl_sensors s "
+                 " WHERE ts.tenant_id = t.id AND s.id = ts.sensor_id AND t.id = %s "
+                 " ORDER BY s.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
 
@@ -1381,7 +1233,7 @@ class SpaceSensorCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -1396,13 +1248,13 @@ class SpaceSensorCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_spaces "
+                       " from tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_sensors "
@@ -1414,16 +1266,16 @@ class SpaceSensorCollection:
                                    description='API.SENSOR_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_spaces_sensors "
-                 " WHERE space_id = %s AND sensor_id = %s")
+                 " FROM tbl_tenants_sensors "
+                 " WHERE tenant_id = %s AND sensor_id = %s")
         cursor.execute(query, (id_, sensor_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.SPACE_SENSOR_RELATION_EXISTED')
+                                   description='API.TENANT_SENSOR_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_spaces_sensors (space_id, sensor_id) "
+        add_row = (" INSERT INTO tbl_tenants_sensors (tenant_id, sensor_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, sensor_id,))
         new_id = cursor.lastrowid
@@ -1432,10 +1284,10 @@ class SpaceSensorCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/spaces/' + str(id_) + '/sensors/' + str(sensor_id)
+        resp.location = '/tenants/' + str(id_) + '/sensors/' + str(sensor_id)
 
 
-class SpaceSensorItem:
+class TenantSensorItem:
     @staticmethod
     def __init__():
         pass
@@ -1448,7 +1300,7 @@ class SpaceSensorItem:
     def on_delete(req, resp, id_, sid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         if not sid.isdigit() or int(sid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1458,13 +1310,13 @@ class SpaceSensorItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_sensors "
@@ -1476,15 +1328,15 @@ class SpaceSensorItem:
                                    description='API.SENSOR_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_spaces_sensors "
-                       " WHERE space_id = %s AND sensor_id = %s ", (id_, sid))
+                       " FROM tbl_tenants_sensors "
+                       " WHERE tenant_id = %s AND sensor_id = %s ", (id_, sid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_SENSOR_RELATION_NOT_FOUND')
+                                   description='API.TENANT_SENSOR_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_spaces_sensors WHERE space_id = %s AND sensor_id = %s ", (id_, sid))
+        cursor.execute(" DELETE FROM tbl_tenants_sensors WHERE tenant_id = %s AND sensor_id = %s ", (id_, sid))
         cnx.commit()
 
         cursor.close()
@@ -1493,7 +1345,7 @@ class SpaceSensorItem:
         resp.status = falcon.HTTP_204
 
 
-class SpaceTenantCollection:
+class TenantVirtualMeterCollection:
     @staticmethod
     def __init__():
         pass
@@ -1506,66 +1358,23 @@ class SpaceTenantCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
-
-        query = (" SELECT id, name, uuid "
-                 " FROM tbl_tenants "
-                 " WHERE parent_space_id = %s "
-                 " ORDER BY id ")
-        cursor.execute(query, (id_,))
-        rows = cursor.fetchall()
-
-        result = list()
-        if rows is not None and len(rows) > 0:
-            for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
-                result.append(meta_result)
-
-        resp.body = json.dumps(result)
-
-
-class SpaceVirtualMeterCollection:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp, id_):
-        resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_get(req, resp, id_):
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         query = (" SELECT m.id, m.name, m.uuid "
-                 " FROM tbl_spaces s, tbl_spaces_virtual_meters sm, tbl_virtual_meters m "
-                 " WHERE sm.space_id = s.id AND m.id = sm.virtual_meter_id AND s.id = %s "
+                 " FROM tbl_tenants t, tbl_tenants_virtual_meters tm, tbl_virtual_meters m "
+                 " WHERE tm.tenant_id = t.id AND m.id = tm.virtual_meter_id AND t.id = %s "
                  " ORDER BY m.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -1588,7 +1397,7 @@ class SpaceVirtualMeterCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -1603,13 +1412,13 @@ class SpaceVirtualMeterCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_spaces "
+                       " from tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_virtual_meters "
@@ -1621,16 +1430,16 @@ class SpaceVirtualMeterCollection:
                                    description='API.VIRTUAL_METER_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_spaces_virtual_meters "
-                 " WHERE space_id = %s AND virtual_meter_id = %s")
+                 " FROM tbl_tenants_virtual_meters "
+                 " WHERE tenant_id = %s AND virtual_meter_id = %s")
         cursor.execute(query, (id_, virtual_meter_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.SPACE_VIRTUAL_METER_RELATION_EXISTED')
+                                   description='API.TENANT_VIRTUAL_METER_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_spaces_virtual_meters (space_id, virtual_meter_id) "
+        add_row = (" INSERT INTO tbl_tenants_virtual_meters (tenant_id, virtual_meter_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, virtual_meter_id,))
         new_id = cursor.lastrowid
@@ -1639,10 +1448,10 @@ class SpaceVirtualMeterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/spaces/' + str(id_) + '/virtualmeters/' + str(virtual_meter_id)
+        resp.location = '/tenants/' + str(id_) + '/virtualmeters/' + str(virtual_meter_id)
 
 
-class SpaceVirtualMeterItem:
+class TenantVirtualMeterItem:
     @staticmethod
     def __init__():
         pass
@@ -1655,7 +1464,7 @@ class SpaceVirtualMeterItem:
     def on_delete(req, resp, id_, mid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         if not mid.isdigit() or int(mid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1665,13 +1474,13 @@ class SpaceVirtualMeterItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
+                       " FROM tbl_tenants "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_NOT_FOUND')
+                                   description='API.TENANT_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_virtual_meters "
@@ -1683,16 +1492,16 @@ class SpaceVirtualMeterItem:
                                    description='API.VIRTUAL_METER_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_spaces_virtual_meters "
-                       " WHERE space_id = %s AND virtual_meter_id = %s ", (id_, mid))
+                       " FROM tbl_tenants_virtual_meters "
+                       " WHERE tenant_id = %s AND virtual_meter_id = %s ", (id_, mid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.SPACE_VIRTUAL_METER_RELATION_NOT_FOUND')
+                                   description='API.TENANT_VIRTUAL_METER_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_spaces_virtual_meters "
-                       " WHERE space_id = %s AND virtual_meter_id = %s ", (id_, mid))
+        cursor.execute(" DELETE FROM tbl_tenants_virtual_meters "
+                       " WHERE tenant_id = %s AND virtual_meter_id = %s ", (id_, mid))
         cnx.commit()
 
         cursor.close()

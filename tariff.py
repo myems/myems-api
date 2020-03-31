@@ -163,6 +163,7 @@ class TariffCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.ENERGY_CATEGORY_NOT_FOUND')
 
+        # todo: validate datetime values
         valid_from = datetime.strptime(new_values['data']['valid_from'], '%Y-%m-%dT%H:%M:%S')
         valid_from = valid_from.replace(tzinfo=timezone.utc)
         valid_from -= timedelta(minutes=timezone_offset)
