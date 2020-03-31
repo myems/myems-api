@@ -2148,7 +2148,7 @@
 					"response": []
 				},
 				{
-					"name": "PUT Update a Tenant by ID",
+					"name": "PUT Update a Tenant",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -2491,6 +2491,108 @@
 								"tenants",
 								"1",
 								"virtualmeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "TenantType",
+			"item": [
+				{
+					"name": "GET All Tenant Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenanttypes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenanttypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Tenant Type by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenanttypes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenanttypes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Tenant Type",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\": \"Office1\", \"description\":\"办公\", \"simplified_code\":\"OF1\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenanttypes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenanttypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Tenant Type",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\": \"Office1\", \"description\":\"办公\", \"simplified_code\":\"OF1\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenanttypes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenanttypes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Tenant Type by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenanttypes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenanttypes",
 								"1"
 							]
 						}

@@ -14,6 +14,7 @@ import sensor
 import space
 import tariff
 import tenant
+import tenanttype
 import timezone
 import user
 import virtualmeter
@@ -156,6 +157,11 @@ api.add_route('/tenants/{id_}/virtualmeters',
               tenant.TenantVirtualMeterCollection())
 api.add_route('/tenants/{id_}/virtualmeters/{mid}',
               tenant.TenantVirtualMeterItem())
+
+api.add_route('/tenanttypes',
+              tenanttype.TenantTypeCollection())
+api.add_route('/tenanttypes/{id_}',
+              tenanttype.TenantTypeItem())
 
 api.add_route('/timezones',
               timezone.TimezoneCollection())
