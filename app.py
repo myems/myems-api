@@ -13,6 +13,7 @@ import privilege
 import sensor
 import space
 import tariff
+import tenant
 import timezone
 import user
 import virtualmeter
@@ -130,6 +131,31 @@ api.add_route('/tariffs',
               tariff.TariffCollection())
 api.add_route('/tariffs/{id_}',
               tariff.TariffItem())
+
+api.add_route('/tenants',
+              tenant.TenantCollection())
+api.add_route('/tenants/{id_}',
+              tenant.TenantItem())
+api.add_route('/tenants/{id_}/meters',
+              tenant.TenantMeterCollection())
+api.add_route('/tenants/{id_}/meters/{mid}',
+              tenant.TenantMeterItem())
+api.add_route('/tenants/{id_}/offlinemeters',
+              tenant.TenantOfflineMeterCollection())
+api.add_route('/tenants/{id_}/offlinemeters/{mid}',
+              tenant.TenantOfflineMeterItem())
+api.add_route('/tenants/{id_}/points',
+              tenant.TenantPointCollection())
+api.add_route('/tenants/{id_}/points/{pid}',
+              tenant.TenantPointItem())
+api.add_route('/tenants/{id_}/sensors',
+              tenant.TenantSensorCollection())
+api.add_route('/tenants/{id_}/sensors/{sid}',
+              tenant.TenantSensorItem())
+api.add_route('/tenants/{id_}/virtualmeters',
+              tenant.TenantVirtualMeterCollection())
+api.add_route('/tenants/{id_}/virtualmeters/{mid}',
+              tenant.TenantVirtualMeterItem())
 
 api.add_route('/timezones',
               timezone.TimezoneCollection())

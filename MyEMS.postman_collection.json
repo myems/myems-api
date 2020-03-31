@@ -1445,14 +1445,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/spaces/1/meters/1",
+							"raw": "{{base_url}}/spaces/1/offlinemeters/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"spaces",
 								"1",
-								"meters",
+								"offlinemeters",
 								"1"
 							]
 						}
@@ -2080,6 +2080,418 @@
 							"path": [
 								"tariffs",
 								"16"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tenant",
+			"item": [
+				{
+					"name": "GET All Tenants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Tenant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Tenant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"Starbucks\", \"parent_space_id\":2, \"buildings\":\"Building #1\", \"floors\":\"L1 L2 L3\", \"rooms\":\"1201b+2247+3F\", \"area\":418.8, \"tenant_type_id\":9, \"is_key_tenant\":true,\n\"lease_number\":\"6b0da806\",  \"lease_start_datetime_utc\":\"2019-12-31T16:00:00\", \"lease_end_datetime_utc\":\"2022-12-31T16:00:00\", \"is_in_lease\":true, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"my description\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Tenant by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"Hermes 爱马仕\", \"parent_space_id\":3, \"buildings\":\"Building #1\", \"floors\":\"L1 L2 L3 L4 L5\", \"rooms\":\"1201b+2247+3F\", \"area\":818.8, \"tenant_type_id\":9, \"is_key_tenant\":true,\n\"lease_number\":\"6b0da806\",  \"lease_start_datetime_utc\":\"2019-12-31T16:00:00\", \"lease_end_datetime_utc\":\"2022-12-31T16:00:00\", \"is_in_lease\":true, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"my description\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenants/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Tenant by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Meters of Tenant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Meter to a Tenant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenants/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Meter from Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/meters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"meters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All OfflineMeters of Tenant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind an OfflineMeter to a Tenant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"offline_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenants/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Offline Meter from Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/offlinemeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"offlinemeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Points of Tenant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Point to a Tenant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"point_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenants/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Point from Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/points/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"points",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Sensors of Tenant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Sensor to a Tenant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"sensor_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenants/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Sensor from Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/sensors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"sensors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Virtual Meters of Tenant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Virtual Meter to a Tenant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"virtual_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tenants/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Virtual Meter from Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tenants/1/virtualmeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tenants",
+								"1",
+								"virtualmeters",
+								"1"
 							]
 						}
 					},
