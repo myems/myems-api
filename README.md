@@ -112,7 +112,7 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) 
 
-[Space](#Space)
+[Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
 
 [User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
 
@@ -267,8 +267,8 @@ $ curl -i -X GET http://BASE_URL/energyitems/{id}
 ```
 Result in JSON
 
-| Name          | Data Type | Description                               |
-|---------------|-----------|-------------------------------------------|
+| Name          | Data Type | Description                           |
+|---------------|-----------|---------------------------------------|
 | id            | integer   | Energy Item ID                        |
 | name          | string    | Energy Item name                      |
 | uuid          | string    | Energy Item UUID                      |
@@ -786,6 +786,41 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_mete
 ```bash
 $ curl -i -X DELETE http://BASE_URL/tenants/{id}/virtualmeters/{mid}
 ```
+
+
+### Tenant Type
+* GET a Tenant Type by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/tenanttypes/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Tenant Type ID                            |
+| name          | string    | Tenant Type name                          |
+| uuid          | string    | Tenant Type UUID                          |
+| description   | string    | Tenant Type description                   |
+| simplified_code | string  | Tenant Type simplified code               |
+
+* GET All Tenant Types
+```bash
+$ curl -i -X GET http://BASE_URL/tenanttypes
+```
+* POST Create New Tenant Types
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name": "Office", "description":"办公", "simplified_code":"OF"}}' http://BASE_URL/tenanttypes
+```
+* PUT Update a Tenant Types
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name": "Office1", "description":"办公", "simplified_code":"OF1"}}' http://BASE_URL/tenanttypes/{id}
+```
+* DELETE a Tenant Types by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/tenanttypes/{id}
+```
+
 
 ### Timezone
 * GET a Timezone by ID
