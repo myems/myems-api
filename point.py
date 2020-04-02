@@ -133,10 +133,10 @@ class PointItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.POINT_NOT_FOUND')
 
-        # check if this meter is being used by meters
-        cursor.execute(" SELECT m.name "
-                       " FROM tbl_meters m, tbl_meters_points mp "
-                       " WHERE m.id = mp.meter_id AND mp.point_id = %s "
+        # check if this point is being used by meters
+        cursor.execute(" SELECT meter_id "
+                       " FROM tbl_meters_points "
+                       " WHERE point_id = %s "
                        " LIMIT 1 ",
                        (id_,))
         row_meter = cursor.fetchone()
@@ -145,7 +145,63 @@ class PointItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_METER' + row_meter[0])
+                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_METER')
+
+        # check if this point is being used by sensors
+        cursor.execute(" SELECT sensor_id "
+                       " FROM tbl_sensors_points "
+                       " WHERE point_id = %s "
+                       " LIMIT 1 ",
+                       (id_,))
+        row_sensor = cursor.fetchone()
+        if row_sensor is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_SENSOR')
+
+        # check if this point is being used by spaces
+        cursor.execute(" SELECT space_id "
+                       " FROM tbl_spaces_points "
+                       " WHERE point_id = %s "
+                       " LIMIT 1 ",
+                       (id_,))
+        row_space = cursor.fetchone()
+        if row_space is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_SPACE')
+
+        # check if this point is being used by tenants
+        cursor.execute(" SELECT tenant_id "
+                       " FROM tbl_tenants_points "
+                       " WHERE point_id = %s "
+                       " LIMIT 1 ",
+                       (id_,))
+        row_tenant = cursor.fetchone()
+        if row_tenant is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_TENANT')
+
+        # check if this point is being used by equipment parameters
+        cursor.execute(" SELECT equipment_id "
+                       " FROM tbl_equipments_parameters "
+                       " WHERE point_id = %s "
+                       " LIMIT 1 ",
+                       (id_,))
+        row_tenant = cursor.fetchone()
+        if row_tenant is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_EQUIPMENT_PARAMETER')
 
         cursor.execute(" DELETE FROM tbl_points WHERE id = %s ", (id_,))
         cnx.commit()

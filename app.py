@@ -6,6 +6,7 @@ import costcenter
 import datasource
 import energycategory
 import energyitem
+import equipment
 import meter
 import offlinemeter
 import point
@@ -61,6 +62,27 @@ api.add_route('/energyitems',
               energyitem.EnergyItemCollection())
 api.add_route('/energyitems/{id_}',
               energyitem.EnergyItemItem())
+
+api.add_route('/equipments',
+              equipment.EquipmentCollection())
+api.add_route('/equipments/{id_}',
+              equipment.EquipmentItem())
+api.add_route('/equipments/{id_}/meters',
+              equipment.EquipmentMeterCollection())
+api.add_route('/equipments/{id_}/meters/{mid}',
+              equipment.EquipmentMeterItem())
+api.add_route('/equipments/{id_}/offlinemeters',
+              equipment.EquipmentOfflineMeterCollection())
+api.add_route('/equipments/{id_}/offlinemeters/{mid}',
+              equipment.EquipmentOfflineMeterItem())
+api.add_route('/equipments/{id_}/parameters',
+              equipment.EquipmentParameterCollection())
+api.add_route('/equipments/{id_}/parameters/{pid}',
+              equipment.EquipmentParameterItem())
+api.add_route('/equipments/{id_}/virtualmeters',
+              equipment.EquipmentVirtualMeterCollection())
+api.add_route('/equipments/{id_}/virtualmeters/{mid}',
+              equipment.EquipmentVirtualMeterItem())
 
 api.add_route('/meters',
               meter.MeterCollection())

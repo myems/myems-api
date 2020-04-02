@@ -281,96 +281,6 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Privilege",
-			"item": [
-				{
-					"name": "Get All Privileges",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/privileges",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create Privilege",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/privileges",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT Update Privilege Data",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"superusers\", \"data\":\"{\\\"spaces\\\":[1, 3]}\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/privileges/3",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE Privilege",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/privileges/2",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges",
-								"2"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
 			"name": "Data Source",
 			"item": [
 				{
@@ -498,37 +408,37 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Point",
+			"name": "Energy Category",
 			"item": [
 				{
-					"name": "GET All Points",
+					"name": "GET All Energy Categories",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/points",
+							"raw": "{{base_url}}/energycategories",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"points"
+								"energycategories"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GET Point by ID",
+					"name": "GET an Energy Category",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/points/1",
+							"raw": "{{base_url}}/energycategories/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"points",
+								"energycategories",
 								"1"
 							]
 						}
@@ -536,41 +446,295 @@
 					"response": []
 				},
 				{
-					"name": "POST Create Point",
+					"name": "POST Create an Energy Category",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"hi_limit\":999999999, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
-							"options": {
-								"raw": {}
-							}
+							"raw": "{\"data\":{\"name\":\"柴油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}"
 						},
 						"url": {
-							"raw": "{{base_url}}/points",
+							"raw": "{{base_url}}/energycategories",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"points"
+								"energycategories"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "DELETE Point by ID",
+					"name": "PUT Update an Energy Category",
 					"request": {
-						"method": "DELETE",
+						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"汽油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}",
+							"options": {
+								"raw": {}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/points/2",
+							"raw": "{{base_url}}/energycategories/9",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"points",
+								"energycategories",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Energy Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energycategories/9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energycategories",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Energy Item",
+			"item": [
+				{
+					"name": "GET All Energy Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyitems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Energy Item",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyitems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create an Energy Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"租户用电\",\"energy_category_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyitems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Energy Item",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"空调用\",\"energy_category_id\":1}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/energyitems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Energy Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyitems/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyitems",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Equipment",
+			"item": [
+				{
+					"name": "POST Create New Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"location\":\"equipment location\", \"description\":\"equipment description\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Equipments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Equipment by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Equipment by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":true, \"cost_center_id\":1, \"location\":\"equipment location\", \"description\":\"equipment description\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Clone an Equipment by ID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Equipment by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
 								"2"
 							]
 						}
@@ -578,27 +742,319 @@
 					"response": []
 				},
 				{
-					"name": "PUT Update Point by ID",
+					"name": "POST Bind a Meter to an Equipment",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"hi_limit\":999999999, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
-							"options": {
-								"raw": {}
-							}
+							"raw": "{\"data\":{\"meter_id\":1, \"is_output\":false}}"
 						},
 						"url": {
-							"raw": "{{base_url}}/points/1",
+							"raw": "{{base_url}}/equipments/1/meters",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"points",
+								"equipments",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Meters of an Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Offline Meter to an Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"offline_meter_id\":1, \"is_output\":false}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Offline Meters of an Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Offline Meter from an Equipment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/offlinemeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"offlinemeters",
 								"1"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Parameters of an Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Parameter of an Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create a point Parameter for an Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test parameter\", \"parameter_type\":\"point\", \"constant\":null, \"point_id\":1, \"numerator_meter_uuid\":null, \"denominator_meter_uuid\":null}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters"
+							]
+						},
+						"description": "parameter_type: constant, point, fraction"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create a meter Parameter for an Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test parameter\", \"parameter_type\":\"fraction\", \"constant\":null, \"point_id\":null, \"numerator_meter_uuid\":\"89ff5118-d0c2-4dd8-8098-a8698189b2ea\", \"denominator_meter_uuid\":\"5ca62d2a-908e-40c5-a6b5-a8e436d60db4\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters"
+							]
+						},
+						"description": "parameter_type: constant, point, fraction"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Parameter from an Equipment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters/16",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Virtual Meter to an Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"virtual_meter_id\":1, \"is_output\":false}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Virtual Meters of an Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Virtual Meter from an Equipment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/virtualmeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"virtualmeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Meter from an Equipment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/equipments/1/meters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"meters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create a constant Parameter for an Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test parameter\", \"parameter_type\":\"constant\", \"constant\":\"test constant\", \"point_id\":null, \"numerator_meter_uuid\":null, \"denominator_meter_uuid\":null}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters"
+							]
+						},
+						"description": "parameter_type: constant, point, fraction"
 					},
 					"response": []
 				}
@@ -884,37 +1340,37 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Virtual Meter",
+			"name": "Point",
 			"item": [
 				{
-					"name": "GET All Virtual Meters",
+					"name": "GET All Points",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/virtualmeters",
+							"raw": "{{base_url}}/points",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"virtualmeters"
+								"points"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GET a Virtual Meter by ID",
+					"name": "GET Point by ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/virtualmeters/1",
+							"raw": "{{base_url}}/points/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"virtualmeters",
+								"points",
 								"1"
 							]
 						}
@@ -922,60 +1378,156 @@
 					"response": []
 				},
 				{
-					"name": "POST Create New Virtual Meter",
+					"name": "POST Create Point",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM10\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"hi_limit\":999999999, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
-							"raw": "{{base_url}}/virtualmeters",
+							"raw": "{{base_url}}/points",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"virtualmeters"
+								"points"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "PUT Update a Virtual Meter by ID",
+					"name": "DELETE Point by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/points/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"points",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Point by ID",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM51\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"hi_limit\":999999999, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
-							"raw": "{{base_url}}/virtualmeters/5",
+							"raw": "{{base_url}}/points/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"virtualmeters",
-								"5"
+								"points",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Privilege",
+			"item": [
+				{
+					"name": "Get All Privileges",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/privileges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"privileges"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "DELETE a Virtual Meter by ID",
+					"name": "POST Create Privilege",
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/virtualmeters/2",
+							"raw": "{{base_url}}/privileges",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"virtualmeters",
+								"privileges"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Privilege Data",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"superusers\", \"data\":\"{\\\"spaces\\\":[1, 3]}\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/privileges/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"privileges",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Privilege",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/privileges/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"privileges",
 								"2"
 							]
 						}
@@ -1255,7 +1807,7 @@
 					"response": []
 				},
 				{
-					"name": "GET All Children of Space by ID",
+					"name": "GET All Children of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1274,7 +1826,7 @@
 					"response": []
 				},
 				{
-					"name": "GET All Equipments of Space by ID",
+					"name": "GET All Equipments of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1336,7 +1888,7 @@
 					"response": []
 				},
 				{
-					"name": "GET All Meters of Space by ID",
+					"name": "GET All Meters of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1398,7 +1950,7 @@
 					"response": []
 				},
 				{
-					"name": "GET All OfflineMeters of Space by ID",
+					"name": "GET All OfflineMeters of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1460,7 +2012,7 @@
 					"response": []
 				},
 				{
-					"name": "GET All Points of Space by ID",
+					"name": "GET All Points of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1522,7 +2074,7 @@
 					"response": []
 				},
 				{
-					"name": "GET All Sensors of Space by ID",
+					"name": "GET All Sensors of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1584,18 +2136,18 @@
 					"response": []
 				},
 				{
-					"name": "GET All Tenants of Space by ID",
+					"name": "GET All Tenants of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/spaces/2/tenants",
+							"raw": "{{base_url}}/spaces/1/tenants",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"spaces",
-								"2",
+								"1",
 								"tenants"
 							]
 						}
@@ -1603,7 +2155,7 @@
 					"response": []
 				},
 				{
-					"name": "GET All Virtual Meters of Space by ID",
+					"name": "GET All Virtual Meters of a Space",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1659,279 +2211,6 @@
 								"1",
 								"virtualmeters",
 								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Get All Users",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/users",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create New User",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT User Login",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"username\":\"administrator\", \"password\":\"!MyEMS1\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE User",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/users/2",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT Update User Profile",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":3, \"password\":\"!MyEMS1\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/4",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"4"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT User Logout",
-					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "addTokenTo",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/users/logout",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"logout"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "User Logout",
-							"originalRequest": {
-								"method": "PUT",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/users/logout",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"users",
-										"logout"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Server",
-									"value": "gunicorn/19.9.0"
-								},
-								{
-									"key": "Date",
-									"value": "Thu, 19 Mar 2020 01:31:00 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "close"
-								},
-								{
-									"key": "content-length",
-									"value": "0"
-								},
-								{
-									"key": "content-type",
-									"value": "application/json; charset=UTF-8"
-								},
-								{
-									"key": "set-cookie",
-									"value": "user_uuid=\"\"; Domain=127.0.0.1; Path=/"
-								},
-								{
-									"key": "set-cookie",
-									"value": "token=\"\"; Domain=127.0.0.1; Path=/"
-								}
-							],
-							"cookie": [],
-							"body": null
-						}
-					]
-				},
-				{
-					"name": "User Change Password",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"password\":\"NewPassword1\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/changepassword",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"changepassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT Reset Password",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"johnson\",\"password\":\"NewPassword2\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/resetpassword",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"resetpassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create Privilege",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/privileges",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges"
 							]
 						}
 					},
@@ -2666,102 +2945,270 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Energy Category",
+			"name": "User",
 			"item": [
 				{
-					"name": "GET All Energy Categories",
+					"name": "Get All Users",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energycategories",
+							"raw": "{{base_url}}/users",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energycategories"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GET an Energy Category",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/energycategories/1",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"energycategories",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create an Energy Category",
+					"name": "POST Create New User",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"柴油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}"
-						},
-						"url": {
-							"raw": "{{base_url}}/energycategories",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"energycategories"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT Update an Energy Category",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"汽油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}",
+							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/energycategories/9",
+							"raw": "{{base_url}}/users",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energycategories",
-								"9"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "DELETE an Energy Category",
+					"name": "PUT User Login",
 					"request": {
-						"method": "DELETE",
+						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"username\":\"administrator\", \"password\":\"!MyEMS1\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/energycategories/9",
+							"raw": "{{base_url}}/users/login",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energycategories",
-								"9"
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":3, \"password\":\"!MyEMS1\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT User Logout",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "User Logout",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/logout",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "gunicorn/19.9.0"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 19 Mar 2020 01:31:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "content-length",
+									"value": "0"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=UTF-8"
+								},
+								{
+									"key": "set-cookie",
+									"value": "user_uuid=\"\"; Domain=127.0.0.1; Path=/"
+								},
+								{
+									"key": "set-cookie",
+									"value": "token=\"\"; Domain=127.0.0.1; Path=/"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "User Change Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"password\":\"NewPassword1\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/changepassword",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"changepassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Reset Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"johnson\",\"password\":\"NewPassword2\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/resetpassword",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"resetpassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Privilege",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/privileges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"privileges"
 							]
 						}
 					},
@@ -2771,37 +3218,37 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Energy Item",
+			"name": "Virtual Meter",
 			"item": [
 				{
-					"name": "GET All Energy Items",
+					"name": "GET All Virtual Meters",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energyitems",
+							"raw": "{{base_url}}/virtualmeters",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energyitems"
+								"virtualmeters"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GET an Energy Item",
+					"name": "GET a Virtual Meter by ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energyitems/1",
+							"raw": "{{base_url}}/virtualmeters/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energyitems",
+								"virtualmeters",
 								"1"
 							]
 						}
@@ -2809,64 +3256,61 @@
 					"response": []
 				},
 				{
-					"name": "POST Create an Energy Item",
+					"name": "POST Create New Virtual Meter",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"租户用电\",\"energy_category_id\":1}}"
+							"raw": "{\"data\":{\"name\":\"VM10\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
-							"raw": "{{base_url}}/energyitems",
+							"raw": "{{base_url}}/virtualmeters",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energyitems"
+								"virtualmeters"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "PUT Update an Energy Item",
+					"name": "PUT Update a Virtual Meter by ID",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"空调用\",\"energy_category_id\":1}}",
-							"options": {
-								"raw": {}
-							}
+							"raw": "{\"data\":{\"name\":\"VM51\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
-							"raw": "{{base_url}}/energyitems/1",
+							"raw": "{{base_url}}/virtualmeters/5",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energyitems",
-								"1"
+								"virtualmeters",
+								"5"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "DELETE an Energy Item",
+					"name": "DELETE a Virtual Meter by ID",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energyitems/4",
+							"raw": "{{base_url}}/virtualmeters/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"energyitems",
-								"4"
+								"virtualmeters",
+								"2"
 							]
 						}
 					},

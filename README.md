@@ -114,6 +114,8 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
 
+[Equipment](#Equipment)
+
 [User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
 
 [Timezone](#Timezone)
@@ -292,6 +294,155 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"空�
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"动力用电","energy_category_id":1}}' http://BASE_URL/energyitems/{id}
 ```
 
+
+### Equipment
+* GET Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/equipments/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Equipment ID                              |
+| name          | string    | Equipment name                            |
+| uuid          | string    | Equipment UUID                            |
+| is_input_counted | boolean | Indicates if the space's energy input is counted for aggregating|                        |
+| is_output_counted | boolean | Indicates if the space's energy output is counted for aggregating|                        |
+| cost_center   | Object    | Cost Center Object                        |
+| location      | string    | Space location                            |
+| description   | string    | Space description                         |
+
+* GET All Equipments
+```bash
+$ curl -i -X GET http://BASE_URL/equipments
+```
+* DELETE an Equipment by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/equipments/{id}
+```
+* POST Create an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Chiller", "is_input_counted":true, "is_output_counted":false, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/equipments
+```
+* PUT Update an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Chiller", "is_input_counted":true, "is_output_counted":true, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/equipments/{id}
+```
+* POST Clone an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{}}' http://BASE_URL/equipments/{id}
+```
+* GET All Meters of an Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/equipments/{id}/meters
+```
+* POST Bind a Meter to an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"meter_id":1}}' http://BASE_URL/equipments/{id}/meters
+```
+* DELETE a Meter from an Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/equipments/{id}/meters/{mid}
+```
+* GET All Parameters of an Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/equipments/{id}/parameters
+```
+* GET a Parameter of an Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/equipments/{id}/parameters/{pid}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Parameter ID                              |
+| name          | string    | Parameter name                            |
+| parameter_type | string   | Parameter Type: constant, point, meter    |
+| is_input_counted  | boolean | Indicates if the equipment's energy input is counted for aggregating|                        |
+| is_output_counted | boolean | Indicates if the equipment's energy output is counted for aggregating|                        |
+| constant            | string    | Parameter constant value            |
+| point               | object    | Parameter point object              |
+| numerator_meter     | object    | Parameter numerator meter object    |
+| denominator_meter   | object    | Parameter numerator meter object    |
+
+* POST Create a constant Parameter for an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"test parameter", "parameter_type":"constant", "constant":"test constant", "point_id":null, "numerator_meter_uuid":null, "denominator_meter_uuid":null}}' http://BASE_URL/equipments/{id}/parameters
+```
+* POST Create a point Parameter for an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"test parameter", "parameter_type":"point", "constant":null, "point_id":1, "numerator_meter_uuid":null, "denominator_meter_uuid":null}}' http://BASE_URL/equipments/{id}/parameters
+```
+* POST Create a meter Parameter for an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"test parameter", "parameter_type":"fraction", "constant":null, "point_id":null, "numerator_meter_uuid":"89ff5118-d0c2-4dd8-8098-a8698189b2ea", "denominator_meter_uuid":"5ca62d2a-908e-40c5-a6b5-a8e436d60db4"}}' http://BASE_URL/equipments/{id}/parameters
+```
+* DELETE a Parameter from an Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/equipments/{id}/parameters/{pid}
+```
+* GET All Offline Meters of Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/equipments/{id}/offlinemeters
+```
+* POST Bind an Offline Meter to an Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"offline_meter_id":1}}' http://BASE_URL/equipments/{id}/offlinemeters
+```
+* DELETE an Offline Meter from Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/equipments/{id}/offlinemeters/{mid}
+```
+* GET All Virtual Meters of Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/equipments/{id}/virtualmeters
+```
+* POST Bind an Virtual Meter to a Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_meter_id":1}}' http://BASE_URL/equipments/{id}/virtualmeters
+```
+* DELETE an Virtual Meter from Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/equipments/{id}/virtualmeters/{mid}
+```
+
+### Help File
+* GET Help File by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/helpfiles/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Help File ID                              |
+| file_name     | string    | Help File name                            |
+| uuid          | string    | Help File UUID                            |
+| upload_datetime | float | the number of milliseconds since January 1, 1970, 00:00:00, universal time |
+| user_display_name | string| Upload user's display name                |
+| file_object   | BLOB      | Help File Object                 |
+
+* GET all Hlep Files
+```bash
+$ curl -i -X GET http://BASE_URL/helpfiles
+```
+* DELETE Help File by id
+```bash
+$ curl -i -X DELETE http://BASE_URL/helpfiles/{id}
+```
+* POST Help File
+```bash
+$ curl -i -H "Content-Type: application/TBD" -X POST -d 'TBD' http://BASE_URL/helpfiles
+```
+* DOWNLOAD Help File by id
+```bash
+$ curl -i -X GET http://BASE_URL/helpfiles/{id}/download
+```
+
+
 ### Meter
 * GET Meter by ID
 
@@ -379,6 +530,40 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Offli
 * PUT Update a Offline Meter
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":9999.99, "is_counted":true, "energy_item_id":1, "cost_center_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
+```
+
+### Offline Meter File
+* GET Offline Meter File by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/offlinemeterfiles/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Offline Meter File ID                     |
+| file_name     | string    | Offline Meter File name                   |
+| uuid          | string    | Offline Meter File UUID                   |
+| upload_datetime | float | the number of milliseconds since January 1, 1970, 00:00:00, universal time |
+| status        | string    | Offline Meter File processing status (new, done, error)   |
+| file_object   | BLOB       | Offline Meter File Object                 |
+
+* GET all Offline Meter Files
+```bash
+$ curl -i -X GET http://BASE_URL/offlinemeterfiles
+```
+* DELETE Offline Meter File by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/offlinemeterfiles/{id}
+```
+* POST Offline Meter File
+```bash
+$ curl -i -H "Content-Type: application/TBD" -X POST -d 'TBD' http://BASE_URL/offlinemeters
+```
+* DOWNLOAD Offline Meter File by ID
+```bash
+$ curl -i -X GET http://BASE_URL/offlinemeterfiles/{id}/download
 ```
 
 
