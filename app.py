@@ -11,6 +11,7 @@ import meter
 import offlinemeter
 import point
 import privilege
+import rule
 import sensor
 import space
 import tariff
@@ -107,6 +108,11 @@ api.add_route('/privileges',
               privilege.PrivilegeCollection())
 api.add_route('/privileges/{id_}',
               privilege.PrivilegeItem())
+
+api.add_route('/rules',
+              rule.RuleCollection())
+api.add_route('/rules/{id_}',
+              rule.RuleItem())
 
 api.add_route('/sensors',
               sensor.SensorCollection())

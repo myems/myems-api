@@ -99,8 +99,6 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 
 ## API List
 
-View online: https://app.getpostman.com/run-collection/a34d69ad0cbbfab2840a
-
 View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 
@@ -115,6 +113,8 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 [Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
 
 [Equipment](#Equipment)
+
+[Rule](#Rule)
 
 [User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
 
@@ -566,31 +566,6 @@ $ curl -i -H "Content-Type: application/TBD" -X POST -d 'TBD' http://BASE_URL/of
 $ curl -i -X GET http://BASE_URL/offlinemeterfiles/{id}/download
 ```
 
-
-### Privilege
-* GET Privilege by ID
-```bash
-$ curl -i -X GET http://BASE_URL/privileges/{id}
-```
-* GET All Privileges
-```bash
-$ curl -i -X GET http://BASE_URL/privileges
-```
-* DELETE Privilege by ID
-```bash
-$ curl -i -X DELETE http://BASE_URL/privileges/{id}
-```
-* POST New Privilege
-```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"superusers","data":"{\"spaces\":[1,2,3,5]}"}}' http://BASE_URL/privileges
-```
-* PUT Privilege
-```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"superusers", "data":"{\"spaces\":[1, 3]}"}}' http://BASE_URL/privileges/{id}
-```
-
-
-
 ### Point
 
 * GET Point by ID
@@ -642,6 +617,67 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Modbu
 * PUT Point
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"ModbusPoint1", "data_source_id":1, "object_type": "ENERGY_VALUE", "units":"kWh", "low_limit":0, "hi_limit":999999999, "is_trend":true, "address":"{\"slave_id\":1, \"function_code\":3, \"offset\":1, \"number_of_registers\":2, \"data_format\":\"float\"}"}}' http://BASE_URL/points/{id}
+```
+
+
+### Privilege
+* GET Privilege by ID
+```bash
+$ curl -i -X GET http://BASE_URL/privileges/{id}
+```
+* GET All Privileges
+```bash
+$ curl -i -X GET http://BASE_URL/privileges
+```
+* DELETE Privilege by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/privileges/{id}
+```
+* POST New Privilege
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"superusers","data":"{\"spaces\":[1,2,3,5]}"}}' http://BASE_URL/privileges
+```
+* PUT Privilege
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"superusers", "data":"{\"spaces\":[1, 3]}"}}' http://BASE_URL/privileges/{id}
+```
+
+
+### Rule
+* GET Rule by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Rule ID                                   |
+| name          | string    | Rule Name                                 |
+| uuid          | string    | Rule UUID                                 |
+| channels      | string    | Channels ('call,sms,email,wechat,web')    |
+| expressions   | string    | Logic of factory, shop, line, recipients in JSON  |
+| messages      | string    | Messages to recipients                    |
+| is_enabled    | boolean   | Indicates if this rule is enabled         |
+| mute_start_datetime| float| Mute Start Datetime (POSIX timestamp * 1000), allow null|
+| mute_end_datetime  | float| Mute End Datetime (POSIX timestamp * 1000), allow null|
+
+```bash
+$ curl -i -X GET http://BASE_URL/rules/{id}
+```
+* GET All Rules
+```bash
+$ curl -i -X GET http://BASE_URL/rules
+```
+* DELETE a Rule by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/rules/{id}
+```
+* POST Create New Rule
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":null, "mute_end_datetime":null}}' http://BASE_URL/rules
+```
+* PUT Update a Rule
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":"2020-05-01T00:00:00", "mute_end_datetime":"2020-05-06T00:00:00"}}' http://BASE_URL/rules/{id}
 ```
 
 
