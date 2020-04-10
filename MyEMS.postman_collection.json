@@ -909,6 +909,30 @@
 					"response": []
 				},
 				{
+					"name": "POST Create a constant Parameter for an Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test parameter\", \"parameter_type\":\"constant\", \"constant\":\"test constant\", \"point_id\":null, \"numerator_meter_uuid\":null, \"denominator_meter_uuid\":null}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters"
+							]
+						},
+						"description": "parameter_type: constant, point, fraction"
+					},
+					"response": []
+				},
+				{
 					"name": "POST Create a meter Parameter for an Equipment",
 					"request": {
 						"method": "POST",
@@ -1031,30 +1055,6 @@
 								"1"
 							]
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create a constant Parameter for an Equipment",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"test parameter\", \"parameter_type\":\"constant\", \"constant\":\"test constant\", \"point_id\":null, \"numerator_meter_uuid\":null, \"denominator_meter_uuid\":null}}"
-						},
-						"url": {
-							"raw": "{{base_url}}/equipments/1/parameters",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"equipments",
-								"1",
-								"parameters"
-							]
-						},
-						"description": "parameter_type: constant, point, fraction"
 					},
 					"response": []
 				}
@@ -1529,6 +1529,108 @@
 							"path": [
 								"privileges",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Rule",
+			"item": [
+				{
+					"name": "GET All Rules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/rules",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Rule by ID ",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/rules/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rules",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Rule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"用能单位今日电耗超标20%\", \"channel\":\"sms\", \"expression\":\"[{}]\", \"message\":\"%s今天截止到目前电耗%s，超标20%。\", \"is_enabled\":true, \"mute_start_datetime\":null, \"mute_end_datetime\":null}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/rules",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Rule",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"用能单位今日电耗超标20%\", \"channel\":\"sms\", \"expression\":\"[{}]\", \"message\":\"%s今天截止到目前电耗%s，超标20%。\", \"is_enabled\":true, \"mute_start_datetime\":\"2020-05-01T00:00:00\", \"mute_end_datetime\":\"2020-05-06T00:00:00\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/rules/5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rules",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Rule by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/rules/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rules",
+								"1"
 							]
 						}
 					},
