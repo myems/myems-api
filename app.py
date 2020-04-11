@@ -8,6 +8,7 @@ import emailserver
 import energycategory
 import energyitem
 import equipment
+import gsmmodem
 import meter
 import offlinemeter
 import point
@@ -90,6 +91,11 @@ api.add_route('/equipments/{id_}/virtualmeters',
               equipment.EquipmentVirtualMeterCollection())
 api.add_route('/equipments/{id_}/virtualmeters/{mid}',
               equipment.EquipmentVirtualMeterItem())
+
+api.add_route('/gsmmodems',
+              gsmmodem.GSMModemCollection())
+api.add_route('/gsmmodems/{id_}',
+              gsmmodem.GSMModemItem())
 
 api.add_route('/meters',
               meter.MeterCollection())

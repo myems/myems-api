@@ -408,6 +408,108 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Email Server",
+			"item": [
+				{
+					"name": "GET All Email Servers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/emailservers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailservers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Email Server",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"host\":\"smtp.163.com\",\"port\":25, \"requires_authentication\":true, \"user_name\":\"myems\" , \"password\":\"!MyEMS1\" , \"from_addr\":\"myems@163.com\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/emailservers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailservers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Email Server by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/emailservers/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailservers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Email Server",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"host\":\"smtp.myems.io\",\"port\":25, \"requires_authentication\":true, \"user_name\":\"myems\" , \"password\":\"!MyEMS1\" , \"from_addr\":\"myems@myems.io\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/emailservers/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailservers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Email Server by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/emailservers/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailservers",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Energy Category",
 			"item": [
 				{
@@ -1053,6 +1155,95 @@
 								"1",
 								"meters",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "GSM Modem",
+			"item": [
+				{
+					"name": "GET All GSM Modems",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a GSM Modem by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New GSM Modem",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"serial_port\":\"/dev/ttyS1\",\"baud_rate\":115200}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/gsmmodems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gsmmodems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a GSM Modem",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"serial_port\":\"/dev/ttyS0\",\"baud_rate\":9600}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/gsmmodems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gsmmodems",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a GSM Modem by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/gsmmodems/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gsmmodems",
+								"2"
 							]
 						}
 					},
@@ -3412,108 +3603,6 @@
 							],
 							"path": [
 								"virtualmeters",
-								"2"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Email Server",
-			"item": [
-				{
-					"name": "GET All Email Servers",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/emailservers",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"emailservers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create New Email Server",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"host\":\"smtp.163.com\",\"port\":25, \"requires_authentication\":true, \"user_name\":\"myems\" , \"password\":\"!MyEMS1\" , \"from_addr\":\"myems@163.com\"}}"
-						},
-						"url": {
-							"raw": "{{base_url}}/emailservers",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"emailservers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET an Email Server by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/emailservers/1",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"emailservers",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT Update an Email Server",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"host\":\"smtp.myems.io\",\"port\":25, \"requires_authentication\":true, \"user_name\":\"myems\" , \"password\":\"!MyEMS1\" , \"from_addr\":\"myems@myems.io\"}}"
-						},
-						"url": {
-							"raw": "{{base_url}}/emailservers/1",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"emailservers",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE an Email Server by ID",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/emailservers/2",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"emailservers",
 								"2"
 							]
 						}

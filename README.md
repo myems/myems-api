@@ -116,6 +116,8 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Rule](#Rule)
 
+[Email Server](#Email Server) | [GSM Modem](#GSM Modem)
+
 [User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
 
 [Timezone](#Timezone)
@@ -442,6 +444,38 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_mete
 ```bash
 $ curl -i -X DELETE http://BASE_URL/equipments/{id}/virtualmeters/{mid}
 ```
+
+### GSM Modem
+* GET a GSM Modem by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/gsmmodems/{id}
+```
+Result in JSON
+
+| Name          | Data Type | Description                           |
+|---------------|-----------|---------------------------------------|
+| id            | integer   | GSM Modem ID                          |
+| serial_port   | string    | GSM Modem serial port                 |
+| baud_rate     | integer   | GSM Modem baud rate                   |
+
+* GET All GSM Modems
+```bash
+$ curl -i -X GET http://BASE_URL/gsmmodems
+```
+* DELETE a GSM Modem by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/gsmmodems/{id}
+```
+* POST Create New GSM Modem
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"serial_port":"/dev/ttyS0","baud_rate":115200}}' http://BASE_URL/gsmmodems
+```
+* PUT Update a GSM Modem
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"serial_port":"/dev/ttyS0","baud_rate":115200}}' http://BASE_URL/gsmmodems/{id}
+```
+
 
 ### Help File
 * GET Help File by ID
