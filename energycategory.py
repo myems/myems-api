@@ -63,16 +63,18 @@ class EnergyCategoryCollection:
         unit_of_measure = str.strip(new_values['data']['unit_of_measure'])
 
         if 'kgce' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['kgce'], float):
+                (not isinstance(new_values['data']['kgce'], float) and
+                 not isinstance(new_values['data']['kgce'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCE')
-        kgce = new_values['data']['kgce']
+        kgce = float(new_values['data']['kgce'])
 
         if 'kgco2e' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['kgco2e'], float):
+                (not isinstance(new_values['data']['kgco2e'], float) and
+                 not isinstance(new_values['data']['kgco2e'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCO2E')
-        kgco2e = new_values['data']['kgco2e']
+        kgco2e = float(new_values['data']['kgco2e'])
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -250,16 +252,18 @@ class EnergyCategoryItem:
         unit_of_measure = str.strip(new_values['data']['unit_of_measure'])
 
         if 'kgce' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['kgce'], float):
+                (not isinstance(new_values['data']['kgce'], float) and
+                 not isinstance(new_values['data']['kgce'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCE')
-        kgce = new_values['data']['kgce']
+        kgce = float(new_values['data']['kgce'])
 
         if 'kgco2e' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['kgco2e'], float):
+                (not isinstance(new_values['data']['kgco2e'], float) and
+                 not isinstance(new_values['data']['kgco2e'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCO2E')
-        kgco2e = new_values['data']['kgco2e']
+        kgco2e = float(new_values['data']['kgco2e'])
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
