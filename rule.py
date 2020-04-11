@@ -32,11 +32,14 @@ class RuleCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
+                mute_start_datetime = row[7].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[7] else None
+                mute_end_datetime = row[8].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[8] else None
+
                 meta_result = {"id": row[0], "name": row[1], "uuid": row[2],
                                "channel": row[3], "expression": row[4], "message": row[5].replace("<br>", ""),
                                "is_enabled": bool(row[6]),
-                               "mute_start_datetime": row[7].timestamp() * 1000 if row[7] else None,
-                               "mute_end_datetime": row[8].timestamp() * 1000 if row[8] else None}
+                               "mute_start_datetime": mute_start_datetime,
+                               "mute_end_datetime": mute_end_datetime}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -187,11 +190,14 @@ class RuleItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.RULE_NOT_FOUND')
 
+        mute_start_datetime = row[7].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[7] else None
+        mute_end_datetime = row[8].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[8] else None
+
         result = {"id": row[0], "name": row[1], "uuid": row[2],
                   "channel": row[3], "expression": row[4], "message": row[5].replace("<br>", ""),
                   "is_enabled": bool(row[6]),
-                  "mute_start_datetime": row[7].timestamp() * 1000 if row[7] else None,
-                  "mute_end_datetime": row[8].timestamp() * 1000 if row[8] else None}
+                  "mute_start_datetime": mute_start_datetime,
+                  "mute_end_datetime": mute_end_datetime}
         resp.body = json.dumps(result)
 
     @staticmethod
