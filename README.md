@@ -224,6 +224,41 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus
 $ curl -i -X GET http://BASE_URL/datasources/{id}/points
 ```
 
+### Email Server
+* GET an Email Server by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/emailservers/{id}
+```
+Result in JSON
+
+| Name          | Data Type | Description                           |
+|---------------|-----------|---------------------------------------|
+| id            | integer   | Email Server ID                       |
+| host          | string    | Email Server host                     |
+| port          | integer   | Email Server port                     |
+| requires_authentication   | boolean | Indicates if the server requires authentication |
+| user_name     | string    | Email Server user name                |
+| password      | string    | Email Server password                 |
+| from_addr     | string    | Indicates from which email address to send emails |
+
+* GET All Email Servers
+```bash
+$ curl -i -X GET http://BASE_URL/emailservers
+```
+* DELETE an Email Server by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/emailservers/{id}
+```
+* POST Create New Email Server
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"host":"smtp.163.com","port":25, "requires_authentication":true, "user_name":"myems" , "password":"!MyEMS1" , "from_addr":"myems@163.com"}}' http://BASE_URL/emailservers
+```
+* PUT Update an Email Server
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"host":"smtp.myems.io","port":25, "requires_authentication":true, "user_name":"myems" , "password":"!MyEMS1" , "from_addr":"myems@myems.io"}}' http://BASE_URL/emailservers/{id}
+```
+
 
 ### Energy Category
 * GET an Energy Category by ID

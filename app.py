@@ -4,6 +4,7 @@ from falcon_multipart.middleware import MultipartMiddleware
 import contact
 import costcenter
 import datasource
+import emailserver
 import energycategory
 import energyitem
 import equipment
@@ -53,6 +54,11 @@ api.add_route('/datasources/{id_}/points',
               datasource.DataSourcePointCollection())
 api.add_route('/datasources/status',
               datasource.DataSourceStatusCollection())
+
+api.add_route('/emailservers',
+              emailserver.EmailServerCollection())
+api.add_route('/emailservers/{id_}',
+              emailserver.EmailServerItem())
 
 api.add_route('/energycategories',
               energycategory.EnergyCategoryCollection())
