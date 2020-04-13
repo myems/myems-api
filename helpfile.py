@@ -6,7 +6,6 @@ import config
 import uuid
 from datetime import datetime, timezone
 import os
-import shutil
 
 
 class HelpFileCollection:
@@ -63,23 +62,23 @@ class HelpFileCollection:
     @staticmethod
     def on_post(req, resp):
         """Handles POST requests"""
+
         try:
             upload = req.get_param('file')
             # Read upload file as binary
             raw_blob = upload.file.read()
             # Retrieve filename
             filename = upload.filename
+            file_uuid = str(uuid.uuid4())
 
             # Define file_path
-            file_path = os.path.join('/usr/share/nginx/html/upload/', filename)
+            file_path = os.path.join(config.upload_path, file_uuid)
 
             # Write to a temporary file to prevent incomplete files from
             # being used.
             temp_file_path = file_path + '~'
 
-            # Finally write the data to a temporary file
-            with open(temp_file_path, 'wb') as output_file:
-                shutil.copyfileobj(raw_blob, output_file)
+            open(temp_file_path, 'wb').write(raw_blob)
 
             # Now that we know the file has been fully saved to disk
             # move it into place.
@@ -126,8 +125,6 @@ class HelpFileCollection:
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
-
-        file_uuid = str(uuid.uuid4())
 
         add_values = (" INSERT INTO tbl_help_files "
                       " (file_name, uuid, upload_datetime_utc, user_uuid, file_object ) "
@@ -227,38 +224,3 @@ class HelpFileItem:
 
         resp.status = falcon.HTTP_204
 
-
-class HelpFileDownload:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp, id_):
-        resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_get(req, resp, id_):
-        if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.BAD_REQUEST',
-                                   description='API.INVALID_HELP_FILE_ID')
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-        query = (" SELECT file_name, file_object "
-                 " FROM tbl_help_files "
-                 " WHERE id = %s ")
-        cursor.execute(query, (id_,))
-        row = cursor.fetchone()
-        cursor.close()
-        cnx.disconnect()
-        if row is None:
-            raise falcon.HTTPError(falcon.HTTP_404,
-                                   title='API.NOT_FOUND',
-                                   description='API.HELP_FILE_NOT_FOUND')
-
-        file_name = urllib.parse.quote(row[0])
-        disposition = 'attachment; filename*=%s; filename="%s"' % (file_name, file_name)
-        # resp.content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        resp.append_header('Content-Disposition', disposition)
-        resp.body = row[1]
