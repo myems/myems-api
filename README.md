@@ -494,7 +494,7 @@ Result
 | user_display_name | string| Upload user's display name                |
 | file_object   | BLOB      | Help File Object                 |
 
-* GET all Hlep Files
+* GET all Help Files
 ```bash
 $ curl -i -X GET http://BASE_URL/helpfiles
 ```
@@ -503,8 +503,9 @@ $ curl -i -X GET http://BASE_URL/helpfiles
 $ curl -i -X DELETE http://BASE_URL/helpfiles/{id}
 ```
 * POST Help File
+ (user must login first to get cookie)
 ```bash
-$ curl -i -H "Content-Type: application/TBD" -X POST -d 'TBD' http://BASE_URL/helpfiles
+$ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/helpfiles
 ```
 * DOWNLOAD Help File by id
 ```bash
