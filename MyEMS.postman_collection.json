@@ -510,6 +510,104 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Email Message",
+			"item": [
+				{
+					"name": "GET Email Messages from Startdate to Enddate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/emailmessages/from/2020-04-01/to/2020-05-01",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailmessages",
+								"from",
+								"2020-04-01",
+								"to",
+								"2020-05-01"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Email Message by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/emailmessages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailmessages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Email Message TODO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/emailmessages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailmessages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Email Message TODO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Email Message by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/emailmessages/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emailmessages",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Energy Category",
 			"item": [
 				{
@@ -1172,7 +1270,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/gsmmodems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gsmmodems"
+							]
 						}
 					},
 					"response": []
@@ -1183,7 +1287,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/gsmmodems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gsmmodems",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -1244,6 +1355,103 @@
 							"path": [
 								"gsmmodems",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Help File",
+			"item": [
+				{
+					"name": "GET All Help Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/helpfiles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"helpfiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Help File by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/helpfiles/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"helpfiles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Upload a Help File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user_uuid",
+								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "efb2aba8b0b0604b939c9e8e0cfa29511e5d1f3e",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/zh/myems/myems_logo_200x200.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/helpfiles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"helpfiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Help File by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/helpfiles/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"helpfiles",
+								"1"
 							]
 						}
 					},
@@ -1522,6 +1730,103 @@
 							"path": [
 								"offlinemeters",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Offline Meter File",
+			"item": [
+				{
+					"name": "GET All Offline Meter Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/offlinemeterfiles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeterfiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Offline Meter File by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/offlinemeterfiles/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeterfiles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Upload a Offline Meter File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user_uuid",
+								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "efb2aba8b0b0604b939c9e8e0cfa29511e5d1f3e",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/zh/jci/FEMS/feed-doc1/JQPT/offline-meter-files/离线表数据201905.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/offlinemeterfiles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeterfiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Offline Meter File by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/offlinemeterfiles/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offlinemeterfiles",
+								"1"
 							]
 						}
 					},
@@ -3175,6 +3480,111 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Text Message",
+			"item": [
+				{
+					"name": "GET Text Messages from Startdate to Enddate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/textmessages/from/2020-04-01/to/2020-05-01",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"textmessages",
+								"from",
+								"2020-04-01",
+								"to",
+								"2020-05-01"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Text Message by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/textmessages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"textmessages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Text Message TODO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/textmessages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"textmessages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Text Message TODO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/textmessages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"textmessages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Text Message by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/textmessages/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"textmessages",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Timezone",
 			"item": [
 				{
@@ -3603,6 +4013,244 @@
 							],
 							"path": [
 								"virtualmeters",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Web Message",
+			"item": [
+				{
+					"name": "GET Web Messages from Startdate to Enddate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webmessages/from/2020-04-01/to/2020-05-01",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webmessages",
+								"from",
+								"2020-04-01",
+								"to",
+								"2020-05-01"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All New Web Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webmessagesnew",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webmessagesnew"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Web Message by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webmessages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webmessages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Web Message TODO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webmessages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webmessages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Web Message TODO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"status\":\"acknowledged\", \"reply\":\"this is my reply\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/webmessages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webmessages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Web Message by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webmessages/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webmessages",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Wechat Message",
+			"item": [
+				{
+					"name": "GET Wechat Messages from Startdate to Enddate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wechatmessages/from/2020-04-01/to/2020-05-01",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wechatmessages",
+								"from",
+								"2020-04-01",
+								"to",
+								"2020-05-01"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Wechat Message by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wechatmessages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wechatmessages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Wechat Message TODO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wechatmessages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wechatmessages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Wechat Message TODO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wechatmessages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wechatmessages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Wechat Message by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wechatmessages/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wechatmessages",
 								"2"
 							]
 						}

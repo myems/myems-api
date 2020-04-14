@@ -108,13 +108,13 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Tariff](#Tariff) | [Cost Center](#Cost-Center)
 
-[Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) 
+[Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) | [Offline Meter File](#Offline-Meter-File) 
 
 [Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
 
 [Equipment](#Equipment)
 
-[Rule](#Rule)
+[Rule](#Rule) | [Email Message](#Email Message) | [Text Message](#Text Message) | [Web Message](#Web Message) | [Wechat Message](#Wechat Message)
 
 [Email Server](#Email Server) | [GSM Modem](#GSM Modem)
 
@@ -122,6 +122,7 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Timezone](#Timezone)
 
+[Help File](#Help-File)
 
 ### Contact
 * GET Contact by ID
@@ -225,6 +226,36 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus
 ```bash
 $ curl -i -X GET http://BASE_URL/datasources/{id}/points
 ```
+
+### Email Message
+* GET an Email Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Email Message ID                          |
+| recipient_name| string    | Recipient Name                            |
+| recipient_email| string   | Recipient Email                           |
+| subject       | string    | Email Message Subject                     |
+| message       | string    | Email Message Body                        |
+| attachment_file_name| string| Email Attachment File Name              |
+| create_datetime| float    | Email Message Created Datetime (POSIX timestamp * 1000)|
+| scheduled_datetime| float | Email Message Scheduled Datetime (POSIX timestamp * 1000)|
+| status        | string    | Status ('new', 'sent', 'timeout'          |
+
+```bash
+$ curl -i -X GET http://BASE_URL/emailmessages/{id}
+```
+* GET Email Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/emailmessages/from/{startdate}/to/{enddate}
+```
+* DELETE an Email Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/emailmessages/{id}
+```
+
 
 ### Email Server
 * GET an Email Server by ID
@@ -494,22 +525,18 @@ Result
 | user_display_name | string| Upload user's display name                |
 | file_object   | BLOB      | Help File Object                 |
 
-* GET all Help Files
+* GET All Help Files
 ```bash
 $ curl -i -X GET http://BASE_URL/helpfiles
 ```
-* DELETE Help File by id
+* DELETE a Help File by id
 ```bash
 $ curl -i -X DELETE http://BASE_URL/helpfiles/{id}
 ```
-* POST Help File
+* POST Upload a Help File
  (user must login first to get cookie)
 ```bash
 $ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/helpfiles
-```
-* DOWNLOAD Help File by id
-```bash
-$ curl -i -X GET http://BASE_URL/helpfiles/{id}/download
 ```
 
 
@@ -603,7 +630,7 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Offlin
 ```
 
 ### Offline Meter File
-* GET Offline Meter File by ID
+* GET an Offline Meter File by ID
 
 ```bash
 $ curl -i -X GET http://BASE_URL/offlinemeterfiles/{id}
@@ -619,21 +646,18 @@ Result
 | status        | string    | Offline Meter File processing status (new, done, error)   |
 | file_object   | BLOB       | Offline Meter File Object                 |
 
-* GET all Offline Meter Files
+* GET All Offline Meter Files
 ```bash
 $ curl -i -X GET http://BASE_URL/offlinemeterfiles
 ```
-* DELETE Offline Meter File by ID
+* DELETE an Offline Meter File by ID
 ```bash
 $ curl -i -X DELETE http://BASE_URL/offlinemeterfiles/{id}
 ```
-* POST Offline Meter File
+* POST Upload an Offline Meter File
+ (user must login first to get cookie)
 ```bash
-$ curl -i -H "Content-Type: application/TBD" -X POST -d 'TBD' http://BASE_URL/offlinemeters
-```
-* DOWNLOAD Offline Meter File by ID
-```bash
-$ curl -i -X GET http://BASE_URL/offlinemeterfiles/{id}/download
+$ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/offlinemeters
 ```
 
 ### Point
@@ -1112,6 +1136,34 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name": "Offic
 $ curl -i -X DELETE http://BASE_URL/tenanttypes/{id}
 ```
 
+### Text Message
+* GET an Text Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Text Message ID                           |
+| recipient_name| string    | Recipient Name                            |
+| recipient_mobile| string  | Recipient Mobile Number                   |
+| message       | string    | Email Message Body                        |
+| attachment_file_name| string| Email Attachment File Name              |
+| create_datetime| float    | Email Message Created Datetime (POSIX timestamp * 1000)|
+| scheduled_datetime| float | Email Message Scheduled Datetime (POSIX timestamp * 1000)|
+| acknowledge_code| string  | Recipient reply with Acknowledge code to acknowledge |
+| status        | string    | Status ('new', 'sent', 'acknowledged', 'timeout'| 
+```bash
+$ curl -i -X GET http://BASE_URL/textmessages/{id}
+```
+* GET Text Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/textmessages/from/{startdate}/to/{enddate}
+```
+* DELETE an Text Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/textmessages/{id}
+```
+
 
 ### Timezone
 * GET a Timezone by ID
@@ -1212,3 +1264,64 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM21"
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "energy_item_id":1, "cost_center_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters/{id}
 ```
+
+### Web Message
+* GET a Web Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Web Message ID                            |
+| user_id       | integer   | Web Message User ID                       |
+| user_display_name| string | User Display Name                         |
+| subject       | string    | Web Message Subject                       |
+| message       | string    | Web Message Body                          |
+| created_datetime| float   | Web Message Created Datetime (POSIX timestamp * 1000)|
+| status        | string    | Status ('new', 'acknowledged', 'timeout') | 
+| reply         | string    | User's Reply text, allow null             |
+```bash
+$ curl -i -X GET http://BASE_URL/webmessages/{id}
+```
+* GET Web Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/webmessages/from/{startdate}/to/{enddate}
+```
+* GET New Web Messages
+```bash
+$ curl -i -X GET http://BASE_URL/webmessagesnew
+```
+* DELETE a Web Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/webmessages/{id}
+```
+
+### Wechat Message
+* GET an Wechat Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Message ID                            |
+| recipient_name| string    | Recipient Name                            |
+| recipient_openid| string  | Recipient OpenID                          |
+| message_template_id|string| Message Template ID                       |
+| message_data  | json      | Message Data in JSON                      |
+| created_datetime| float   | Message Created Datetime (POSIX timestamp * 1000)|
+| scheduled_datetime| float | Message Scheduled Datetime (POSIX timestamp * 1000)|
+| acknowledge_code| string  | Recipient reply with Acknowledge code to acknowledge |
+| status        | string    | Status ('new', 'sent', 'acknowledged', 'timeout'| 
+```bash
+$ curl -i -X GET http://BASE_URL/wechatmessages/{id}
+```
+* GET a Wechat Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/wechatmessages/from/{startdate}/to/{enddate}
+```
+* DELETE a Wechat Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/wechatmessages/{id}
+```
+
+

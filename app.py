@@ -4,6 +4,7 @@ from falcon_multipart.middleware import MultipartMiddleware
 import contact
 import costcenter
 import datasource
+import emailmessage
 import emailserver
 import energycategory
 import energyitem
@@ -12,6 +13,7 @@ import gsmmodem
 import helpfile
 import meter
 import offlinemeter
+import offlinemeterfile
 import point
 import privilege
 import rule
@@ -20,9 +22,12 @@ import space
 import tariff
 import tenant
 import tenanttype
+import textmessage
 import timezone
 import user
 import virtualmeter
+import webmessage
+import wechatmessage
 
 
 # https://github.com/lwcolton/falcon-cors
@@ -56,6 +61,11 @@ api.add_route('/datasources/{id_}/points',
               datasource.DataSourcePointCollection())
 api.add_route('/datasources/status',
               datasource.DataSourceStatusCollection())
+
+api.add_route('/emailmessages/from/{startdate}/to/{enddate}',
+              emailmessage.EmailMessageCollection())
+api.add_route('/emailmessages/{id_}',
+              emailmessage.EmailMessageItem())
 
 api.add_route('/emailservers',
               emailserver.EmailServerCollection())
@@ -102,8 +112,6 @@ api.add_route('/helpfiles',
               helpfile.HelpFileCollection())
 api.add_route('/helpfiles/{id_}',
               helpfile.HelpFileItem())
-api.add_route('/helpfiles/{id_}/download',
-              helpfile.HelpFileDownload())
 
 api.add_route('/meters',
               meter.MeterCollection())
@@ -118,6 +126,11 @@ api.add_route('/offlinemeters',
               offlinemeter.OfflineMeterCollection())
 api.add_route('/offlinemeters/{id_}',
               offlinemeter.OfflineMeterItem())
+
+api.add_route('/offlinemeterfiles',
+              offlinemeterfile.OfflineMeterFileCollection())
+api.add_route('/offlinemeterfiles/{id_}',
+              offlinemeterfile.OfflineMeterFileItem())
 
 api.add_route('/points',
               point.PointCollection())
@@ -211,6 +224,11 @@ api.add_route('/tenanttypes',
 api.add_route('/tenanttypes/{id_}',
               tenanttype.TenantTypeItem())
 
+api.add_route('/textmessages/from/{startdate}/to/{enddate}',
+              textmessage.TextMessageCollection())
+api.add_route('/textmessages/{id_}',
+              textmessage.TextMessageItem())
+
 api.add_route('/timezones',
               timezone.TimezoneCollection())
 api.add_route('/timezones/{id_}',
@@ -233,6 +251,18 @@ api.add_route('/virtualmeters',
               virtualmeter.VirtualMeterCollection())
 api.add_route('/virtualmeters/{id_}',
               virtualmeter.VirtualMeterItem())
+
+api.add_route('/webmessages/from/{startdate}/to/{enddate}',
+              webmessage.WebMessageCollection())
+api.add_route('/webmessagesnew',
+              webmessage.WebMessageStatusNewCollection())
+api.add_route('/webmessages/{id_}',
+              webmessage.WebMessageItem())
+
+api.add_route('/wechatmessages/from/{startdate}/to/{enddate}',
+              wechatmessage.WechatMessageCollection())
+api.add_route('/wechatmessages/{id_}',
+              wechatmessage.WechatMessageItem())
 
 # from waitress import serve
 # serve(api, host='0.0.0.0', port=8886)

@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import os
 
 
-class HelpFileCollection:
+class OfflineMeterFileCollection:
     @staticmethod
     def __init__():
         pass
@@ -18,26 +18,11 @@ class HelpFileCollection:
 
     @staticmethod
     def on_get(req, resp):
-        cnx = mysql.connector.connect(**config.myems_user_db)
+        cnx = mysql.connector.connect(**config.myems_historical_db)
         cursor = cnx.cursor()
 
-        query = (" SELECT uuid, display_name "
-                 " FROM tbl_users ")
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        cursor.close()
-        cnx.disconnect()
-
-        user_dict = dict()
-        if rows is not None and len(rows) > 0:
-            for row in rows:
-                user_dict[row[0]] = row[1]
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        query = (" SELECT id, file_name, uuid, upload_datetime_utc, user_uuid "
-                 " FROM tbl_help_files "
+        query = (" SELECT id, file_name, uuid, upload_datetime_utc, status "
+                 " FROM tbl_offline_meter_files "
                  " ORDER BY upload_datetime_utc desc ")
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -53,7 +38,7 @@ class HelpFileCollection:
                                "file_name": row[1],
                                "uuid": row[2],
                                "upload_datetime": upload_datetime.timestamp() * 1000,
-                               "user_display_name": user_dict.get(row[4], None)}
+                               "status": row[4]}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -61,7 +46,6 @@ class HelpFileCollection:
     @staticmethod
     def on_post(req, resp):
         """Handles POST requests"""
-
         try:
             upload = req.get_param('file')
             # Read upload file as binary
@@ -124,16 +108,16 @@ class HelpFileCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
 
-        cnx = mysql.connector.connect(**config.myems_system_db)
+        cnx = mysql.connector.connect(**config.myems_historical_db)
         cursor = cnx.cursor()
 
-        add_values = (" INSERT INTO tbl_help_files "
-                      " (file_name, uuid, upload_datetime_utc, user_uuid, file_object ) "
+        add_values = (" INSERT INTO tbl_offline_meter_files "
+                      " (file_name, uuid, upload_datetime_utc, status, file_object ) "
                       " VALUES (%s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (filename,
                                     file_uuid,
                                     datetime.utcnow(),
-                                    cookies[1],
+                                    'new',
                                     raw_blob))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -141,10 +125,10 @@ class HelpFileCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/helpfiles/' + str(new_id)
+        resp.location = '/offlinemeterfiles/' + str(new_id)
 
 
-class HelpFileItem:
+class OfflineMeterFileItem:
     @staticmethod
     def __init__():
         pass
@@ -156,38 +140,23 @@ class HelpFileItem:
     @staticmethod
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_HELP_FILE_ID')
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_OFFLINE_METER_FILE_ID')
 
-        cnx = mysql.connector.connect(**config.myems_user_db)
+        cnx = mysql.connector.connect(**config.myems_historical_db)
         cursor = cnx.cursor()
 
-        query = (" SELECT uuid, display_name "
-                 " FROM tbl_users ")
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        cursor.close()
-        cnx.disconnect()
-
-        user_dict = dict()
-        if rows is not None and len(rows) > 0:
-            for row in rows:
-                user_dict[row[0]] = row[1]
-
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        query = (" SELECT id, file_name, uuid, upload_datetime_utc, user_uuid "
-                 " FROM tbl_help_files "
+        query = (" SELECT id, file_name, uuid, upload_datetime_utc, status "
+                 " FROM tbl_offline_meter_files "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
         row = cursor.fetchone()
         cursor.close()
         cnx.disconnect()
-
         if row is None:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.HELP_FILE_NOT_FOUND')
+                                   description='API.OFFLINE_METER_FILE_NOT_FOUND')
 
         upload_datetime = row[3]
         upload_datetime = upload_datetime.replace(tzinfo=timezone.utc)
@@ -196,27 +165,27 @@ class HelpFileItem:
                   "file_name": row[1],
                   "uuid": row[2],
                   "upload_datetime": upload_datetime.timestamp() * 1000,
-                  "user_display_name": user_dict.get(row[4], None)}
+                  "status": row[4]}
         resp.body = json.dumps(result)
 
     @staticmethod
     def on_delete(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.BAD_REQUEST',
-                                   description='API.INVALID_HELP_FILE_ID')
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_OFFLINE_METER_FILE_ID')
 
-        cnx = mysql.connector.connect(**config.myems_system_db)
+        cnx = mysql.connector.connect(**config.myems_historical_db)
         cursor = cnx.cursor()
 
-        cursor.execute(" SELECT uuid FROM tbl_help_files WHERE id = %s ", (id_,))
+        cursor.execute(" SELECT uuid "
+                       " FROM tbl_offline_meter_files "
+                       " WHERE id = %s ", (id_,))
         row = cursor.fetchone()
         if row is None:
             cursor.close()
             cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404,
-                                   title='API.NOT_FOUND',
-                                   description='API.HELP_FILE_NOT_FOUND')
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.OFFLINE_METER_FILE_NOT_FOUND')
 
         try:
             file_uuid = row[0]
@@ -227,13 +196,13 @@ class HelpFileItem:
             os.remove(file_path)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.HELP_FILE_NOT_FOUND')
+                                   description='API.OFFLINE_METER_FILE_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_help_files WHERE id = %s ", (id_,))
+        # Note: the energy data imported from the deleted file will not be deleted
+        cursor.execute(" DELETE FROM tbl_offline_meter_files WHERE id = %s ", (id_,))
         cnx.commit()
 
         cursor.close()
         cnx.disconnect()
 
         resp.status = falcon.HTTP_204
-
