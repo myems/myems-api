@@ -99,8 +99,6 @@ $ sudo gunicorn -b 127.0.0.1:8080 app:api
 
 ## API List
 
-View online: https://app.getpostman.com/run-collection/a34d69ad0cbbfab2840a
-
 View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 
@@ -110,16 +108,21 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Tariff](#Tariff) | [Cost Center](#Cost-Center)
 
-[Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) 
+[Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) | [Offline Meter File](#Offline-Meter-File) 
 
 [Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
 
 [Equipment](#Equipment)
 
+[Rule](#Rule) | [Email Message](#Email Message) | [Text Message](#Text Message) | [Web Message](#Web Message) | [Wechat Message](#Wechat Message)
+
+[Email Server](#Email Server) | [GSM Modem](#GSM Modem)
+
 [User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
 
 [Timezone](#Timezone)
 
+[Help File](#Help-File)
 
 ### Contact
 * GET Contact by ID
@@ -222,6 +225,71 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus
 * GET all points of the Data Source by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/datasources/{id}/points
+```
+
+### Email Message
+* GET an Email Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Email Message ID                          |
+| recipient_name| string    | Recipient Name                            |
+| recipient_email| string   | Recipient Email                           |
+| subject       | string    | Email Message Subject                     |
+| message       | string    | Email Message Body                        |
+| attachment_file_name| string| Email Attachment File Name              |
+| create_datetime| float    | Email Message Created Datetime (POSIX timestamp * 1000)|
+| scheduled_datetime| float | Email Message Scheduled Datetime (POSIX timestamp * 1000)|
+| status        | string    | Status ('new', 'sent', 'timeout'          |
+
+```bash
+$ curl -i -X GET http://BASE_URL/emailmessages/{id}
+```
+* GET Email Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/emailmessages/from/{startdate}/to/{enddate}
+```
+* DELETE an Email Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/emailmessages/{id}
+```
+
+
+### Email Server
+* GET an Email Server by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/emailservers/{id}
+```
+Result in JSON
+
+| Name          | Data Type | Description                           |
+|---------------|-----------|---------------------------------------|
+| id            | integer   | Email Server ID                       |
+| host          | string    | Email Server host                     |
+| port          | integer   | Email Server port                     |
+| requires_authentication   | boolean | Indicates if the server requires authentication |
+| user_name     | string    | Email Server user name                |
+| password      | string    | Email Server password                 |
+| from_addr     | string    | Indicates from which email address to send emails |
+
+* GET All Email Servers
+```bash
+$ curl -i -X GET http://BASE_URL/emailservers
+```
+* DELETE an Email Server by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/emailservers/{id}
+```
+* POST Create New Email Server
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"host":"smtp.163.com","port":25, "requires_authentication":true, "user_name":"myems" , "password":"!MyEMS1" , "from_addr":"myems@163.com"}}' http://BASE_URL/emailservers
+```
+* PUT Update an Email Server
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"host":"smtp.myems.io","port":25, "requires_authentication":true, "user_name":"myems" , "password":"!MyEMS1" , "from_addr":"myems@myems.io"}}' http://BASE_URL/emailservers/{id}
 ```
 
 
@@ -408,6 +476,38 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_mete
 $ curl -i -X DELETE http://BASE_URL/equipments/{id}/virtualmeters/{mid}
 ```
 
+### GSM Modem
+* GET a GSM Modem by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/gsmmodems/{id}
+```
+Result in JSON
+
+| Name          | Data Type | Description                           |
+|---------------|-----------|---------------------------------------|
+| id            | integer   | GSM Modem ID                          |
+| serial_port   | string    | GSM Modem serial port                 |
+| baud_rate     | integer   | GSM Modem baud rate                   |
+
+* GET All GSM Modems
+```bash
+$ curl -i -X GET http://BASE_URL/gsmmodems
+```
+* DELETE a GSM Modem by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/gsmmodems/{id}
+```
+* POST Create New GSM Modem
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"serial_port":"/dev/ttyS0","baud_rate":115200}}' http://BASE_URL/gsmmodems
+```
+* PUT Update a GSM Modem
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"serial_port":"/dev/ttyS0","baud_rate":115200}}' http://BASE_URL/gsmmodems/{id}
+```
+
+
 ### Help File
 * GET Help File by ID
 
@@ -425,21 +525,18 @@ Result
 | user_display_name | string| Upload user's display name                |
 | file_object   | BLOB      | Help File Object                 |
 
-* GET all Hlep Files
+* GET All Help Files
 ```bash
 $ curl -i -X GET http://BASE_URL/helpfiles
 ```
-* DELETE Help File by id
+* DELETE a Help File by id
 ```bash
 $ curl -i -X DELETE http://BASE_URL/helpfiles/{id}
 ```
-* POST Help File
+* POST Upload a Help File
+ (user must login first to get cookie)
 ```bash
-$ curl -i -H "Content-Type: application/TBD" -X POST -d 'TBD' http://BASE_URL/helpfiles
-```
-* DOWNLOAD Help File by id
-```bash
-$ curl -i -X GET http://BASE_URL/helpfiles/{id}/download
+$ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/helpfiles
 ```
 
 
@@ -533,7 +630,7 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Offlin
 ```
 
 ### Offline Meter File
-* GET Offline Meter File by ID
+* GET an Offline Meter File by ID
 
 ```bash
 $ curl -i -X GET http://BASE_URL/offlinemeterfiles/{id}
@@ -549,47 +646,19 @@ Result
 | status        | string    | Offline Meter File processing status (new, done, error)   |
 | file_object   | BLOB       | Offline Meter File Object                 |
 
-* GET all Offline Meter Files
+* GET All Offline Meter Files
 ```bash
 $ curl -i -X GET http://BASE_URL/offlinemeterfiles
 ```
-* DELETE Offline Meter File by ID
+* DELETE an Offline Meter File by ID
 ```bash
 $ curl -i -X DELETE http://BASE_URL/offlinemeterfiles/{id}
 ```
-* POST Offline Meter File
+* POST Upload an Offline Meter File
+ (user must login first to get cookie)
 ```bash
-$ curl -i -H "Content-Type: application/TBD" -X POST -d 'TBD' http://BASE_URL/offlinemeters
+$ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/offlinemeters
 ```
-* DOWNLOAD Offline Meter File by ID
-```bash
-$ curl -i -X GET http://BASE_URL/offlinemeterfiles/{id}/download
-```
-
-
-### Privilege
-* GET Privilege by ID
-```bash
-$ curl -i -X GET http://BASE_URL/privileges/{id}
-```
-* GET All Privileges
-```bash
-$ curl -i -X GET http://BASE_URL/privileges
-```
-* DELETE Privilege by ID
-```bash
-$ curl -i -X DELETE http://BASE_URL/privileges/{id}
-```
-* POST New Privilege
-```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"superusers","data":"{\"spaces\":[1,2,3,5]}"}}' http://BASE_URL/privileges
-```
-* PUT Privilege
-```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"superusers", "data":"{\"spaces\":[1, 3]}"}}' http://BASE_URL/privileges/{id}
-```
-
-
 
 ### Point
 
@@ -642,6 +711,67 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Modbu
 * PUT Point
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"ModbusPoint1", "data_source_id":1, "object_type": "ENERGY_VALUE", "units":"kWh", "low_limit":0, "hi_limit":999999999, "is_trend":true, "address":"{\"slave_id\":1, \"function_code\":3, \"offset\":1, \"number_of_registers\":2, \"data_format\":\"float\"}"}}' http://BASE_URL/points/{id}
+```
+
+
+### Privilege
+* GET Privilege by ID
+```bash
+$ curl -i -X GET http://BASE_URL/privileges/{id}
+```
+* GET All Privileges
+```bash
+$ curl -i -X GET http://BASE_URL/privileges
+```
+* DELETE Privilege by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/privileges/{id}
+```
+* POST New Privilege
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"superusers","data":"{\"spaces\":[1,2,3,5]}"}}' http://BASE_URL/privileges
+```
+* PUT Privilege
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"superusers", "data":"{\"spaces\":[1, 3]}"}}' http://BASE_URL/privileges/{id}
+```
+
+
+### Rule
+* GET Rule by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Rule ID                                   |
+| name          | string    | Rule Name                                 |
+| uuid          | string    | Rule UUID                                 |
+| channels      | string    | Channels ('call,sms,email,wechat,web')    |
+| expressions   | string    | Logic of factory, shop, line, recipients in JSON  |
+| messages      | string    | Messages to recipients                    |
+| is_enabled    | boolean   | Indicates if this rule is enabled         |
+| mute_start_datetime| float| Mute Start Datetime (POSIX timestamp * 1000), allow null|
+| mute_end_datetime  | float| Mute End Datetime (POSIX timestamp * 1000), allow null|
+
+```bash
+$ curl -i -X GET http://BASE_URL/rules/{id}
+```
+* GET All Rules
+```bash
+$ curl -i -X GET http://BASE_URL/rules
+```
+* DELETE a Rule by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/rules/{id}
+```
+* POST Create New Rule
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":null, "mute_end_datetime":null}}' http://BASE_URL/rules
+```
+* PUT Update a Rule
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":"2020-05-01T00:00:00", "mute_end_datetime":"2020-05-06T00:00:00"}}' http://BASE_URL/rules/{id}
 ```
 
 
@@ -1006,6 +1136,34 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name": "Offic
 $ curl -i -X DELETE http://BASE_URL/tenanttypes/{id}
 ```
 
+### Text Message
+* GET an Text Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Text Message ID                           |
+| recipient_name| string    | Recipient Name                            |
+| recipient_mobile| string  | Recipient Mobile Number                   |
+| message       | string    | Email Message Body                        |
+| attachment_file_name| string| Email Attachment File Name              |
+| create_datetime| float    | Email Message Created Datetime (POSIX timestamp * 1000)|
+| scheduled_datetime| float | Email Message Scheduled Datetime (POSIX timestamp * 1000)|
+| acknowledge_code| string  | Recipient reply with Acknowledge code to acknowledge |
+| status        | string    | Status ('new', 'sent', 'acknowledged', 'timeout'| 
+```bash
+$ curl -i -X GET http://BASE_URL/textmessages/{id}
+```
+* GET Text Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/textmessages/from/{startdate}/to/{enddate}
+```
+* DELETE an Text Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/textmessages/{id}
+```
+
 
 ### Timezone
 * GET a Timezone by ID
@@ -1106,3 +1264,64 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM21"
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "energy_item_id":1, "cost_center_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters/{id}
 ```
+
+### Web Message
+* GET a Web Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Web Message ID                            |
+| user_id       | integer   | Web Message User ID                       |
+| user_display_name| string | User Display Name                         |
+| subject       | string    | Web Message Subject                       |
+| message       | string    | Web Message Body                          |
+| created_datetime| float   | Web Message Created Datetime (POSIX timestamp * 1000)|
+| status        | string    | Status ('new', 'acknowledged', 'timeout') | 
+| reply         | string    | User's Reply text, allow null             |
+```bash
+$ curl -i -X GET http://BASE_URL/webmessages/{id}
+```
+* GET Web Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/webmessages/from/{startdate}/to/{enddate}
+```
+* GET New Web Messages
+```bash
+$ curl -i -X GET http://BASE_URL/webmessagesnew
+```
+* DELETE a Web Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/webmessages/{id}
+```
+
+### Wechat Message
+* GET an Wechat Message by ID
+
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Message ID                            |
+| recipient_name| string    | Recipient Name                            |
+| recipient_openid| string  | Recipient OpenID                          |
+| message_template_id|string| Message Template ID                       |
+| message_data  | json      | Message Data in JSON                      |
+| created_datetime| float   | Message Created Datetime (POSIX timestamp * 1000)|
+| scheduled_datetime| float | Message Scheduled Datetime (POSIX timestamp * 1000)|
+| acknowledge_code| string  | Recipient reply with Acknowledge code to acknowledge |
+| status        | string    | Status ('new', 'sent', 'acknowledged', 'timeout'| 
+```bash
+$ curl -i -X GET http://BASE_URL/wechatmessages/{id}
+```
+* GET a Wechat Messages from Startdate to Enddate
+```bash
+$ curl -i -X GET http://BASE_URL/wechatmessages/from/{startdate}/to/{enddate}
+```
+* DELETE a Wechat Message by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/wechatmessages/{id}
+```
+
+

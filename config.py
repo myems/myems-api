@@ -29,7 +29,7 @@ myems_historical_db = {
 myems_user_db = {
     'user': 'root',
     'password': 'PASSWORD',
-    'host': '192.168.0.105',
+    'host': '127.0.0.1',
     'database': 'myems_user_db',
 }
 
@@ -60,3 +60,7 @@ utc_offset = '+08:00'
 
 # indicates from when ( in local timezone) of the day to calculate working days
 working_day_start_time_local = '00:00:00'
+
+# indicates where user uploaded files will be saved to
+# must use the root folder of myems-admin web application
+upload_path = '/usr/share/nginx/html/upload/'
