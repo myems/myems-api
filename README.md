@@ -342,7 +342,7 @@ Result in JSON
 | id            | integer   | Energy Item ID                        |
 | name          | string    | Energy Item name                      |
 | uuid          | string    | Energy Item UUID                      |
-| Energy Category ID   | integer | Energy Category ID               |
+| Energy Category| object | Energy Category Object                  |
 
 
 * GET All Energy Items
