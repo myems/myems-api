@@ -1505,7 +1505,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20withcostcenter\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -1523,24 +1523,24 @@
 					"response": []
 				},
 				{
-					"name": "PUT Update a Sensor",
+					"name": "PUT Update a Meter",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"Sensor20\", \"location\":\"sensor location\", \"description\":\"sensor description\"}}",
+							"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/sensors/1",
+							"raw": "{{base_url}}/meters/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"sensors",
+								"meters",
 								"1"
 							]
 						}
@@ -1675,7 +1675,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"OfflinePM21\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"OfflinePM21\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -1699,19 +1699,19 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"OfflinePM20\", \"energy_category_id\":1, \"max_hourly_value\":9999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"OfflinePM201\", \"energy_category_id\":1, \"max_hourly_value\":9999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/offlinemeters/1",
+							"raw": "{{base_url}}/offlinemeters/5",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"offlinemeters",
-								"1"
+								"5"
 							]
 						}
 					},
@@ -4008,7 +4008,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM10\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"VM10\", \"energy_category_id\":1, \"is_counted\": true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
 							"raw": "{{base_url}}/virtualmeters",
@@ -4029,7 +4029,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM51\", \"energy_category_id\":1, \"is_counted\": true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"VM51\", \"energy_category_id\":1, \"is_counted\": true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
 							"raw": "{{base_url}}/virtualmeters/5",

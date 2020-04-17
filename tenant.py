@@ -72,6 +72,10 @@ class TenantCollection:
                 tenant_type = tenant_type_dict.get(row['tenant_type_id'], None)
                 contact = contact_dict.get(row['contact_id'], None)
                 cost_center = cost_center_dict.get(row['cost_center_id'], None)
+
+                lease_start_datetime_utc = row['lease_start_datetime_utc'].replace(tzinfo=timezone.utc)
+                lease_end_datetime_utc = row['lease_end_datetime_utc'].replace(tzinfo=timezone.utc)
+
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
@@ -83,8 +87,8 @@ class TenantCollection:
                                "is_input_counted": bool(row['is_input_counted']),
                                "is_key_tenant": bool(row['is_key_tenant']),
                                "lease_number": row['lease_number'],
-                               "lease_start_datetime_utc": row['lease_start_datetime_utc'].timestamp() * 1000,
-                               "lease_end_datetime_utc": row['lease_end_datetime_utc'].timestamp() * 1000,
+                               "lease_start_datetime_utc": lease_start_datetime_utc.timestamp() * 1000,
+                               "lease_end_datetime_utc": lease_end_datetime_utc.timestamp() * 1000,
                                "is_in_lease": bool(row['is_in_lease']),
                                "contact": contact,
                                "cost_center": cost_center,
