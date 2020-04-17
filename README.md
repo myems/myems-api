@@ -342,7 +342,7 @@ Result in JSON
 | id            | integer   | Energy Item ID                        |
 | name          | string    | Energy Item name                      |
 | uuid          | string    | Energy Item UUID                      |
-| Energy Category ID   | integer | Energy Category ID               |
+| Energy Category| object | Energy Category Object                  |
 
 
 * GET All Energy Items
@@ -927,6 +927,14 @@ $ curl -i -X DELETE http://BASE_URL/spaces/{id}/sensors/{sid}
 ```bash
 $ curl -i -X GET http://BASE_URL/spaces/{id}/tenants
 ```
+* POST Bind a Tenant to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"tenant_id":1}}' http://BASE_URL/spaces/{id}/tenants
+```
+* DELETE a Tenant from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/tenants/{tid}
+```
 * GET All Virtual Meters of Space by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/spaces/{id}/virtualmeters
@@ -1010,7 +1018,6 @@ Result
 | id            | integer   | Tenant ID                                 |
 | name          | string    | Tenant name                               |
 | uuid          | string    | Tenant UUID                               |
-| parent_space_id| integer  | Parent Space ID                           |
 | buildings     | string    | Buildings (one or many)                   |
 | floors        | string    | Floors (one or many)                      |
 | rooms         | string    | Rooms (one or many)                       |
@@ -1031,11 +1038,11 @@ $ curl -i -X GET http://BASE_URL/tenants
 ```
 * POST Create New Tenant
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Starbucks", "parent_space_id":2, "buildings":"Building #1", "floors":"L1 L2 L3", "rooms":"1201b+2247+3F", "area":418.8, "tenant_type_id":9, "is_key_tenant":true, "lease_number":"6b0da806",  "lease_start_datetime_utc":"2019-12-31T16:00:00", "lease_end_datetime_utc":"2022-12-31T16:00:00", "is_in_lease":true, "contact_id":1, "cost_center_id":1, "description":"my description"}}' http://BASE_URL/tenants
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Starbucks", "buildings":"Building #1", "floors":"L1 L2 L3", "rooms":"1201b+2247+3F", "area":418.8, "tenant_type_id":9, "is_key_tenant":true, "lease_number":"6b0da806",  "lease_start_datetime_utc":"2019-12-31T16:00:00", "lease_end_datetime_utc":"2022-12-31T16:00:00", "is_in_lease":true, "contact_id":1, "cost_center_id":1, "description":"my description"}}' http://BASE_URL/tenants
 ```
 * PUT Update a Tenant
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Hermes 爱马仕", "parent_space_id":3, "buildings":"Building #1", "floors":"L1 L2 L3 L4 L5", "rooms":"1201b+2247+3F", "area":818.8, "tenant_type_id":9, "is_key_tenant":true, "lease_number":"6b0da806",  "lease_start_datetime_utc":"2019-12-31T16:00:00", "lease_end_datetime_utc":"2022-12-31T16:00:00", "is_in_lease":true, "contact_id":1, "cost_center_id":1, "description":"my description"}}' http://BASE_URL/tenants/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Hermes 爱马仕", "buildings":"Building #1", "floors":"L1 L2 L3 L4 L5", "rooms":"1201b+2247+3F", "area":818.8, "tenant_type_id":9, "is_key_tenant":true, "lease_number":"6b0da806",  "lease_start_datetime_utc":"2019-12-31T16:00:00", "lease_end_datetime_utc":"2022-12-31T16:00:00", "is_in_lease":true, "contact_id":1, "cost_center_id":1, "description":"my description"}}' http://BASE_URL/tenants/{id}
 ```
 * DELETE Tenant by ID
 ```bash

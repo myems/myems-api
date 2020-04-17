@@ -17,7 +17,19 @@ class EnergyItemCollection:
     @staticmethod
     def on_get(req, resp):
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id "
                  " FROM tbl_energy_items "
@@ -30,7 +42,9 @@ class EnergyItemCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2], "energy_category_id": row[3]}
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "energy_category": energy_category}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -112,7 +126,19 @@ class EnergyItemItem:
                                    description='API.INVALID_ENERGY_ITEM_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id "
                  " FROM tbl_energy_items "
@@ -125,10 +151,11 @@ class EnergyItemItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.ENERGY_ITEM_NOT_FOUND')
 
-        result = {"id": row[0],
-                  "name": row[1],
-                  "uuid": row[2],
-                  "energy_category_id": row[3]}
+        energy_category = energy_category_dict.get(row['energy_category_id'], None)
+        result = {"id": row['id'],
+                  "name": row['name'],
+                  "uuid": row['uuid'],
+                  "energy_category": energy_category}
         resp.body = json.dumps(result)
 
     @staticmethod
