@@ -171,6 +171,14 @@ class VirtualMeterCollection:
                                    description='API.INVALID_IS_COUNTED_VALUE')
         is_counted = new_values['data']['is_counted']
 
+        if 'cost_center_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['cost_center_id'], int) or \
+                new_values['data']['cost_center_id'] <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_COST_CENTER_ID')
+
+        cost_center_id = new_values['data']['cost_center_id']
+
         if 'energy_item_id' in new_values['data'].keys():
             if new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -178,14 +186,6 @@ class VirtualMeterCollection:
             energy_item_id = new_values['data']['energy_item_id']
         else:
             energy_item_id = None
-
-        if 'cost_center_id' in new_values['data'].keys():
-            if new_values['data']['cost_center_id'] <= 0:
-                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description='API.INVALID_ENERGY_ITEM_ID')
-            cost_center_id = new_values['data']['cost_center_id']
-        else:
-            cost_center_id = None
 
         if 'location' in new_values['data'].keys():
             location = str.strip(new_values['data']['location'])
@@ -249,6 +249,17 @@ class VirtualMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.ENERGY_CATEGORY_NOT_FOUND')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_cost_centers "
+                       " WHERE id = %s ",
+                       (new_values['data']['cost_center_id'],))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COST_CENTER_NOT_FOUND')
+
         if energy_item_id is not None:
             cursor.execute(" SELECT name, energy_category_id "
                            " FROM tbl_energy_items "
@@ -266,18 +277,6 @@ class VirtualMeterCollection:
                     cnx.disconnect()
                     raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                            description='API.ENERGY_ITEM_IS_NOT_BELONG_TO_ENERGY_CATEGORY')
-
-        if cost_center_id is not None:
-            cursor.execute(" SELECT name "
-                           " FROM tbl_cost_centers "
-                           " WHERE id = %s ",
-                           (new_values['data']['cost_center_id'],))
-            row = cursor.fetchone()
-            if row is None:
-                cursor.close()
-                cnx.disconnect()
-                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                       description='API.COST_CENTER_NOT_FOUND')
 
         for variable in new_values['data']['expression']['variables']:
             if variable['meter_type'].lower() == 'meter':
@@ -313,14 +312,14 @@ class VirtualMeterCollection:
 
         add_values = (" INSERT INTO tbl_virtual_meters "
                       "     (name, uuid, energy_category_id, is_counted, "
-                      "      energy_item_id, cost_center_id, location, description) "
+                      "      cost_center_id, energy_item_id, location, description) "
                       " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     energy_category_id,
                                     is_counted,
-                                    energy_item_id,
                                     cost_center_id,
+                                    energy_item_id,
                                     location,
                                     description))
         new_id = cursor.lastrowid
@@ -611,6 +610,14 @@ class VirtualMeterItem:
                                    description='API.INVALID_IS_COUNTED_VALUE')
         is_counted = new_values['data']['is_counted']
 
+        if 'cost_center_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['cost_center_id'], int) or \
+                new_values['data']['cost_center_id'] <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_COST_CENTER_ID')
+
+        cost_center_id = new_values['data']['cost_center_id']
+
         if 'energy_item_id' in new_values['data'].keys():
             if new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -618,14 +625,6 @@ class VirtualMeterItem:
             energy_item_id = new_values['data']['energy_item_id']
         else:
             energy_item_id = None
-
-        if 'cost_center_id' in new_values['data'].keys():
-            if new_values['data']['cost_center_id'] <= 0:
-                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description='API.INVALID_COST_CENTER_ID')
-            cost_center_id = new_values['data']['cost_center_id']
-        else:
-            cost_center_id = None
 
         if 'location' in new_values['data'].keys():
             location = str.strip(new_values['data']['location'])
@@ -698,6 +697,17 @@ class VirtualMeterItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.ENERGY_CATEGORY_NOT_FOUND')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_cost_centers "
+                       " WHERE id = %s ",
+                       (new_values['data']['cost_center_id'],))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COST_CENTER_NOT_FOUND')
+
         if energy_item_id is not None:
             cursor.execute(" SELECT name, energy_category_id "
                            " FROM tbl_energy_items "
@@ -715,18 +725,6 @@ class VirtualMeterItem:
                     cnx.disconnect()
                     raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                            description='API.ENERGY_ITEM_IS_NOT_BELONG_TO_ENERGY_CATEGORY')
-
-        if cost_center_id is not None:
-            cursor.execute(" SELECT name "
-                           " FROM tbl_cost_centers "
-                           " WHERE id = %s ",
-                           (new_values['data']['cost_center_id'],))
-            row = cursor.fetchone()
-            if row is None:
-                cursor.close()
-                cnx.disconnect()
-                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                       description='API.COST_CENTER_NOT_FOUND')
 
         for variable in new_values['data']['expression']['variables']:
             if variable['meter_type'].lower() == 'meter':
@@ -762,13 +760,13 @@ class VirtualMeterItem:
 
         update_row = (" UPDATE tbl_virtual_meters "
                       " SET name = %s, energy_category_id = %s, is_counted = %s, "
-                      "     energy_item_id = %s, cost_center_id = %s, location = %s, description = %s "
+                      "     cost_center_id = %s, energy_item_id = %s, location = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     energy_category_id,
                                     is_counted,
-                                    energy_item_id,
                                     cost_center_id,
+                                    energy_item_id,
                                     location,
                                     description,
                                     id_,))

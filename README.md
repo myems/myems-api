@@ -556,8 +556,8 @@ Result
 | energy_category| Object   | Energy Category Object                    |
 | is_counted    | boolean   | Meter is counted in associated unit       |
 | max_hourly_value | decimal(18,3)   | Maximum energy consumption per hour|
-| energy_item   | Object    | Energy Item Object                        |
 | cost_center   | Object    | Cost Center Object                        |
+| energy_item   | Object    | Energy Item Object                        |
 | location      | string    | Meter location                            |
 | description   | string    | Meter description                         |
 
@@ -571,11 +571,11 @@ $ curl -i -X DELETE http://BASE_URL/meters/{id}
 ```
 * POST Create a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "energy_item_id":1, "cost_center_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
 ```
 * PUT Update a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "energy_item_id":1, "cost_center_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
 ```
 * GET All Points associated with Meter ID
 ```bash
@@ -607,8 +607,8 @@ Result
 | energy_category| Object   | Energy Category Object                    |
 | is_counted    | boolean   | Offline Meter is counted in associated unit   |
 | max_hourly_value | decimal(18,3)   | Maximum energy consumption per hour|
+| cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
-| energy_item   | Object    | Cost Center Object                        |
 | location      | string    | Offline Meter location                    |
 | description   | string    | Offline Meter description                 |
 
@@ -622,11 +622,11 @@ $ curl -i -X DELETE http://BASE_URL/offlinemeters/{id}
 ```
 * POST Create a Offline Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "energy_item_id":1, "cost_center_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters
 ```
 * PUT Update a Offline Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":9999.99, "is_counted":true, "energy_item_id":1, "cost_center_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":9999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
 ```
 
 ### Offline Meter File
@@ -1241,8 +1241,8 @@ Result
 | uuid          | string    | Virtual Meter UUID                        |
 | energy_category| Object   | Energy Category Object                    |
 | is_counted    | boolean   | the Virtual Meter is counted in           |
-| energy_item   | Object    | Energy Item Object                        |
 | cost_center   | Object    | Cost Center Object                        |
+| energy_item   | Object    | Energy Item Object                        |
 | location      | string    | Offline Meter location                    |
 | description   | string    | Offline Meter description                 |
 | expression    | json      | Expression                                |
@@ -1266,11 +1266,11 @@ $ curl -i -X DELETE http://BASE_URL/virtualmeters/{id}
 ```
 * POST Create New Virtual Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "energy_item_id":1, "cost_center_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "cost_center_id":1, "energy_item_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters
 ```
 * PUT Update a Virtual Meter by ID
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "energy_item_id":1, "cost_center_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "cost_center_id":1, "energy_item_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters/{id}
 ```
 
 ### Web Message
