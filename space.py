@@ -1520,10 +1520,10 @@ class SpaceTenantCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.SPACE_NOT_FOUND')
 
-        query = (" SELECT id, name, uuid "
-                 " FROM tbl_tenants "
-                 " WHERE parent_space_id = %s "
-                 " ORDER BY id ")
+        query = (" SELECT t.id, t.name, t.uuid "
+                 " FROM tbl_spaces s, tbl_spaces_tenants st, tbl_tenants t "
+                 " WHERE st.space_id = s.id AND t.id = st.tenant_id AND t.id = %s "
+                 " ORDER BY t.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
 
@@ -1534,6 +1534,127 @@ class SpaceTenantCollection:
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
+
+    @staticmethod
+    def on_post(req, resp, id_):
+        """Handles POST requests"""
+        try:
+            raw_json = req.stream.read().decode('utf-8')
+        except Exception as ex:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
+
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_SPACE_ID')
+
+        new_values = json.loads(raw_json, encoding='utf-8')
+
+        if 'tenant_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['tenant_id'], int) or \
+                new_values['data']['tenant_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_TENANT_ID')
+        tenant_id = new_values['data']['tenant_id']
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " from tbl_spaces "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.SPACE_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_tenants "
+                       " WHERE id = %s ", (tenant_id,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.TENANT_NOT_FOUND')
+
+        query = (" SELECT id " 
+                 " FROM tbl_spaces_tenants "
+                 " WHERE space_id = %s AND tenant_id = %s")
+        cursor.execute(query, (id_, tenant_id,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
+                                   description='API.SPACE_TENANT_RELATION_EXISTED')
+
+        add_row = (" INSERT INTO tbl_spaces_tenants (space_id, tenant_id) "
+                   " VALUES (%s, %s) ")
+        cursor.execute(add_row, (id_, tenant_id,))
+        new_id = cursor.lastrowid
+        cnx.commit()
+        cursor.close()
+        cnx.disconnect()
+
+        resp.status = falcon.HTTP_201
+        resp.location = '/spaces/' + str(id_) + '/tenants/' + str(tenant_id)
+
+
+class SpaceTenantItem:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp, id_, tid):
+            resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_delete(req, resp, id_, tid):
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_SPACE_ID')
+
+        if not tid.isdigit() or int(tid) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_TENANT_ID')
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_spaces "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.SPACE_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_tenants "
+                       " WHERE id = %s ", (tid,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.TENANT_NOT_FOUND')
+
+        cursor.execute(" SELECT id "
+                       " FROM tbl_spaces_tenants "
+                       " WHERE space_id = %s AND tenant_id = %s ", (id_, tid))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.SPACE_TENANT_RELATION_NOT_FOUND')
+
+        cursor.execute(" DELETE FROM tbl_spaces_tenants WHERE space_id = %s AND tenant_id = %s ", (id_, tid))
+        cnx.commit()
+
+        cursor.close()
+        cnx.disconnect()
+
+        resp.status = falcon.HTTP_204
 
 
 class SpaceVirtualMeterCollection:

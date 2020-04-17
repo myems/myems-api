@@ -184,6 +184,8 @@ api.add_route('/spaces/{id_}/sensors/{sid}',
               space.SpaceSensorItem())
 api.add_route('/spaces/{id_}/tenants',
               space.SpaceTenantCollection())
+api.add_route('/spaces/{id_}/tenants/{tid}',
+              space.SpaceTenantItem())
 api.add_route('/spaces/{id_}/virtualmeters',
               space.SpaceVirtualMeterCollection())
 api.add_route('/spaces/{id_}/virtualmeters/{mid}',

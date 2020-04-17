@@ -57,7 +57,7 @@ class TenantCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        parent_space_id, buildings, floors, rooms, area, tenant_type_id, is_key_tenant, "
+                 "        buildings, floors, rooms, area, tenant_type_id, is_key_tenant, "
                  "        lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
                  "        contact_id, cost_center_id, description "
                  " FROM tbl_tenants "
@@ -74,7 +74,6 @@ class TenantCollection:
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
-                               "parent_space_id": row['parent_space_id'],
                                "buildings": row['buildings'],
                                "floors": row['floors'],
                                "rooms": row['rooms'],
@@ -110,13 +109,6 @@ class TenantCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_NAME')
         name = str.strip(new_values['data']['name'])
-
-        if 'parent_space_id' not in new_values['data'].keys() or \
-                new_values['data']['parent_space_id'] <= 0:
-                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description='API.INVALID_PARENT_SPACE_ID')
-
-        parent_space_id = new_values['data']['parent_space_id']
 
         if 'buildings' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['buildings'], str) or \
@@ -220,17 +212,6 @@ class TenantCollection:
                                    description='API.TENANT_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
-                       " WHERE id = %s ",
-                       (parent_space_id,))
-        row = cursor.fetchone()
-        if row is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.PARENT_SPACE_NOT_FOUND')
-
-        cursor.execute(" SELECT name "
                        " FROM tbl_tenant_types "
                        " WHERE id = %s ",
                        (tenant_type_id,))
@@ -264,13 +245,12 @@ class TenantCollection:
                                        description='API.COST_CENTER_NOT_FOUND')
 
         add_values = (" INSERT INTO tbl_tenants "
-                      "    (name, uuid, parent_space_id, buildings, floors, rooms, area, tenant_type_id, "
+                      "    (name, uuid, buildings, floors, rooms, area, tenant_type_id, "
                       "    is_key_tenant, lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
                       "     contact_id, cost_center_id, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
-                                    parent_space_id,
                                     buildings,
                                     floors,
                                     rooms,
@@ -348,7 +328,7 @@ class TenantItem:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        parent_space_id, buildings, floors, rooms, area, tenant_type_id, is_key_tenant, "
+                 "        buildings, floors, rooms, area, tenant_type_id, is_key_tenant, "
                  "        lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
                  "        contact_id, cost_center_id, description "
                  " FROM tbl_tenants "
@@ -368,7 +348,6 @@ class TenantItem:
             meta_result = {"id": row['id'],
                            "name": row['name'],
                            "uuid": row['uuid'],
-                           "parent_space_id": row['parent_space_id'],
                            "buildings": row['buildings'],
                            "floors": row['floors'],
                            "rooms": row['rooms'],
@@ -485,7 +464,7 @@ class TenantItem:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_SPACE_ID')
+                                   description='API.INVALID_TENANT_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -495,13 +474,6 @@ class TenantItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_NAME')
         name = str.strip(new_values['data']['name'])
-
-        if 'parent_space_id' not in new_values['data'].keys() or \
-                new_values['data']['parent_space_id'] <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_PARENT_SPACE_ID')
-
-        parent_space_id = new_values['data']['parent_space_id']
 
         if 'buildings' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['buildings'], str) or \
@@ -614,17 +586,6 @@ class TenantItem:
                                    description='API.TENANT_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
-                       " WHERE id = %s ",
-                       (parent_space_id,))
-        row = cursor.fetchone()
-        if row is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.PARENT_SPACE_NOT_FOUND')
-
-        cursor.execute(" SELECT name "
                        " FROM tbl_tenant_types "
                        " WHERE id = %s ",
                        (tenant_type_id,))
@@ -658,13 +619,12 @@ class TenantItem:
                                        description='API.COST_CENTER_NOT_FOUND')
 
         update_row = (" UPDATE tbl_tenants "
-                      " SET name = %s, parent_space_id = %s, buildings = %s, floors = %s, rooms = %s, area = %s, "
+                      " SET name = %s, buildings = %s, floors = %s, rooms = %s, area = %s, "
                       "     tenant_type_id = %s, is_key_tenant = %s, lease_number = %s, lease_start_datetime_utc = %s, "
                       "     lease_end_datetime_utc = %s, is_in_lease = %s, contact_id = %s, cost_center_id = %s, "
                       "     description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
-                                    parent_space_id,
                                     buildings,
                                     floors,
                                     rooms,
