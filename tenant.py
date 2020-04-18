@@ -700,7 +700,7 @@ class TenantMeterCollection:
                                    description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_tenants "
@@ -711,7 +711,19 @@ class TenantMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.TENANT_NOT_FOUND')
 
-        query = (" SELECT m.id, m.name, m.uuid "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id "
                  " FROM tbl_tenants t, tbl_tenants_meters tm, tbl_meters m "
                  " WHERE tm.tenant_id = t.id AND m.id = tm.meter_id AND t.id = %s "
                  " ORDER BY m.id ")
@@ -721,7 +733,9 @@ class TenantMeterCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "energy_category": energy_category}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -864,7 +878,7 @@ class TenantOfflineMeterCollection:
                                    description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_tenants "
@@ -875,7 +889,19 @@ class TenantOfflineMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.TENANT_NOT_FOUND')
 
-        query = (" SELECT m.id, m.name, m.uuid "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id "
                  " FROM tbl_tenants s, tbl_tenants_offline_meters sm, tbl_offline_meters m "
                  " WHERE sm.tenant_id = s.id AND m.id = sm.offline_meter_id AND s.id = %s "
                  " ORDER BY m.id ")
@@ -885,7 +911,9 @@ class TenantOfflineMeterCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "energy_category": energy_category}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -1358,7 +1386,7 @@ class TenantVirtualMeterCollection:
                                    description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_tenants "
@@ -1369,7 +1397,19 @@ class TenantVirtualMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.TENANT_NOT_FOUND')
 
-        query = (" SELECT m.id, m.name, m.uuid "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id "
                  " FROM tbl_tenants t, tbl_tenants_virtual_meters tm, tbl_virtual_meters m "
                  " WHERE tm.tenant_id = t.id AND m.id = tm.virtual_meter_id AND t.id = %s "
                  " ORDER BY m.id ")
@@ -1379,7 +1419,9 @@ class TenantVirtualMeterCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "energy_category": energy_category}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
