@@ -1033,7 +1033,7 @@ class EquipmentMeterCollection:
                                    description='API.INVALID_EQUIPMENT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_equipments "
@@ -1044,7 +1044,19 @@ class EquipmentMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.EQUIPMENT_NOT_FOUND')
 
-        query = (" SELECT m.id, m.name, m.uuid, em.is_output "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id, em.is_output "
                  " FROM tbl_equipments e, tbl_equipments_meters em, tbl_meters m "
                  " WHERE em.equipment_id = e.id AND m.id = em.meter_id AND e.id = %s "
                  " ORDER BY m.id ")
@@ -1054,7 +1066,10 @@ class EquipmentMeterCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2], "is_output": bool(row[3])}
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "energy_category": energy_category,
+                               "is_output": bool(row['is_output'])}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -1203,7 +1218,7 @@ class EquipmentOfflineMeterCollection:
                                    description='API.INVALID_EQUIPMENT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_equipments "
@@ -1214,7 +1229,19 @@ class EquipmentOfflineMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.EQUIPMENT_NOT_FOUND')
 
-        query = (" SELECT m.id, m.name, m.uuid, em.is_output "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id, em.is_output "
                  " FROM tbl_equipments e, tbl_equipments_offline_meters em, tbl_offline_meters m "
                  " WHERE em.equipment_id = e.id AND m.id = em.offline_meter_id AND e.id = %s "
                  " ORDER BY m.id ")
@@ -1224,7 +1251,10 @@ class EquipmentOfflineMeterCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2], "is_output": bool(row[3])}
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "energy_category": energy_category,
+                               "is_output": bool(row['is_output'])}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -1374,7 +1404,7 @@ class EquipmentVirtualMeterCollection:
                                    description='API.INVALID_EQUIPMENT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_equipments "
@@ -1385,7 +1415,19 @@ class EquipmentVirtualMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.EQUIPMENT_NOT_FOUND')
 
-        query = (" SELECT m.id, m.name, m.uuid, em.is_output "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id, em.is_output "
                  " FROM tbl_equipments e, tbl_equipments_virtual_meters em, tbl_virtual_meters m "
                  " WHERE em.equipment_id = e.id AND m.id = em.virtual_meter_id AND e.id = %s "
                  " ORDER BY m.id ")
@@ -1395,7 +1437,10 @@ class EquipmentVirtualMeterCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2], "is_output": bool(row[3])}
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "energy_category": energy_category,
+                               "is_output": bool(row['is_output'])}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
