@@ -1057,7 +1057,7 @@ class TenantPointCollection:
                                    description='API.INVALID_TENANT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_tenants "
@@ -1068,7 +1068,19 @@ class TenantPointCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.TENANT_NOT_FOUND')
 
-        query = (" SELECT p.id, p.name "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_data_sources ")
+        cursor.execute(query)
+        rows_data_sources = cursor.fetchall()
+
+        data_source_dict = dict()
+        if rows_data_sources is not None and len(rows_data_sources) > 0:
+            for row in rows_data_sources:
+                data_source_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
+        query = (" SELECT p.id, p.name, p.data_source_id "
                  " FROM tbl_tenants t, tbl_tenants_points tp, tbl_points p "
                  " WHERE tp.tenant_id = t.id AND p.id = tp.point_id AND t.id = %s "
                  " ORDER BY p.id ")
@@ -1078,7 +1090,8 @@ class TenantPointCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1]}
+                data_source = data_source_dict.get(row['data_source_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "data_source": data_source}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)

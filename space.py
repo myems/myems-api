@@ -1218,7 +1218,7 @@ class SpacePointCollection:
                                    description='API.INVALID_SPACE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_spaces "
@@ -1229,7 +1229,19 @@ class SpacePointCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.SPACE_NOT_FOUND')
 
-        query = (" SELECT p.id, p.name "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_data_sources ")
+        cursor.execute(query)
+        rows_data_sources = cursor.fetchall()
+
+        data_source_dict = dict()
+        if rows_data_sources is not None and len(rows_data_sources) > 0:
+            for row in rows_data_sources:
+                data_source_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
+        query = (" SELECT p.id, p.name, p.data_source_id "
                  " FROM tbl_spaces s, tbl_spaces_points sp, tbl_points p "
                  " WHERE sp.space_id = s.id AND p.id = sp.point_id AND s.id = %s "
                  " ORDER BY p.id ")
@@ -1239,7 +1251,8 @@ class SpacePointCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1]}
+                data_source = data_source_dict.get(row['data_source_id'], None)
+                meta_result = {"id": row['id'], "name": row['name'], "data_source": data_source}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
