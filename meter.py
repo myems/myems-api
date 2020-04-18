@@ -132,7 +132,7 @@ class MeterCollection:
 
         if 'energy_item_id' in new_values['data'].keys() and \
                 new_values['data']['energy_item_id'] is not None:
-            if not isinstance(new_values['data']['max_hourly_value'], int) or \
+            if not isinstance(new_values['data']['energy_item_id'], int) or \
                     new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_ENERGY_ITEM_ID')
@@ -140,12 +140,16 @@ class MeterCollection:
         else:
             energy_item_id = None
 
-        if 'location' in new_values['data'].keys():
+        if 'location' in new_values['data'].keys() and \
+                new_values['data']['location'] is not None and \
+                len(str(new_values['data']['location'])) > 0:
             location = str.strip(new_values['data']['location'])
         else:
             location = None
 
-        if 'description' in new_values['data'].keys():
+        if 'description' in new_values['data'].keys() and \
+                new_values['data']['description'] is not None and \
+                len(str(new_values['data']['description'])) > 0:
             description = str.strip(new_values['data']['description'])
         else:
             description = None
@@ -438,7 +442,7 @@ class MeterItem:
 
         if 'energy_item_id' in new_values['data'].keys() and \
                 new_values['data']['energy_item_id'] is not None:
-            if not isinstance(new_values['data']['max_hourly_value'], int) or \
+            if not isinstance(new_values['data']['energy_item_id'], int) or \
                     new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_ENERGY_ITEM_ID')
@@ -454,12 +458,16 @@ class MeterItem:
 
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'location' in new_values['data'].keys():
+        if 'location' in new_values['data'].keys() and \
+                new_values['data']['location'] is not None and \
+                len(str(new_values['data']['location'])) > 0:
             location = str.strip(new_values['data']['location'])
         else:
             location = None
 
-        if 'description' in new_values['data'].keys():
+        if 'description' in new_values['data'].keys() and \
+                new_values['data']['description'] is not None and \
+                len(str(new_values['data']['description'])) > 0:
             description = str.strip(new_values['data']['description'])
         else:
             description = None

@@ -205,7 +205,9 @@ class TenantCollection:
                                        description='API.INVALID_COST_CENTER_ID')
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'description' in new_values['data'].keys():
+        if 'description' in new_values['data'].keys() and \
+                new_values['data']['description'] is not None and \
+                len(str(new_values['data']['description'])) > 0:
             description = str.strip(new_values['data']['description'])
         else:
             description = None
@@ -591,7 +593,9 @@ class TenantItem:
                                    description='API.INVALID_COST_CENTER_ID')
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'description' in new_values['data'].keys():
+        if 'description' in new_values['data'].keys() and \
+                new_values['data']['description'] is not None and \
+                len(str(new_values['data']['description'])) > 0:
             description = str.strip(new_values['data']['description'])
         else:
             description = None
