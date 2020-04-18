@@ -116,7 +116,8 @@ class OfflineMeterCollection:
         is_counted = new_values['data']['is_counted']
 
         if 'max_hourly_value' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['max_hourly_value'], float):
+                not (isinstance(new_values['data']['max_hourly_value'], float) or
+                     isinstance(new_values['data']['max_hourly_value'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_MAX_HOURLY_VALUE')
         max_hourly_value = new_values['data']['max_hourly_value']
@@ -414,7 +415,8 @@ class OfflineMeterItem:
         is_counted = new_values['data']['is_counted']
 
         if 'max_hourly_value' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['max_hourly_value'], float):
+                not (isinstance(new_values['data']['max_hourly_value'], float) or
+                     isinstance(new_values['data']['max_hourly_value'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_MAX_HOURLY_VALUE')
         max_hourly_value = new_values['data']['max_hourly_value']

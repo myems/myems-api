@@ -63,15 +63,15 @@ class EnergyCategoryCollection:
         unit_of_measure = str.strip(new_values['data']['unit_of_measure'])
 
         if 'kgce' not in new_values['data'].keys() or \
-                (not isinstance(new_values['data']['kgce'], float) and
-                 not isinstance(new_values['data']['kgce'], int)):
+                not (isinstance(new_values['data']['kgce'], float) or
+                     isinstance(new_values['data']['kgce'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCE')
         kgce = float(new_values['data']['kgce'])
 
         if 'kgco2e' not in new_values['data'].keys() or \
-                (not isinstance(new_values['data']['kgco2e'], float) and
-                 not isinstance(new_values['data']['kgco2e'], int)):
+                not (isinstance(new_values['data']['kgco2e'], float) or
+                     isinstance(new_values['data']['kgco2e'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCO2E')
         kgco2e = float(new_values['data']['kgco2e'])
@@ -252,15 +252,15 @@ class EnergyCategoryItem:
         unit_of_measure = str.strip(new_values['data']['unit_of_measure'])
 
         if 'kgce' not in new_values['data'].keys() or \
-                (not isinstance(new_values['data']['kgce'], float) and
-                 not isinstance(new_values['data']['kgce'], int)):
+                not (isinstance(new_values['data']['kgce'], float) or
+                     isinstance(new_values['data']['kgce'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCE')
         kgce = float(new_values['data']['kgce'])
 
         if 'kgco2e' not in new_values['data'].keys() or \
-                (not isinstance(new_values['data']['kgco2e'], float) and
-                 not isinstance(new_values['data']['kgco2e'], int)):
+                not (isinstance(new_values['data']['kgco2e'], float) or
+                     isinstance(new_values['data']['kgco2e'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_KGCO2E')
         kgco2e = float(new_values['data']['kgco2e'])
