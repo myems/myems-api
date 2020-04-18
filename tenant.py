@@ -138,7 +138,8 @@ class TenantCollection:
         rooms = str.strip(new_values['data']['rooms'])
 
         if 'area' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['area'], float):
+                not (isinstance(new_values['data']['area'], float) or
+                     isinstance(new_values['data']['area'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']
@@ -523,7 +524,8 @@ class TenantItem:
         rooms = str.strip(new_values['data']['rooms'])
 
         if 'area' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['area'], float):
+                not (isinstance(new_values['data']['area'], float) or
+                     isinstance(new_values['data']['area'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']

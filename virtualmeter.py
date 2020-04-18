@@ -179,8 +179,10 @@ class VirtualMeterCollection:
 
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'energy_item_id' in new_values['data'].keys():
-            if new_values['data']['energy_item_id'] <= 0:
+        if 'energy_item_id' in new_values['data'].keys() and \
+                new_values['data']['energy_item_id'] is not None:
+            if not isinstance(new_values['data']['max_hourly_value'], int) or \
+                    new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_ENERGY_ITEM_ID')
             energy_item_id = new_values['data']['energy_item_id']
@@ -618,8 +620,10 @@ class VirtualMeterItem:
 
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'energy_item_id' in new_values['data'].keys():
-            if new_values['data']['energy_item_id'] <= 0:
+        if 'energy_item_id' in new_values['data'].keys() and \
+                new_values['data']['energy_item_id'] is not None:
+            if not isinstance(new_values['data']['max_hourly_value'], int) or \
+                    new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_ENERGY_ITEM_ID')
             energy_item_id = new_values['data']['energy_item_id']

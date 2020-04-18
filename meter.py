@@ -116,7 +116,8 @@ class MeterCollection:
         is_counted = new_values['data']['is_counted']
 
         if 'max_hourly_value' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['max_hourly_value'], float):
+                not (isinstance(new_values['data']['max_hourly_value'], float) or
+                     isinstance(new_values['data']['max_hourly_value'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_MAX_HOURLY_VALUE')
         max_hourly_value = new_values['data']['max_hourly_value']
@@ -129,8 +130,10 @@ class MeterCollection:
 
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'energy_item_id' in new_values['data'].keys():
-            if new_values['data']['energy_item_id'] <= 0:
+        if 'energy_item_id' in new_values['data'].keys() and \
+                new_values['data']['energy_item_id'] is not None:
+            if not isinstance(new_values['data']['max_hourly_value'], int) or \
+                    new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_ENERGY_ITEM_ID')
             energy_item_id = new_values['data']['energy_item_id']
@@ -427,13 +430,16 @@ class MeterItem:
         is_counted = new_values['data']['is_counted']
 
         if 'max_hourly_value' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['max_hourly_value'], float):
+                not (isinstance(new_values['data']['max_hourly_value'], float) or
+                     isinstance(new_values['data']['max_hourly_value'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_MAX_HOURLY_VALUE')
         max_hourly_value = new_values['data']['max_hourly_value']
 
-        if 'energy_item_id' in new_values['data'].keys():
-            if new_values['data']['energy_item_id'] <= 0:
+        if 'energy_item_id' in new_values['data'].keys() and \
+                new_values['data']['energy_item_id'] is not None:
+            if not isinstance(new_values['data']['max_hourly_value'], int) or \
+                    new_values['data']['energy_item_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_ENERGY_ITEM_ID')
             energy_item_id = new_values['data']['energy_item_id']
