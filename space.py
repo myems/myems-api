@@ -19,6 +19,18 @@ class SpaceCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_spaces ")
+        cursor.execute(query)
+        rows_spaces = cursor.fetchall()
+
+        space_dict = dict()
+        if rows_spaces is not None and len(rows_spaces) > 0:
+            for row in rows_spaces:
+                space_dict[row['id']] = {"id": row['id'],
+                                         "name": row['name'],
+                                         "uuid": row['uuid']}
+
         query = (" SELECT id, name, utc_offset "
                  " FROM tbl_timezones ")
         cursor.execute(query)
@@ -69,10 +81,11 @@ class SpaceCollection:
                 timezone = timezone_dict.get(row['timezone_id'], None)
                 contact = contact_dict.get(row['contact_id'], None)
                 cost_center = cost_center_dict.get(row['cost_center_id'], None)
+                parent_space = space_dict.get(row['parent_space_id'], None)
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
-                               "parent_space_id": row['parent_space_id'],
+                               "parent_space": parent_space,
                                "area": row['area'],
                                "timezone": timezone,
                                "is_input_counted": bool(row['is_input_counted']),
@@ -267,6 +280,18 @@ class SpaceItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_spaces ")
+        cursor.execute(query)
+        rows_spaces = cursor.fetchall()
+
+        space_dict = dict()
+        if rows_spaces is not None and len(rows_spaces) > 0:
+            for row in rows_spaces:
+                space_dict[row['id']] = {"id": row['id'],
+                                         "name": row['name'],
+                                         "uuid": row['uuid']}
+
         query = (" SELECT id, name, utc_offset "
                  " FROM tbl_timezones ")
         cursor.execute(query)
@@ -317,13 +342,14 @@ class SpaceItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.SPACE_NOT_FOUND')
         else:
+            parent_space = space_dict.get(row['parent_space_id'], None)
             timezone = timezone_dict.get(row['timezone_id'], None)
             contact = contact_dict.get(row['contact_id'], None)
             cost_center = cost_center_dict.get(row['cost_center_id'], None)
             meta_result = {"id": row['id'],
                            "name": row['name'],
                            "uuid": row['uuid'],
-                           "parent_space_id": row['parent_space_id'],
+                           "parent_space_id": parent_space,
                            "area": row['area'],
                            "timezone": timezone,
                            "is_input_counted": bool(row['is_input_counted']),
@@ -340,6 +366,9 @@ class SpaceItem:
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
+        if int(id_) == 1:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.THIS_SPACE_CAN_NOT_BE_DELETED')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -432,8 +461,8 @@ class SpaceItem:
 
         # check relation with tenant
         cursor.execute(" SELECT id "
-                       " FROM tbl_tenants "
-                       " WHERE parent_space_id = %s ", (id_,))
+                       " FROM tbl_spaces_tenants "
+                       " WHERE space_id = %s ", (id_,))
         rows_tenants = cursor.fetchall()
         if rows_tenants is not None and len(rows_tenants) > 0:
             cursor.close()
@@ -484,13 +513,16 @@ class SpaceItem:
                                    description='API.INVALID_SPACE_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'parent_space_id' in new_values['data'].keys():
-            if new_values['data']['parent_space_id'] <= 0:
-                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description='API.INVALID_PARENT_SPACE_ID')
-            parent_space_id = new_values['data']['parent_space_id']
-        else:
+        if int(id_) == 1:
             parent_space_id = None
+        else:
+            if 'parent_space_id' not in new_values['data'].keys() or \
+                    new_values['data']['parent_space_id'] is None or \
+                    not isinstance(new_values['data']['parent_space_id'], int) or \
+                    int(new_values['data']['parent_space_id']) <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_TIMEZONE_ID')
+            parent_space_id = int(new_values['data']['parent_space_id'])
 
         if 'area' not in new_values['data'].keys() or \
                 not (isinstance(new_values['data']['area'], float) or
