@@ -1108,7 +1108,7 @@ class EquipmentParameterItem:
 
         cursor.execute(" SELECT name "
                        " FROM tbl_equipments_parameters "
-                       " WHERE name = %s AND equipment_id = %s ", (name, id_))
+                       " WHERE name = %s AND equipment_id = %s  AND id != %s ", (name, id_, pid))
         row = cursor.fetchone()
         if row is not None:
             cursor.close()
