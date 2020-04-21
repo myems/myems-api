@@ -673,7 +673,7 @@ Result in JSON
 |---------------|-----------|-------------------------------------------|
 | id            | integer   | Point ID                                  |
 | name          | string    | Point name                                |
-| data_source_id| integer   | Data Source ID                            |
+| data_source   | object    | Data Source Object                        |
 | object_type   | string    | Object Type ('ENERGY_VALUE', 'ANALOG_VALUE, 'BINARY_VALUE')   |
 | units         | string    | Units of Measure                          |
 | low_limit     | float     | Low Limit of the Point Value              |

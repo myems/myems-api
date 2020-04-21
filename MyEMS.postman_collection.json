@@ -1109,6 +1109,31 @@
 					"response": []
 				},
 				{
+					"name": "PUT Update a point Parameter for an Equipment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test parameter\", \"parameter_type\":\"point\", \"constant\":null, \"point_id\":3, \"numerator_meter_uuid\":null, \"denominator_meter_uuid\":null}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters/14",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters",
+								"14"
+							]
+						},
+						"description": "parameter_type: constant, point, fraction"
+					},
+					"response": []
+				},
+				{
 					"name": "POST Create a constant Parameter for an Equipment",
 					"request": {
 						"method": "POST",
@@ -1133,7 +1158,32 @@
 					"response": []
 				},
 				{
-					"name": "POST Create a meter Parameter for an Equipment",
+					"name": "PUT Update a constant Parameter for an Equipment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test parameter1\", \"parameter_type\":\"constant\", \"constant\":\"test constant1\", \"point_id\":null, \"numerator_meter_uuid\":null, \"denominator_meter_uuid\":null}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters/25",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters",
+								"25"
+							]
+						},
+						"description": "parameter_type: constant, point, fraction"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create a fraction Parameter for an Equipment",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1150,6 +1200,31 @@
 								"equipments",
 								"1",
 								"parameters"
+							]
+						},
+						"description": "parameter_type: constant, point, fraction"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a fraction Parameter for an Equipment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"test fraction parameter\", \"parameter_type\":\"fraction\", \"constant\":null, \"point_id\":null, \"numerator_meter_uuid\":\"89ff5118-d0c2-4dd8-8098-a8698189b2ea\", \"denominator_meter_uuid\":\"5ca62d2a-908e-40c5-a6b5-a8e436d60db4\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/equipments/1/parameters/24",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"equipments",
+								"1",
+								"parameters",
+								"24"
 							]
 						},
 						"description": "parameter_type: constant, point, fraction"
