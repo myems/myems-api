@@ -16,7 +16,19 @@ class PointCollection:
     @staticmethod
     def on_get(req, resp):
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_data_sources ")
+        cursor.execute(query)
+        rows_data_sources = cursor.fetchall()
+
+        data_source_dict = dict()
+        if rows_data_sources is not None and len(rows_data_sources) > 0:
+            for row in rows_data_sources:
+                data_source_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
 
         query = (" SELECT id, name, data_source_id, object_type, units, low_limit, hi_limit, is_trend, address, ratio "
                  " FROM tbl_points ")
@@ -28,16 +40,17 @@ class PointCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0],
-                               "name": row[1],
-                               "data_source_id": row[2],
-                               "object_type": row[3],
-                               "units": row[4],
-                               "low_limit": row[5],
-                               "hi_limit": row[6],
-                               "is_trend": row[7],
-                               "address": row[8],
-                               "ratio": float(row[9]) if row[9] is not None else None}
+                data_source = data_source_dict.get(row['data_source_id'], None)
+                meta_result = {"id": row['id'],
+                               "name": row['name'],
+                               "data_source": data_source,
+                               "object_type": row['object_type'],
+                               "units": row['units'],
+                               "low_limit": row['low_limit'],
+                               "hi_limit": row['hi_limit'],
+                               "is_trend": row['is_trend'],
+                               "address": row['address'],
+                               "ratio": float(row['ratio']) if row['ratio'] is not None else None}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -91,7 +104,20 @@ class PointItem:
                                    description='API.INVALID_POINT_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_data_sources ")
+        cursor.execute(query)
+        rows_data_sources = cursor.fetchall()
+
+        data_source_dict = dict()
+        if rows_data_sources is not None and len(rows_data_sources) > 0:
+            for row in rows_data_sources:
+                data_source_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
         query = (" SELECT id, name, data_source_id, object_type, units, low_limit, hi_limit, is_trend, address, ratio "
                  " FROM tbl_points "
                  " WHERE id = %s ")
@@ -103,16 +129,17 @@ class PointItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.POINT_NOT_FOUND')
 
-        result = {"id": row[0],
-                  "name": row[1],
-                  "data_source_id": row[2],
-                  "object_type": row[3],
-                  "units": row[4],
-                  "low_limit": row[5],
-                  "hi_limit": row[6],
-                  "is_trend": row[7],
-                  "address": row[8],
-                  "ratio": row[9]}
+        data_source = data_source_dict.get(row['data_source_id'], None)
+        result = {"id": row['id'],
+                  "name": row['name'],
+                  "data_source": data_source,
+                  "object_type": row['object_type'],
+                  "units": row['units'],
+                  "low_limit": row['low_limit'],
+                  "hi_limit": row['hi_limit'],
+                  "is_trend": bool(row['is_trend']),
+                  "address": row['address'],
+                  "ratio": float(row['ratio']) if row['ratio'] is not None else None}
         resp.body = json.dumps(result)
 
     @staticmethod
