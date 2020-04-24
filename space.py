@@ -1671,7 +1671,7 @@ class SpaceTenantCollection:
 
         query = (" SELECT t.id, t.name, t.uuid "
                  " FROM tbl_spaces s, tbl_spaces_tenants st, tbl_tenants t "
-                 " WHERE st.space_id = s.id AND t.id = st.tenant_id AND t.id = %s "
+                 " WHERE st.space_id = s.id AND t.id = st.tenant_id AND s.id = %s "
                  " ORDER BY t.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
