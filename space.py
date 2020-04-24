@@ -686,7 +686,7 @@ class SpaceChildrenCollection:
                                    description='API.INVALID_SPACE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
                        " FROM tbl_spaces "
@@ -698,20 +698,86 @@ class SpaceChildrenCollection:
                                    description='API.SPACE_NOT_FOUND')
 
         query = (" SELECT id, name, uuid "
+                 " FROM tbl_spaces ")
+        cursor.execute(query)
+        rows_spaces = cursor.fetchall()
+
+        space_dict = dict()
+        if rows_spaces is not None and len(rows_spaces) > 0:
+            for row in rows_spaces:
+                space_dict[row['id']] = {"id": row['id'],
+                                         "name": row['name'],
+                                         "uuid": row['uuid']}
+
+        query = (" SELECT id, name, utc_offset "
+                 " FROM tbl_timezones ")
+        cursor.execute(query)
+        rows_timezones = cursor.fetchall()
+
+        timezone_dict = dict()
+        if rows_timezones is not None and len(rows_timezones) > 0:
+            for row in rows_timezones:
+                timezone_dict[row['id']] = {"id": row['id'],
+                                            "name": row['name'],
+                                            "utc_offset": row['utc_offset']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_contacts ")
+        cursor.execute(query)
+        rows_contacts = cursor.fetchall()
+
+        contact_dict = dict()
+        if rows_contacts is not None and len(rows_contacts) > 0:
+            for row in rows_contacts:
+                contact_dict[row['id']] = {"id": row['id'],
+                                           "name": row['name'],
+                                           "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_cost_centers ")
+        cursor.execute(query)
+        rows_cost_centers = cursor.fetchall()
+
+        cost_center_dict = dict()
+        if rows_cost_centers is not None and len(rows_cost_centers) > 0:
+            for row in rows_cost_centers:
+                cost_center_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid, "
+                 "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
+                 "        contact_id, cost_center_id, location, description "
                  " FROM tbl_spaces "
                  " WHERE parent_space_id = %s "
                  " ORDER BY id ")
-        cursor.execute(query, (id_,))
-        rows = cursor.fetchall()
+        cursor.execute(query, (id_, ))
+        rows_spaces = cursor.fetchall()
 
         result = list()
-        if rows is not None and len(rows) > 0:
-            for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
+        if rows_spaces is not None and len(rows_spaces) > 0:
+            for row in rows_spaces:
+                timezone = timezone_dict.get(row['timezone_id'], None)
+                contact = contact_dict.get(row['contact_id'], None)
+                cost_center = cost_center_dict.get(row['cost_center_id'], None)
+                parent_space = space_dict.get(row['parent_space_id'], None)
+                meta_result = {"id": row['id'],
+                               "name": row['name'],
+                               "uuid": row['uuid'],
+                               "parent_space": parent_space,
+                               "area": row['area'],
+                               "timezone": timezone,
+                               "is_input_counted": bool(row['is_input_counted']),
+                               "is_output_counted": bool(row['is_output_counted']),
+                               "contact": contact,
+                               "cost_center": cost_center,
+                               "location": row['location'],
+                               "description": row['description']}
                 result.append(meta_result)
 
+        cursor.close()
+        cnx.disconnect()
         resp.body = json.dumps(result)
-
 
 class SpaceEquipmentCollection:
     @staticmethod
