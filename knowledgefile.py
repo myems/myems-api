@@ -88,7 +88,7 @@ class KnowledgeFileCollection:
 
         # Verify User Session
         cookies = req.headers['SET-COOKIE'].split('=')
-        if 'upload_user_uuid' not in cookies or 'token' not in cookies:
+        if 'user_uuid' not in cookies or 'token' not in cookies:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
 
@@ -97,7 +97,7 @@ class KnowledgeFileCollection:
 
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
-                 " WHERE upload_user_uuid = %s AND token = %s")
+                 " WHERE user_uuid = %s AND token = %s")
         cursor.execute(query, (cookies[1], cookies[3],))
         row = cursor.fetchone()
 
