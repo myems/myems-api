@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import os
 
 
-class HelpFileCollection:
+class KnowledgeFileCollection:
     @staticmethod
     def __init__():
         pass
@@ -36,8 +36,8 @@ class HelpFileCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        query = (" SELECT id, file_name, uuid, upload_datetime_utc, user_uuid "
-                 " FROM tbl_help_files "
+        query = (" SELECT id, file_name, uuid, upload_datetime_utc, upload_user_uuid "
+                 " FROM tbl_knowledge_files "
                  " ORDER BY upload_datetime_utc desc ")
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -84,11 +84,11 @@ class HelpFileCollection:
             os.rename(temp_file_path, file_path)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.FAILED_TO_UPLOAD_HELP_FILE')
+                                   description='API.FAILED_TO_UPLOAD_KNOWLEDGE_FILE')
 
         # Verify User Session
         cookies = req.headers['SET-COOKIE'].split('=')
-        if 'user_uuid' not in cookies or 'token' not in cookies:
+        if 'upload_user_uuid' not in cookies or 'token' not in cookies:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
 
@@ -97,7 +97,7 @@ class HelpFileCollection:
 
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
-                 " WHERE user_uuid = %s AND token = %s")
+                 " WHERE upload_user_uuid = %s AND token = %s")
         cursor.execute(query, (cookies[1], cookies[3],))
         row = cursor.fetchone()
 
@@ -127,8 +127,8 @@ class HelpFileCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        add_values = (" INSERT INTO tbl_help_files "
-                      " (file_name, uuid, upload_datetime_utc, user_uuid, file_object ) "
+        add_values = (" INSERT INTO tbl_knowledge_files "
+                      " (file_name, uuid, upload_datetime_utc, upload_user_uuid, file_object ) "
                       " VALUES (%s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (filename,
                                     file_uuid,
@@ -141,10 +141,10 @@ class HelpFileCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/helpfiles/' + str(new_id)
+        resp.location = '/knowledgefiles/' + str(new_id)
 
 
-class HelpFileItem:
+class KnowledgeFileItem:
     @staticmethod
     def __init__():
         pass
@@ -157,7 +157,7 @@ class HelpFileItem:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_HELP_FILE_ID')
+                                   description='API.INVALID_KNOWLEDGE_FILE_ID')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -177,8 +177,8 @@ class HelpFileItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        query = (" SELECT id, file_name, uuid, upload_datetime_utc, user_uuid "
-                 " FROM tbl_help_files "
+        query = (" SELECT id, file_name, uuid, upload_datetime_utc, upload_user_uuid "
+                 " FROM tbl_knowledge_files "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
         row = cursor.fetchone()
@@ -187,7 +187,7 @@ class HelpFileItem:
 
         if row is None:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.HELP_FILE_NOT_FOUND')
+                                   description='API.KNOWLEDGE_FILE_NOT_FOUND')
 
         upload_datetime = row[3]
         upload_datetime = upload_datetime.replace(tzinfo=timezone.utc)
@@ -204,19 +204,21 @@ class HelpFileItem:
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.INVALID_HELP_FILE_ID')
+                                   description='API.INVALID_KNOWLEDGE_FILE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        cursor.execute(" SELECT uuid FROM tbl_help_files WHERE id = %s ", (id_,))
+        cursor.execute(" SELECT uuid "
+                       " FROM tbl_knowledge_files "
+                       " WHERE id = %s ", (id_,))
         row = cursor.fetchone()
         if row is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404,
                                    title='API.NOT_FOUND',
-                                   description='API.HELP_FILE_NOT_FOUND')
+                                   description='API.KNOWLEDGE_FILE_NOT_FOUND')
 
         try:
             file_uuid = row[0]
@@ -227,9 +229,9 @@ class HelpFileItem:
             os.remove(file_path)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.HELP_FILE_NOT_FOUND')
+                                   description='API.KNOWLEDGE_FILE_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_help_files WHERE id = %s ", (id_,))
+        cursor.execute(" DELETE FROM tbl_knowledge_files WHERE id = %s ", (id_,))
         cnx.commit()
 
         cursor.close()

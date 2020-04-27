@@ -10,7 +10,7 @@ import energycategory
 import energyitem
 import equipment
 import gsmmodem
-import helpfile
+import knowledgefile
 import meter
 import offlinemeter
 import offlinemeterfile
@@ -108,10 +108,10 @@ api.add_route('/gsmmodems',
 api.add_route('/gsmmodems/{id_}',
               gsmmodem.GSMModemItem())
 
-api.add_route('/helpfiles',
-              helpfile.HelpFileCollection())
-api.add_route('/helpfiles/{id_}',
-              helpfile.HelpFileItem())
+api.add_route('/knowledgefiles',
+              knowledgefile.KnowledgeFileCollection())
+api.add_route('/knowledgefiles/{id_}',
+              knowledgefile.KnowledgeFileItem())
 
 api.add_route('/meters',
               meter.MeterCollection())
