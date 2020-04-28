@@ -114,6 +114,8 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Equipment](#Equipment)
 
+[Energy Flow Diagram](#Energy-Flow-Diagram)
+
 [Rule](#Rule) | [Email Message](#Email Message) | [Text Message](#Text Message) | [Web Message](#Web Message) | [Wechat Message](#Wechat Message)
 
 [Email Server](#Email Server) | [GSM Modem](#GSM Modem)
@@ -326,6 +328,69 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"电",
 * PUT Update an Energy Category
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"电","unit_of_measure":"kWh", "kgce":0.1329 , "kgco2e":0.9825}}' http://BASE_URL/energycategories/{id}
+```
+
+
+### Energy Flow Diagram
+* GET an Energy Flow Diagram by ID
+```bash
+$ curl -i -X GET http://BASE_URL/energyflowdiagrams/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Equipment ID                              |
+| name          | string    | Equipment name                            |
+| uuid          | string    | Equipment UUID                            |
+
+* GET All Energy Flow Diagrams
+```bash
+$ curl -i -X GET http://BASE_URL/energyflowdiagrams
+```
+* DELETE an Energy Flow Diagram by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/energyflowdiagrams/{id}
+```
+* POST Create an Energy Flow Diagram
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Energy Flow"}}' http://BASE_URL/energyflowdiagrams
+```
+* PUT Update an Energy Flow Diagram
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Energy Flow Diagram"}}' http://BASE_URL/energyflowdiagrams/{id}
+```
+* GET All Nodes of an Energy Flow Diagram by ID
+```bash
+$ curl -i -X GET http://BASE_URL/energyflowdiagrams/{id}/nodes
+```
+* POST Create a Node of an Energy Flow Diagram
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"10KV#1"}}' http://BASE_URL/energyflowdiagrams/{id}/nodes
+```
+* PUT Update a Node of an Energy Flow Diagram
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"10KV#2"}}' http://BASE_URL/energyflowdiagrams/{id}/nodes/{nid}
+```
+* DELETE a Node of an Energy Flow Diagram
+```bash
+$ curl -i -X DELETE http://BASE_URL/energyflowdiagrams/{id}/nodes/{nid}
+```
+* GET All Links of an Energy Flow Diagram by ID
+```bash
+$ curl -i -X GET http://BASE_URL/energyflowdiagrams/{id}/links
+```
+* POST Create a Link of an Energy Flow Diagram
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"source_node_id":1, "target_node_id":3, "meter_uuid":"d806a78d-a31e-4833-b5c8-81261cfeb1f2"}}' http://BASE_URL/energyflowdiagrams/{id}/links
+```
+* PUT Update a Link of an Energy Flow Diagram
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"source_node_id":1, "target_node_id":4, "meter_uuid":"d806a78d-a31e-4833-b5c8-81261cfeb1f2"}}' http://BASE_URL/energyflowdiagrams/{id}/links/{lid}
+```
+* DELETE a Link of an Energy Flow Diagram
+```bash
+$ curl -i -X DELETE http://BASE_URL/energyflowdiagrams/{id}/links/{lid}
 ```
 
 
