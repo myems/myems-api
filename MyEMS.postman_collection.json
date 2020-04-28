@@ -713,6 +713,280 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Energy Flow Diagram",
+			"item": [
+				{
+					"name": "GET All Energy Flow Diagrams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET an Energy Flow Diagram by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create an Energy Flow Diagram",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Energy Flow\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Energy Flow Diagram",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Energy Flow Diagram\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Energy Flow Diagram",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Nodes of an Energy Flow Diagram",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/nodes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"nodes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create new Node of an Energy Flow Diagram",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"10KV#1\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/nodes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"nodes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update an Node of an Energy Flow Diagram",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"10KV#2\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/nodes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"nodes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Node of an Energy Flow Diagram",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/nodes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"nodes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Links of an Energy Flow Diagram",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/nodes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"nodes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create new Link of an Energy Flow Diagram",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"source_node_id\":1, \"target_node_id\":3, \"meter_uuid\":\"d806a78d-a31e-4833-b5c8-81261cfeb1f2\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/links",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"links"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Link of an Energy Flow Diagram",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"source_node_id\":1, \"target_node_id\":4, \"meter_uuid\":\"d806a78d-a31e-4833-b5c8-81261cfeb1f2\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/links/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"links",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Link of an Energy Flow Diagram",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/energyflowdiagrams/1/links/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"energyflowdiagrams",
+								"1",
+								"links",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Energy Item",
 			"item": [
 				{
@@ -1439,37 +1713,37 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Help File",
+			"name": "Knowledge File",
 			"item": [
 				{
-					"name": "GET All Help Files",
+					"name": "GET All Knowledge Files",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/helpfiles",
+							"raw": "{{base_url}}/knowledgefiles",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"helpfiles"
+								"knowledgefiles"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GET a Help File by ID",
+					"name": "GET a Knowledge File by ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/helpfiles/1",
+							"raw": "{{base_url}}/knowledgefiles/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"helpfiles",
+								"knowledgefiles",
 								"1"
 							]
 						}
@@ -1477,7 +1751,7 @@
 					"response": []
 				},
 				{
-					"name": "POST Upload a Help File",
+					"name": "POST Upload a Knowledge File",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1488,7 +1762,7 @@
 							},
 							{
 								"key": "token",
-								"value": "efb2aba8b0b0604b939c9e8e0cfa29511e5d1f3e",
+								"value": "7951c99f9f2693394b9d49ab79ff91e4f6dc1253",
 								"type": "text"
 							}
 						],
@@ -1498,24 +1772,24 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/zh/myems/myems_logo_200x200.png"
+									"src": "/zh/jci/FEMS/feed-doc/standards/能源管理体系-要求GB-T-23331-2012.pdf"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/helpfiles",
+							"raw": "{{base_url}}/knowledgefiles",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"helpfiles"
+								"knowledgefiles"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "DELETE a Help File by ID",
+					"name": "DELETE a Knowledge File by ID",
 					"request": {
 						"method": "DELETE",
 						"header": [],

@@ -37,11 +37,11 @@ class EquipmentCollection:
                  " FROM tbl_equipments "
                  " ORDER BY id ")
         cursor.execute(query)
-        rows_spaces = cursor.fetchall()
+        rows_equipments = cursor.fetchall()
 
         result = list()
-        if rows_spaces is not None and len(rows_spaces) > 0:
-            for row in rows_spaces:
+        if rows_equipments is not None and len(rows_equipments) > 0:
+            for row in rows_equipments:
                 cost_center = cost_center_dict.get(row['cost_center_id'], None)
                 meta_result = {"id": row['id'],
                                "name": row['name'],
@@ -738,7 +738,7 @@ class EquipmentParameterCollection:
 
         cursor.execute(" SELECT name "
                        " FROM tbl_equipments_parameters "
-                       " WHERE name = %s AND equipment_id != %s ", (name, id_))
+                       " WHERE name = %s AND equipment_id = %s ", (name, id_))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
@@ -842,7 +842,7 @@ class EquipmentParameterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/equipments/' + str(new_id)
+        resp.location = '/equipments/' + str(id_) + 'parameters/' + str(new_id)
 
 
 class EquipmentParameterItem:

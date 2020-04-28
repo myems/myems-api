@@ -7,6 +7,7 @@ import datasource
 import emailmessage
 import emailserver
 import energycategory
+import energyflowdiagram
 import energyitem
 import equipment
 import gsmmodem
@@ -76,6 +77,19 @@ api.add_route('/energycategories',
               energycategory.EnergyCategoryCollection())
 api.add_route('/energycategories/{id_}',
               energycategory.EnergyCategoryItem())
+
+api.add_route('/energyflowdiagrams',
+              energyflowdiagram.EnergyFlowDiagramCollection())
+api.add_route('/energyflowdiagrams/{id_}',
+              energyflowdiagram.EnergyFlowDiagramItem())
+api.add_route('/energyflowdiagrams/{id_}/links',
+              energyflowdiagram.EnergyFlowDiagramLinkCollection())
+api.add_route('/energyflowdiagrams/{id_}/links/{lid}',
+              energyflowdiagram.EnergyFlowDiagramLinkItem())
+api.add_route('/energyflowdiagrams/{id_}/nodes',
+              energyflowdiagram.EnergyFlowDiagramNodeCollection())
+api.add_route('/energyflowdiagrams/{id_}/nodes/{nid}',
+              energyflowdiagram.EnergyFlowDiagramNodeItem())
 
 api.add_route('/energyitems',
               energyitem.EnergyItemCollection())
