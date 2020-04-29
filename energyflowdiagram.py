@@ -19,6 +19,84 @@ class EnergyFlowDiagramCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
+        query = (" SELECT id, energy_flow_diagram_id, name "
+                 " FROM tbl_energy_flow_diagrams_nodes")
+        cursor.execute(query)
+        rows_nodes = cursor.fetchall()
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_meters ")
+        cursor.execute(query)
+        rows_meters = cursor.fetchall()
+
+        meter_dict = dict()
+        if rows_meters is not None and len(rows_meters) > 0:
+            for row in rows_meters:
+                meter_dict[row['uuid']] = {"type": 'meter',
+                                           "id": row['id'],
+                                           "name": row['name'],
+                                           "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_offline_meters ")
+        cursor.execute(query)
+        rows_offline_meters = cursor.fetchall()
+
+        offline_meter_dict = dict()
+        if rows_offline_meters is not None and len(rows_offline_meters) > 0:
+            for row in rows_offline_meters:
+                offline_meter_dict[row['uuid']] = {"type": 'offline_meter',
+                                                   "id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_virtual_meters ")
+        cursor.execute(query)
+        rows_virtual_meters = cursor.fetchall()
+
+        virtual_meter_dict = dict()
+        if rows_virtual_meters is not None and len(rows_virtual_meters) > 0:
+            for row in rows_virtual_meters:
+                virtual_meter_dict[row['uuid']] = {"type": 'virtual_meter',
+                                                   "id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        node_dict = dict()
+        node_list_dict = dict()
+        if rows_nodes is not None and len(rows_nodes) > 0:
+            for row in rows_nodes:
+                node_dict[row['id']] = row['name']
+                if node_list_dict.get(row['energy_flow_diagram_id']) is None:
+                    node_list_dict[row['energy_flow_diagram_id']] = list()
+                node_list_dict[row['energy_flow_diagram_id']].append({"id": row['id'], "name": row['name']})
+
+        query = (" SELECT id, energy_flow_diagram_id, source_node_id, target_node_id, meter_uuid "
+                 " FROM tbl_energy_flow_diagrams_links")
+        cursor.execute(query)
+        rows_links = cursor.fetchall()
+
+        link_list_dict = dict()
+        if rows_links is not None and len(rows_links) > 0:
+            for row in rows_links:
+                # find meter by uuid
+                meter = meter_dict.get(row['meter_uuid'], None)
+                if meter is None:
+                    meter = virtual_meter_dict.get(row['meter_uuid'], None)
+                if meter is None:
+                    meter = offline_meter_dict.get(row['meter_uuid'], None)
+
+                if link_list_dict.get(row['energy_flow_diagram_id']) is None:
+                    link_list_dict[row['energy_flow_diagram_id']] = list()
+                link_list_dict[row['energy_flow_diagram_id']].append({"id": row['id'],
+                                                                      "source_node": {
+                                                                          "id": row['source_node_id'],
+                                                                          "name": node_dict.get(row['source_node_id'])},
+                                                                      "target_node": {
+                                                                          "id": row['target_node_id'],
+                                                                          "name": node_dict.get(row['target_node_id'])},
+                                                                      "meter": meter})
+
         query = (" SELECT id, name, uuid "
                  " FROM tbl_energy_flow_diagrams "
                  " ORDER BY id ")
@@ -31,7 +109,9 @@ class EnergyFlowDiagramCollection:
 
                 meta_result = {"id": row['id'],
                                "name": row['name'],
-                               "uuid": row['uuid']}
+                               "uuid": row['uuid'],
+                               "nodes": node_list_dict.get(row['id'], None),
+                               "links": link_list_dict.get(row['id'], None), }
                 result.append(meta_result)
 
         cursor.close()
@@ -69,7 +149,7 @@ class EnergyFlowDiagramCollection:
 
         add_values = (" INSERT INTO tbl_energy_flow_diagrams "
                       "    (name, uuid) "
-                      " VALUES (%s) ")
+                      " VALUES (%s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4())))
         new_id = cursor.lastrowid
@@ -99,6 +179,84 @@ class EnergyFlowDiagramItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
+        query = (" SELECT id, energy_flow_diagram_id, name "
+                 " FROM tbl_energy_flow_diagrams_nodes")
+        cursor.execute(query)
+        rows_nodes = cursor.fetchall()
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_meters ")
+        cursor.execute(query)
+        rows_meters = cursor.fetchall()
+
+        meter_dict = dict()
+        if rows_meters is not None and len(rows_meters) > 0:
+            for row in rows_meters:
+                meter_dict[row['uuid']] = {"type": 'meter',
+                                           "id": row['id'],
+                                           "name": row['name'],
+                                           "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_offline_meters ")
+        cursor.execute(query)
+        rows_offline_meters = cursor.fetchall()
+
+        offline_meter_dict = dict()
+        if rows_offline_meters is not None and len(rows_offline_meters) > 0:
+            for row in rows_offline_meters:
+                offline_meter_dict[row['uuid']] = {"type": 'offline_meter',
+                                                   "id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_virtual_meters ")
+        cursor.execute(query)
+        rows_virtual_meters = cursor.fetchall()
+
+        virtual_meter_dict = dict()
+        if rows_virtual_meters is not None and len(rows_virtual_meters) > 0:
+            for row in rows_virtual_meters:
+                virtual_meter_dict[row['uuid']] = {"type": 'virtual_meter',
+                                                   "id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        node_dict = dict()
+        node_list_dict = dict()
+        if rows_nodes is not None and len(rows_nodes) > 0:
+            for row in rows_nodes:
+                node_dict[row['id']] = row['name']
+                if node_list_dict.get(row['energy_flow_diagram_id']) is None:
+                    node_list_dict[row['energy_flow_diagram_id']] = list()
+                node_list_dict[row['energy_flow_diagram_id']].append({"id": row['id'], "name": row['name']})
+
+        query = (" SELECT id, energy_flow_diagram_id, source_node_id, target_node_id, meter_uuid "
+                 " FROM tbl_energy_flow_diagrams_links")
+        cursor.execute(query)
+        rows_links = cursor.fetchall()
+
+        link_list_dict = dict()
+        if rows_links is not None and len(rows_links) > 0:
+            for row in rows_links:
+                # find meter by uuid
+                meter = meter_dict.get(row['meter_uuid'], None)
+                if meter is None:
+                    meter = virtual_meter_dict.get(row['meter_uuid'], None)
+                if meter is None:
+                    meter = offline_meter_dict.get(row['meter_uuid'], None)
+
+                if link_list_dict.get(row['energy_flow_diagram_id']) is None:
+                    link_list_dict[row['energy_flow_diagram_id']] = list()
+                link_list_dict[row['energy_flow_diagram_id']].append({"id": row['id'],
+                                                                      "source_node": {
+                                                                          "id": row['source_node_id'],
+                                                                          "name": node_dict.get(row['source_node_id'])},
+                                                                      "target_node": {
+                                                                          "id": row['target_node_id'],
+                                                                          "name": node_dict.get(row['target_node_id'])},
+                                                                      "meter": meter})
+
         query = (" SELECT id, name, uuid "
                  " FROM tbl_energy_flow_diagrams "
                  " WHERE id = %s ")
@@ -113,7 +271,10 @@ class EnergyFlowDiagramItem:
         else:
             meta_result = {"id": row['id'],
                            "name": row['name'],
-                           "uuid": row['uuid']}
+                           "uuid": row['uuid'],
+                           "nodes": node_list_dict.get(row['id'], None),
+                           "links": link_list_dict.get(row['id'], None),
+                           }
 
         resp.body = json.dumps(meta_result)
 
@@ -283,8 +444,8 @@ class EnergyFlowDiagramLinkCollection:
         rows_links = cursor.fetchall()
 
         result = list()
-        if rows_links is not None and len(rows_nodes) > 0:
-            for row in rows_nodes:
+        if rows_links is not None and len(rows_links) > 0:
+            for row in rows_links:
                 source_node = node_dict.get(row['source_node_id'], None)
                 target_node = node_dict.get(row['target_node_id'], None)
                 # find meter by uuid
@@ -351,6 +512,19 @@ class EnergyFlowDiagramLinkCollection:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.NOT_FOUND',
                                    description='API.ENERGY_FLOW_DIAGRAM_NOT_FOUND')
+
+        cursor.execute(" SELECT id "
+                       " FROM tbl_energy_flow_diagrams_links "
+                       " WHERE energy_flow_diagram_id = %s AND "
+                       "       source_node_id = %s AND target_node_id = %s ",
+                       (id_, source_node_id, target_node_id,))
+        row = cursor.fetchone()
+        if row is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.NOT_FOUND',
+                                   description='API.ENERGY_FLOW_DIAGRAM_LINK_IS_ALREADY_IN_USE')
 
         query = (" SELECT id, name "
                  " FROM tbl_energy_flow_diagrams_nodes "
@@ -557,7 +731,7 @@ class EnergyFlowDiagramLinkItem:
                                    title='API.NOT_FOUND',
                                    description='API.ENERGY_FLOW_DIAGRAM_NOT_FOUND')
 
-        cursor.execute(" SELECT name "
+        cursor.execute(" SELECT id "
                        " FROM tbl_energy_flow_diagrams_links "
                        " WHERE energy_flow_diagram_id = %s AND id = %s ",
                        (id_, lid,))
@@ -631,7 +805,7 @@ class EnergyFlowDiagramLinkItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.NOT_FOUND',
                                    description='API.ENERGY_FLOW_DIAGRAM_NOT_FOUND')
 
-        cursor.execute(" SELECT name "
+        cursor.execute(" SELECT id "
                        " FROM tbl_energy_flow_diagrams_links "
                        " WHERE energy_flow_diagram_id = %s AND id = %s ",
                        (id_, lid,))
@@ -642,6 +816,19 @@ class EnergyFlowDiagramLinkItem:
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.NOT_FOUND',
                                    description='API.ENERGY_FLOW_DIAGRAM_LINK_NOT_FOUND_OR_NOT_MATCH')
+
+        cursor.execute(" SELECT id "
+                       " FROM tbl_energy_flow_diagrams_links "
+                       " WHERE energy_flow_diagram_id = %s AND id != %s "
+                       "       AND source_node_id = %s AND target_node_id = %s ",
+                       (id_, lid, source_node_id, target_node_id,))
+        row = cursor.fetchone()
+        if row is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.NOT_FOUND',
+                                   description='API.ENERGY_FLOW_DIAGRAM_LINK_IS_ALREADY_IN_USE')
 
         query = (" SELECT id, name "
                  " FROM tbl_energy_flow_diagrams_nodes "
@@ -722,6 +909,7 @@ class EnergyFlowDiagramLinkItem:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_200
+
 
 class EnergyFlowDiagramNodeCollection:
     @staticmethod
