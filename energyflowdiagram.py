@@ -386,7 +386,8 @@ class EnergyFlowDiagramLinkCollection:
         node_dict = dict()
         if rows_nodes is not None and len(rows_nodes) > 0:
             for row in rows_nodes:
-                node_dict[row['id']] = {"name": row['name']}
+                node_dict[row['id']] = {"id": row['id'],
+                                        "name": row['name']}
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_meters ")
@@ -638,7 +639,8 @@ class EnergyFlowDiagramLinkItem:
         node_dict = dict()
         if rows_nodes is not None and len(rows_nodes) > 0:
             for row in rows_nodes:
-                node_dict[row['id']] = {"name": row['name']}
+                node_dict[row['id']] = {"id": row['id'],
+                                        "name": row['name']}
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_meters ")
