@@ -519,14 +519,17 @@ class VirtualMeterItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        cursor.execute(" SELECT name "
+        cursor.execute(" SELECT uuid "
                        " FROM tbl_virtual_meters "
                        " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
+        row = cursor.fetchone()
+        if row is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.VIRTUAL_METER_NOT_FOUND')
+        else:
+            virtual_meter_uuid = row[0]
 
         # check relations with other virtual meters
         cursor.execute(" SELECT vm.name "
@@ -566,6 +569,18 @@ class VirtualMeterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_EQUIPMENTS')
 
+        # check relation with equipment parameters
+        cursor.execute(" SELECT id "
+                       " FROM tbl_equipments_parameters "
+                       " WHERE numerator_meter_uuid = %s OR denominator_meter_uuid = %s", (virtual_meter_uuid,))
+        rows_links = cursor.fetchall()
+        if rows_links is not None and len(rows_links) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_EQUIPMENT_PARAMETERS')
+
         cursor.execute(" SELECT id "
                        " FROM tbl_expressions "
                        " WHERE virtual_meter_id = %s ", (id_,))
@@ -576,6 +591,18 @@ class VirtualMeterItem:
             # delete expression
             cursor.execute(" DELETE FROM tbl_expressions WHERE id = %s ", (row_expression[0],))
             cnx.commit()
+
+        # check relation with energy flow diagram links
+        cursor.execute(" SELECT id "
+                       " FROM tbl_energy_flow_diagram_links "
+                       " WHERE meter_uuid = %s ", (virtual_meter_uuid,))
+        rows_links = cursor.fetchall()
+        if rows_links is not None and len(rows_links) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_ENERGY_FLOW_DIAGRAM_LINKS')
 
         cursor.execute(" DELETE FROM tbl_virtual_meters WHERE id = %s ", (id_,))
         cnx.commit()
