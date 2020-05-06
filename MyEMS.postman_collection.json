@@ -408,6 +408,346 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Distribution System",
+			"item": [
+				{
+					"name": "GET All Distribution Systems",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributionsystems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET  a Distribution System by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributionsystems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Distribution System",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"示例配电系统2\", \"svg\":\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><svg width=\\\"5cm\\\" height=\\\"4cm\\\" version=\\\"1.1\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"><desc>Four separate rectangles</desc><rect x=\\\".5cm\\\" y=\\\".5cm\\\" width=\\\"2cm\\\" height=\\\"1cm\\\"/></svg>\", \"description\":\"demo description\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/distributionsystems",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Distribution Systems by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributionsystems/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Distribution System by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"示例配电系统1\", \"svg\":\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><svg width=\\\"5cm\\\" height=\\\"4cm\\\" version=\\\"1.1\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"><desc>Four separate rectangles</desc><rect x=\\\".5cm\\\" y=\\\".5cm\\\" width=\\\"2cm\\\" height=\\\"1cm\\\"/></svg>\", \"description\":\"demo description\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/distributionsystems/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Distribution Circuits of Distribution System",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributionsystems/1/distributioncircuits",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems",
+								"1",
+								"distributioncircuits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind Distribution Circuit to Distribution System",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"distribution_circuit_id\":\"1\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/distributionsystems/1/distributioncircuits",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems",
+								"1",
+								"distributioncircuits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Unbind Distribution Circuit from Distribution System",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributionsystems/1/distributioncircuits/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributionsystems",
+								"1",
+								"distributioncircuits",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Distribution Circuit",
+			"item": [
+				{
+					"name": "GET All Distribution Circuits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Distribution Circuit by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create new Distribution Circuit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"51W92\", \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Distribution Circuit by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Distribution Circuit by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"51W91\", \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind Point to Distribution Circuit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"point_id\":\"1\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Points of a Distribution Circuit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Unbind Point from Distribution Circuit",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distributioncircuits/1/points/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distributioncircuits",
+								"1",
+								"points",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Email Server",
 			"item": [
 				{
@@ -799,13 +1139,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energyflowdiagrams/1",
+							"raw": "{{base_url}}/energyflowdiagrams/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"energyflowdiagrams",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -837,7 +1177,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"10KV#1\"}}"
+							"raw": "{\"data\":{\"name\":\"10KV#3\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/energyflowdiagrams/1/nodes",
@@ -860,7 +1200,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"10KV#2\"}}"
+							"raw": "{\"data\":{\"name\":\"10KV Input #1\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/energyflowdiagrams/1/nodes/1",
@@ -883,7 +1223,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energyflowdiagrams/1/nodes/1",
+							"raw": "{{base_url}}/energyflowdiagrams/1/nodes/3",
 							"host": [
 								"{{base_url}}"
 							],
@@ -891,7 +1231,7 @@
 								"energyflowdiagrams",
 								"1",
 								"nodes",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -903,14 +1243,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energyflowdiagrams/1/nodes",
+							"raw": "{{base_url}}/energyflowdiagrams/1/links",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"energyflowdiagrams",
 								"1",
-								"nodes"
+								"links"
 							]
 						}
 					},
@@ -923,7 +1263,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"source_node_id\":1, \"target_node_id\":3, \"meter_uuid\":\"d806a78d-a31e-4833-b5c8-81261cfeb1f2\"}}"
+							"raw": "{\"data\":{\"source_node_id\":1, \"target_node_id\":2, \"meter_uuid\":\"493cd112-6295-43c6-98aa-e7f801e7b7ba\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/energyflowdiagrams/1/links",
@@ -946,7 +1286,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"source_node_id\":1, \"target_node_id\":4, \"meter_uuid\":\"d806a78d-a31e-4833-b5c8-81261cfeb1f2\"}}"
+							"raw": "{\"data\":{\"source_node_id\":1, \"target_node_id\":4, \"meter_uuid\":\"493cd112-6295-43c6-98aa-e7f801e7b7ba\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/energyflowdiagrams/1/links/1",
@@ -969,7 +1309,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/energyflowdiagrams/1/links/1",
+							"raw": "{{base_url}}/energyflowdiagrams/1/links/2",
 							"host": [
 								"{{base_url}}"
 							],
@@ -977,7 +1317,7 @@
 								"energyflowdiagrams",
 								"1",
 								"links",
-								"1"
+								"2"
 							]
 						}
 					},

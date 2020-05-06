@@ -4,6 +4,8 @@ from falcon_multipart.middleware import MultipartMiddleware
 import contact
 import costcenter
 import datasource
+import distributioncircuit
+import distributionsystem
 import emailmessage
 import emailserver
 import energycategory
@@ -62,6 +64,24 @@ api.add_route('/datasources/{id_}/points',
               datasource.DataSourcePointCollection())
 api.add_route('/datasources/status',
               datasource.DataSourceStatusCollection())
+
+api.add_route('/distributioncircuits',
+              distributioncircuit.DistributionCircuitCollection())
+api.add_route('/distributioncircuits/{id_}',
+              distributioncircuit.DistributionCircuitItem())
+api.add_route('/distributioncircuits/{id_}/points',
+              distributioncircuit.DistributionCircuitPointCollection())
+api.add_route('/distributioncircuits/{id_}/points/{pid}',
+              distributioncircuit.DistributionCircuitPointItem())
+
+api.add_route('/distributionsystems',
+              distributionsystem.DistributionSystemCollection())
+api.add_route('/distributionsystems/{id_}',
+              distributionsystem.DistributionSystemItem())
+api.add_route('/distributionsystems/{id_}/distributioncircuits',
+              distributionsystem.DistributionSystemDistributionCircuitCollection())
+api.add_route('/distributionsystems/{id_}/distributioncircuits/{dcid}',
+              distributionsystem.DistributionSystemDistributionCircuitItem())
 
 api.add_route('/emailmessages/from/{startdate}/to/{enddate}',
               emailmessage.EmailMessageCollection())
