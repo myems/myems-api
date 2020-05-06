@@ -116,6 +116,8 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Energy Flow Diagram](#Energy-Flow-Diagram)
 
+[Distribution System](#Distribution-System) | [Distribution Circuit](#Distribution-Circuit)
+
 [Rule](#Rule) | [Email Message](#Email Message) | [Text Message](#Text Message) | [Web Message](#Web Message) | [Wechat Message](#Wechat Message)
 
 [Email Server](#Email Server) | [GSM Modem](#GSM Modem)
@@ -202,9 +204,9 @@ Result in JSON
 
 | Name          | Data Type | Description                               |
 |---------------|-----------|-------------------------------------------|
-| id            | integer   | Complex ID                                |
-| name          | string    | Complex name                              |
-| uuid          | string    | Complex UUID                              |
+| id            | integer   | Data Source ID                            |
+| name          | string    | Data Source name                          |
+| uuid          | string    | Data Source UUID                          |
 | protocol      | string    | Protocol Type Supported: bacnet-ip, modbus-tcp, s7, opc-ua, control-logix, |
 | connection    | json      | Connection data in JSON. BACnet/IP example: {"host":"10.1.2.88"}, Modbus TCP example: {"host":"10.1.2.88", "port":502}, S7 example: {"host":"10.1.2.202", "port":102, "rack": 0, "slot": 2}, ControlLogix example: {"host":"10.1.2.88","port":44818,"processorslot":3} OPC UA example: {"url":"opc.tcp://10.1.2.5:49320/OPCUA/SimulationServer/"} |
 
@@ -227,6 +229,100 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Modbus
 * GET all points of the Data Source by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/datasources/{id}/points
+```
+
+### Distribution Circuit
+* GET Distribution Circuit by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/distributioncircuits/{id}
+```
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Distribution Circuit ID                   |
+| name          | string    | Distribution Circuit name                 |
+| uuid          | string    | Distribution Circuit UUID                 |
+| distribution_room| string | Distribution Room                         |
+| switchgear    | string    | Switchgear                                |
+| peak_load     | decimal(18,3)| Peak Load (KW)                         |
+| peak_current  | decimal(18,3)| Peak Current (A)                       |
+| customers     | string    | Customers or users                        |
+| meters        | string    | Meters (output or next level)             |
+
+* GET all Distribution Circuits
+```bash
+$ curl -i -X GET http://BASE_URL/distributioncircuits
+```
+* DELETE a Distribution Circuit by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/distributioncircuits/{id}
+```
+* POST Create new Distribution Circuit
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"51W91", "distribution_room":"EW1", "switchgear":"51AL9", "peak_load": 30, "peak_current": 53.6, "customers": "地下室应急照明", "meters": "ALE-1102, ALE-1082"}}' http://BASE_URL/distributioncircuits
+```
+* PUT Update a Distribution Circuit
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"51W92", "distribution_room":"EW1", "switchgear":"51AL9", "peak_load": 30, "peak_current": 53.6, "customers": "地下室应急照明", "meters": "ALE-1102, ALE-1082"}}' http://BASE_URL/distributioncircuits/{id}
+```
+* GET All Points associated with Distribution Circuit ID
+```bash
+$ curl -i -X GET http://BASE_URL/distributioncircuits/{id}/points
+```
+* POST Bind Point to Distribution Circuit
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":"3"}}' http://BASE_URL/distributioncircuits/{id}/points
+```
+* DELETE Unbind Point from Distribution Circuit
+```bash
+$ curl -i -X DELETE http://BASE_URL/distributioncircuits/{id}/points/{pid}
+```
+
+### Distribution System
+* GET Distribution System by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/distributionsystems/{id}
+```
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Distribution System ID                    |
+| name          | string    | Distribution System name                  |
+| uuid          | string    | Distribution System UUID                  |
+| svg           | string    | SVG file in plain text                    |
+| description   | string    | Description (allow None)                  |
+
+* GET all Distribution Systems
+```bash
+$ curl -i -X GET http://BASE_URL/distributionsystems
+```
+* DELETE a Distribution System by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/distributionsystems/{id}
+```
+* POST Create new Distribution System
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"示例配电系统", "svg":"<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg width=\"5cm\" height=\"4cm\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><desc>Four separate rectangles</desc><rect x=\".5cm\" y=\".5cm\" width=\"2cm\" height=\"1cm\"/></svg>", "description":"demo description"}}' http://BASE_URL/distributionsystems
+```
+* PUT Update a Distribution System
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"示例配电系统", "svg":"<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg width=\"5cm\" height=\"4cm\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><desc>Four separate rectangles</desc><rect x=\".5cm\" y=\".5cm\" width=\"2cm\" height=\"1cm\"/></svg>", "description":"demo description"}}' http://BASE_URL/distributionsystems/{id}
+```
+* GET All Distribution Circuits associated with Distribution Circuit
+```bash
+$ curl -i -X GET http://BASE_URL/distributionsystems/{id}/distributioncircuits
+```
+* POST Bind Point to Distribution Circuit
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"distribution_circuit_id":"1"}}' http://BASE_URL/distributionsystems/{id}/distributioncircuits
+```
+* DELETE Unbind Point from Distribution Circuit
+```bash
+$ curl -i -X DELETE http://BASE_URL/distributionsystems/{id}/distributioncircuits/{dcid}
 ```
 
 ### Email Message
