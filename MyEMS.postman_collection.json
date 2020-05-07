@@ -622,7 +622,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"51W92\", \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
+							"raw": "{\"data\":{\"name\":\"51W92\", \"distribution_system_id\":1, \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -664,7 +664,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"51W91\", \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
+							"raw": "{\"data\":{\"name\":\"51W91\", \"distribution_system_id\":1, \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
 							"options": {
 								"raw": {}
 							}

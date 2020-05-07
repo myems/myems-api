@@ -80,8 +80,6 @@ api.add_route('/distributionsystems/{id_}',
               distributionsystem.DistributionSystemItem())
 api.add_route('/distributionsystems/{id_}/distributioncircuits',
               distributionsystem.DistributionSystemDistributionCircuitCollection())
-api.add_route('/distributionsystems/{id_}/distributioncircuits/{dcid}',
-              distributionsystem.DistributionSystemDistributionCircuitItem())
 
 api.add_route('/emailmessages/from/{startdate}/to/{enddate}',
               emailmessage.EmailMessageCollection())
