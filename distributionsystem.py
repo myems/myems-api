@@ -203,7 +203,7 @@ class DistributionSystemItem:
                 len(str.strip(new_values['data']['svg'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SVG')
-        svg = str.strip(new_values['data']['name'])
+        svg = str.strip(new_values['data']['svg'])
 
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
