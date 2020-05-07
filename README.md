@@ -244,6 +244,7 @@ Result in JSON
 | id            | integer   | Distribution Circuit ID                   |
 | name          | string    | Distribution Circuit name                 |
 | uuid          | string    | Distribution Circuit UUID                 |
+| distribution_system| object | Distribution System Object              |
 | distribution_room| string | Distribution Room                         |
 | switchgear    | string    | Switchgear                                |
 | peak_load     | decimal(18,3)| Peak Load (KW)                         |
@@ -261,11 +262,11 @@ $ curl -i -X DELETE http://BASE_URL/distributioncircuits/{id}
 ```
 * POST Create new Distribution Circuit
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"51W91", "distribution_room":"EW1", "switchgear":"51AL9", "peak_load": 30, "peak_current": 53.6, "customers": "地下室应急照明", "meters": "ALE-1102, ALE-1082"}}' http://BASE_URL/distributioncircuits
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"51W91", "distribution_system_id":1, "distribution_room":"EW1", "switchgear":"51AL9", "peak_load": 30, "peak_current": 53.6, "customers": "地下室应急照明", "meters": "ALE-1102, ALE-1082"}}' http://BASE_URL/distributioncircuits
 ```
 * PUT Update a Distribution Circuit
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"51W92", "distribution_room":"EW1", "switchgear":"51AL9", "peak_load": 30, "peak_current": 53.6, "customers": "地下室应急照明", "meters": "ALE-1102, ALE-1082"}}' http://BASE_URL/distributioncircuits/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"51W92", "distribution_system_id":1, "distribution_room":"EW1", "switchgear":"51AL9", "peak_load": 30, "peak_current": 53.6, "customers": "地下室应急照明", "meters": "ALE-1102, ALE-1082"}}' http://BASE_URL/distributioncircuits/{id}
 ```
 * GET All Points associated with Distribution Circuit ID
 ```bash
@@ -315,14 +316,6 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"示例
 * GET All Distribution Circuits associated with Distribution Circuit
 ```bash
 $ curl -i -X GET http://BASE_URL/distributionsystems/{id}/distributioncircuits
-```
-* POST Bind Point to Distribution Circuit
-```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"distribution_circuit_id":"1"}}' http://BASE_URL/distributionsystems/{id}/distributioncircuits
-```
-* DELETE Unbind Point from Distribution Circuit
-```bash
-$ curl -i -X DELETE http://BASE_URL/distributionsystems/{id}/distributioncircuits/{dcid}
 ```
 
 ### Email Message
