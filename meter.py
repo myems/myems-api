@@ -127,7 +127,6 @@ class MeterCollection:
                 new_values['data']['cost_center_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_COST_CENTER_ID')
-
         cost_center_id = new_values['data']['cost_center_id']
 
         if 'energy_item_id' in new_values['data'].keys() and \
