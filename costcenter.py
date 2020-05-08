@@ -49,39 +49,43 @@ class CostCenterCollection:
         if 'name' not in new_values['data'].keys() or len(new_values['data']['name']) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_NAME_VALUE')
+        name = str.strip(new_values['data']['name'])
 
-        if 'external_id' not in new_values['data'].keys() or len(new_values['data']['external_id']) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_EXTERNAL_ID_VALUE')
+        if 'external_id' in new_values['data'].keys() and \
+                new_values['data']['external_id'] is not None and \
+                len(str(new_values['data']['external_id'])) > 0:
+            external_id = str.strip(new_values['data']['external_id'])
+        else:
+            external_id = None
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
                        " FROM tbl_cost_centers "
-                       " WHERE name = %s ", (new_values['data']['name'], ))
+                       " WHERE name = %s ", (name, ))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.NAME_CONFLICTS',
+                                   title='API.BAD_REQUEST',
                                    description='API.COST_CENTER_NAME_EXISTS')
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_cost_centers "
-                       " WHERE external_id = %s ", (new_values['data']['external_id'], ))
-        if cursor.fetchone() is not None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.GLOBAL_ID_CONFLICTS',
-                                   description='API.COST_CENTER_EXTERNAL_ID_EXISTS')
+        if external_id is not None:
+            cursor.execute(" SELECT name "
+                           " FROM tbl_cost_centers "
+                           " WHERE external_id = %s ", (external_id, ))
+            if cursor.fetchone() is not None:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.COST_CENTER_EXTERNAL_ID_EXISTS')
 
         add_row = (" INSERT INTO tbl_cost_centers "
                    "     (name, uuid, external_id) "
                    " VALUES (%s, %s, %s) ")
-        cursor.execute(add_row, (new_values['data']['name'],
+        cursor.execute(add_row, (name,
                                  str(uuid.uuid4()),
-                                 new_values['data']['external_id'],))
+                                 external_id,))
         new_id = cursor.lastrowid
         cnx.commit()
         cursor.close()
@@ -142,21 +146,79 @@ class CostCenterItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.COST_CENTER_NOT_FOUND')
 
-        # TODO: delete all associated objects
-
-        # check relationship with companies
+        # check relation with equipments
         cursor.execute(" SELECT id "
-                       " FROM tbl_companies "
+                       " FROM tbl_equipments "
                        " WHERE cost_center_id = %s ", (id_,))
-        rows_companies = cursor.fetchall()
-        if rows_companies is not None and len(rows_companies) > 0:
+        rows_equipments = cursor.fetchall()
+        if rows_equipments is not None and len(rows_equipments) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATIONSHIP_WITH_COMPANIES')
+                                   description='API.THERE_IS_RELATION_WITH_EQUIPMENTS')
 
-        # check relationship with spaces
+        # check relation with tariffs
+        cursor.execute(" SELECT id "
+                       " FROM tbl_cost_centers_tariffs "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_tariffs = cursor.fetchall()
+        if rows_tariffs is not None and len(rows_tariffs) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_TARIFFS')
+
+        # check relation with meters
+        cursor.execute(" SELECT id "
+                       " FROM tbl_meters "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_meters = cursor.fetchall()
+        if rows_meters is not None and len(rows_meters) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_METERS')
+
+        # check relation with offline meters
+        cursor.execute(" SELECT id "
+                       " FROM tbl_offline_meters "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_offline_meters = cursor.fetchall()
+        if rows_offline_meters is not None and len(rows_offline_meters) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METERS')
+
+        # check relation with virtual meters
+        cursor.execute(" SELECT id "
+                       " FROM tbl_virtual_meters "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_virtual_meters = cursor.fetchall()
+        if rows_virtual_meters is not None and len(rows_virtual_meters) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METERS')
+
+        # check relation with tenants
+        cursor.execute(" SELECT id "
+                       " FROM tbl_tenants "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_tenants = cursor.fetchall()
+        if rows_tenants is not None and len(rows_tenants) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_TENANTS')
+
+        # check relation with spaces
         cursor.execute(" SELECT id "
                        " FROM tbl_spaces "
                        " WHERE cost_center_id = %s ", (id_,))
@@ -192,10 +254,14 @@ class CostCenterItem:
         if 'name' not in new_values['data'].keys() or len(new_values['data']['name']) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_NAME_VALUE')
+        name = str.strip(new_values['data']['name'])
 
-        if 'external_id' not in new_values['data'].keys() or len(new_values['data']['external_id']) <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_EXTERNAL_ID_VALUE')
+        if 'external_id' in new_values['data'].keys() and \
+                new_values['data']['external_id'] is not None and \
+                len(str(new_values['data']['external_id'])) > 0:
+            external_id = str.strip(new_values['data']['external_id'])
+        else:
+            external_id = None
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -212,24 +278,24 @@ class CostCenterItem:
         cursor.execute(" SELECT name "
                        " FROM tbl_cost_centers "
                        " WHERE name = %s AND id != %s ",
-                       (new_values['data']['name'], id_, ))
+                       (name, id_, ))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.NAME_CONFLICTS',
+                                   title='API.BAD_REQUEST',
                                    description='API.COST_CENTER_NAME_EXISTS')
-
-        cursor.execute(" SELECT name "
-                       " FROM tbl_cost_centers "
-                       " WHERE external_id = %s AND id != %s ",
-                       (new_values['data']['external_id'], id_, ))
-        if cursor.fetchone() is not None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.GLOBAL_ID_CONFLICTS',
-                                   description='API.COST_CENTER_EXTERNAL_ID_EXISTS')
+        if external_id is not None:
+            cursor.execute(" SELECT name "
+                           " FROM tbl_cost_centers "
+                           " WHERE external_id = %s AND id != %s ",
+                           (external_id, id_, ))
+            if cursor.fetchone() is not None:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_400,
+                                       title='API.BAD_REQUEST',
+                                       description='API.COST_CENTER_EXTERNAL_ID_EXISTS')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_cost_centers "
@@ -245,8 +311,8 @@ class CostCenterItem:
                       " SET name = %s, external_id = %s "
                       " WHERE id = %s ")
 
-        cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['external_id'],
+        cursor.execute(update_row, (name,
+                                    external_id,
                                     id_,))
         cnx.commit()
 

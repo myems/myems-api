@@ -408,9 +408,9 @@ class DistributionCircuitPointCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.DISTRIBUTION_CIRCUIT_NOT_FOUND')
 
-        query = (" SELECT p.id, p.name, "
-                 "        dc.id, dc.name, dc.uuid, "
-                 "        p.address "
+        query = (" SELECT p.id AS point_id, p.name AS point_name, p.address AS point_address, "
+                 "        dc.id AS distribution_circuit_id, dc.name AS distribution_circuit_name, "
+                 "        dc.uuid AS distribution_circuit_uuid "
                  " FROM tbl_points p, tbl_distribution_circuits_points dcp, tbl_distribution_circuits dc "
                  " WHERE dcp.distribution_circuit_id = %s AND p.id = dcp.point_id "
                  "       AND dcp.distribution_circuit_id = dc.id "
@@ -421,10 +421,10 @@ class DistributionCircuitPointCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row['p.id'], "name": row['p.name'], "address": row['p.address'],
-                               "distribution_circuit": {"id": row['dc.id'],
-                                                        "name": row['dc.name'],
-                                                        "uuid": row['dc.uuid']},}
+                meta_result = {"id": row['point_id'], "name": row['point_name'], "address": row['point_address'],
+                               "distribution_circuit": {"id": row['distribution_circuit_id'],
+                                                        "name": row['distribution_circuit_name'],
+                                                        "uuid": row['distribution_circuit_uuid']}}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
