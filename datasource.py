@@ -243,7 +243,7 @@ class DataSourcePointCollection:
         result = list()
         # Get points of the data source
         query_point = (" SELECT id, name, data_source_id, object_type, "
-                       "        units, low_limit, hi_limit, is_trend, address, ratio "
+                       "        units, low_limit, high_limit, is_trend, address, ratio "
                        " FROM tbl_points "
                        " WHERE data_source_id = %s "
                        " ORDER BY name ")
@@ -258,7 +258,7 @@ class DataSourcePointCollection:
                                "object_type": row[3],
                                "units": row[4],
                                "low_limit": row[5],
-                               "hi_limit": row[6],
+                               "high_limit": row[6],
                                "is_trend": True if row[7] else False,
                                "address": row[8],
                                "ratio": row[9]}
