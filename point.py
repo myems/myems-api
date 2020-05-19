@@ -51,7 +51,7 @@ class PointCollection:
                                "high_limit": row['high_limit'],
                                "is_trend": row['is_trend'],
                                "address": row['address'],
-                               "ratio": float(row['ratio']) if row['ratio'] is not None else None}
+                               "ratio": float(row['ratio'])}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -66,20 +66,93 @@ class PointCollection:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_POINT_NAME')
+        name = str.strip(new_values['data']['name'])
+
+        if 'data_source_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['data_source_id'], int) or \
+                new_values['data']['data_source_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_DATA_SOURCE_ID')
+        data_source_id = new_values['data']['data_source_id']
+
+        if 'object_type' not in new_values['data'].keys() \
+           or str.strip(new_values['data']['object_type']) not in ('ENERGY_VALUE', 'ANALOG_VALUE', 'DIGITAL_VALUE'):
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_OBJECT_TYPE')
+        object_type = str.strip(new_values['data']['object_type'])
+
+        if 'units' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['units'], str) or \
+                len(str.strip(new_values['data']['units'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_UNITS')
+        units = str.strip(new_values['data']['units'])
+
+        if 'low_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['low_limit'], float) or
+                     isinstance(new_values['data']['low_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_LOW_LIMIT_VALUE')
+        low_limit = new_values['data']['low_limit']
+
+        if 'high_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['high_limit'], float) or
+                     isinstance(new_values['data']['high_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_LOW_LIMIT_VALUE')
+        high_limit = new_values['data']['high_limit']
+
+        if 'is_trend' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_trend'], bool):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_IS_TREND_VALUE')
+        is_trend = new_values['data']['is_trend']
+
+        if 'address' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['address'], str) or \
+                len(str.strip(new_values['data']['address'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_ADDRESS')
+        address = str.strip(new_values['data']['address'])
+
+        if 'ratio' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['ratio'], float) or
+                     isinstance(new_values['data']['ratio'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_RATIO_VALUE')
+        ratio = new_values['data']['ratio']
+
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_points "
+                       " WHERE name = %s AND data_source_id = %s ", (name, data_source_id))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.POINT_NAME_IS_ALREADY_IN_USE')
+
         add_value = (" INSERT INTO tbl_points (name, data_source_id, "
-                     "                         object_type, units, low_limit, high_limit, is_trend, address, ratio) "
+                     "                         object_type, units, low_limit, high_limit, "
+                     "                         is_trend, address, ratio) "
                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
-        cursor.execute(add_value, (new_values['data']['name'],
-                                   new_values['data']['data_source_id'],
-                                   new_values['data']['object_type'],
-                                   new_values['data']['units'],
-                                   new_values['data']['low_limit'],
-                                   new_values['data']['high_limit'],
-                                   new_values['data']['is_trend'],
-                                   new_values['data']['address'],
-                                   new_values['data']['ratio'] if 'ratio' in new_values['data'].keys() else None))
+        cursor.execute(add_value, (name,
+                                   data_source_id,
+                                   object_type,
+                                   units,
+                                   low_limit,
+                                   high_limit,
+                                   is_trend,
+                                   address,
+                                   ratio))
         new_id = cursor.lastrowid
         cnx.commit()
         cursor.close()
@@ -119,7 +192,8 @@ class PointItem:
                                                "name": row['name'],
                                                "uuid": row['uuid']}
 
-        query = (" SELECT id, name, data_source_id, object_type, units, low_limit, high_limit, is_trend, address, ratio "
+        query = (" SELECT id, name, data_source_id, object_type, units, "
+                 "        low_limit, high_limit, is_trend, address, ratio "
                  " FROM tbl_points "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -140,7 +214,7 @@ class PointItem:
                   "high_limit": row['high_limit'],
                   "is_trend": bool(row['is_trend']),
                   "address": row['address'],
-                  "ratio": float(row['ratio']) if row['ratio'] is not None else None}
+                  "ratio": float(row['ratio'])}
         resp.body = json.dumps(result)
 
     @staticmethod
@@ -253,6 +327,68 @@ class PointItem:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_POINT_NAME')
+        name = str.strip(new_values['data']['name'])
+
+        if 'data_source_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['data_source_id'], int) or \
+                new_values['data']['data_source_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_DATA_SOURCE_ID')
+        data_source_id = new_values['data']['data_source_id']
+
+        if 'object_type' not in new_values['data'].keys() \
+           or str.strip(new_values['data']['object_type']) not in ('ENERGY_VALUE', 'ANALOG_VALUE', 'DIGITAL_VALUE'):
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_OBJECT_TYPE')
+        object_type = str.strip(new_values['data']['object_type'])
+
+        if 'units' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['units'], str) or \
+                len(str.strip(new_values['data']['units'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_UNITS')
+        units = str.strip(new_values['data']['units'])
+
+        if 'low_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['low_limit'], float) or
+                     isinstance(new_values['data']['low_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_LOW_LIMIT_VALUE')
+        low_limit = new_values['data']['low_limit']
+
+        if 'high_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['high_limit'], float) or
+                     isinstance(new_values['data']['high_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_LOW_LIMIT_VALUE')
+        high_limit = new_values['data']['high_limit']
+
+        if 'is_trend' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['is_trend'], bool):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_IS_TREND_VALUE')
+        is_trend = new_values['data']['is_trend']
+
+        if 'address' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['address'], str) or \
+                len(str.strip(new_values['data']['address'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_ADDRESS')
+        address = str.strip(new_values['data']['address'])
+
+        if 'ratio' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['ratio'], float) or
+                     isinstance(new_values['data']['ratio'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_RATIO_VALUE')
+        ratio = new_values['data']['ratio']
+
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
@@ -265,21 +401,30 @@ class PointItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.POINT_NOT_FOUND')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_points "
+                       " WHERE name = %s AND data_source_id = %s AND id != %s ", (name, data_source_id, id_))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.POINT_NAME_IS_ALREADY_IN_USE')
+
         update_row = (" UPDATE tbl_points "
                       " SET name = %s, data_source_id = %s, "
                       "     object_type = %s, units = %s, "
                       "     low_limit = %s, high_limit = %s, is_trend = %s, address = %s, "
                       "     ratio = %s "
                       " WHERE id = %s ")
-        cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['data_source_id'],
-                                    new_values['data']['object_type'],
-                                    new_values['data']['units'],
-                                    new_values['data']['low_limit'],
-                                    new_values['data']['high_limit'],
-                                    new_values['data']['is_trend'],
-                                    new_values['data']['address'],
-                                    new_values['data']['ratio'] if 'ratio' in new_values['data'].keys() else None,
+        cursor.execute(update_row, (name,
+                                    data_source_id,
+                                    object_type,
+                                    units,
+                                    low_limit,
+                                    high_limit,
+                                    is_trend,
+                                    address,
+                                    ratio,
                                     id_,))
         cnx.commit()
 
