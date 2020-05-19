@@ -779,6 +779,7 @@ class SpaceChildrenCollection:
         cnx.disconnect()
         resp.body = json.dumps(result)
 
+
 class SpaceEquipmentCollection:
     @staticmethod
     def __init__():
