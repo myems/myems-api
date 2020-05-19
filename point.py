@@ -30,7 +30,8 @@ class PointCollection:
                                                "name": row['name'],
                                                "uuid": row['uuid']}
 
-        query = (" SELECT id, name, data_source_id, object_type, units, low_limit, hi_limit, is_trend, address, ratio "
+        query = (" SELECT id, name, data_source_id, object_type, units, "
+                 "        low_limit, high_limit, is_trend, address, ratio "
                  " FROM tbl_points ")
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -47,7 +48,7 @@ class PointCollection:
                                "object_type": row['object_type'],
                                "units": row['units'],
                                "low_limit": row['low_limit'],
-                               "hi_limit": row['hi_limit'],
+                               "high_limit": row['high_limit'],
                                "is_trend": row['is_trend'],
                                "address": row['address'],
                                "ratio": float(row['ratio']) if row['ratio'] is not None else None}
@@ -68,14 +69,14 @@ class PointCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
         add_value = (" INSERT INTO tbl_points (name, data_source_id, "
-                     "                         object_type, units, low_limit, hi_limit, is_trend, address, ratio) "
+                     "                         object_type, units, low_limit, high_limit, is_trend, address, ratio) "
                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_value, (new_values['data']['name'],
                                    new_values['data']['data_source_id'],
                                    new_values['data']['object_type'],
                                    new_values['data']['units'],
                                    new_values['data']['low_limit'],
-                                   new_values['data']['hi_limit'],
+                                   new_values['data']['high_limit'],
                                    new_values['data']['is_trend'],
                                    new_values['data']['address'],
                                    new_values['data']['ratio'] if 'ratio' in new_values['data'].keys() else None))
@@ -118,7 +119,7 @@ class PointItem:
                                                "name": row['name'],
                                                "uuid": row['uuid']}
 
-        query = (" SELECT id, name, data_source_id, object_type, units, low_limit, hi_limit, is_trend, address, ratio "
+        query = (" SELECT id, name, data_source_id, object_type, units, low_limit, high_limit, is_trend, address, ratio "
                  " FROM tbl_points "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -136,7 +137,7 @@ class PointItem:
                   "object_type": row['object_type'],
                   "units": row['units'],
                   "low_limit": row['low_limit'],
-                  "hi_limit": row['hi_limit'],
+                  "high_limit": row['high_limit'],
                   "is_trend": bool(row['is_trend']),
                   "address": row['address'],
                   "ratio": float(row['ratio']) if row['ratio'] is not None else None}
@@ -266,7 +267,8 @@ class PointItem:
 
         update_row = (" UPDATE tbl_points "
                       " SET name = %s, data_source_id = %s, "
-                      "     object_type = %s, units = %s, low_limit = %s, hi_limit = %s, is_trend = %s, address = %s, "
+                      "     object_type = %s, units = %s, "
+                      "     low_limit = %s, high_limit = %s, is_trend = %s, address = %s, "
                       "     ratio = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (new_values['data']['name'],
@@ -274,7 +276,7 @@ class PointItem:
                                     new_values['data']['object_type'],
                                     new_values['data']['units'],
                                     new_values['data']['low_limit'],
-                                    new_values['data']['hi_limit'],
+                                    new_values['data']['high_limit'],
                                     new_values['data']['is_trend'],
                                     new_values['data']['address'],
                                     new_values['data']['ratio'] if 'ratio' in new_values['data'].keys() else None,

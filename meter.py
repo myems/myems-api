@@ -127,7 +127,6 @@ class MeterCollection:
                 new_values['data']['cost_center_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_COST_CENTER_ID')
-
         cost_center_id = new_values['data']['cost_center_id']
 
         if 'energy_item_id' in new_values['data'].keys() and \
@@ -385,7 +384,7 @@ class MeterItem:
         # check relation with equipment parameters
         cursor.execute(" SELECT id "
                        " FROM tbl_equipments_parameters "
-                       " WHERE numerator_meter_uuid = %s OR denominator_meter_uuid = %s", (meter_uuid,))
+                       " WHERE numerator_meter_uuid = %s OR denominator_meter_uuid = %s", (meter_uuid, meter_uuid, ))
         rows_links = cursor.fetchall()
         if rows_links is not None and len(rows_links) > 0:
             cursor.close()
@@ -408,7 +407,7 @@ class MeterItem:
 
         # check relation with energy flow diagram links
         cursor.execute(" SELECT id "
-                       " FROM tbl_energy_flow_diagram_links "
+                       " FROM tbl_energy_flow_diagrams_links "
                        " WHERE meter_uuid = %s ", (meter_uuid,))
         rows_links = cursor.fetchall()
         if rows_links is not None and len(rows_links) > 0:

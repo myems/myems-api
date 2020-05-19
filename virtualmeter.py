@@ -572,7 +572,8 @@ class VirtualMeterItem:
         # check relation with equipment parameters
         cursor.execute(" SELECT id "
                        " FROM tbl_equipments_parameters "
-                       " WHERE numerator_meter_uuid = %s OR denominator_meter_uuid = %s", (virtual_meter_uuid,))
+                       " WHERE numerator_meter_uuid = %s OR denominator_meter_uuid = %s",
+                       (virtual_meter_uuid, virtual_meter_uuid,))
         rows_links = cursor.fetchall()
         if rows_links is not None and len(rows_links) > 0:
             cursor.close()
@@ -594,7 +595,7 @@ class VirtualMeterItem:
 
         # check relation with energy flow diagram links
         cursor.execute(" SELECT id "
-                       " FROM tbl_energy_flow_diagram_links "
+                       " FROM tbl_energy_flow_diagrams_links "
                        " WHERE meter_uuid = %s ", (virtual_meter_uuid,))
         rows_links = cursor.fetchall()
         if rows_links is not None and len(rows_links) > 0:

@@ -86,13 +86,12 @@ class EquipmentCollection:
                                    description='API.INVALID_IS_OUTPUT_COUNTED_VALUE')
         is_output_counted = new_values['data']['is_output_counted']
 
-        if 'cost_center_id' in new_values['data'].keys():
-            if new_values['data']['cost_center_id'] <= 0:
+        if 'cost_center_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['cost_center_id'], int) or \
+                new_values['data']['cost_center_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_COST_CENTER_ID')
-            cost_center_id = new_values['data']['cost_center_id']
-        else:
-            cost_center_id = None
+        cost_center_id = new_values['data']['cost_center_id']
 
         if 'location' in new_values['data'].keys() and \
                 new_values['data']['location'] is not None and \
@@ -313,13 +312,12 @@ class EquipmentItem:
                                    description='API.INVALID_IS_OUTPUT_COUNTED_VALUE')
         is_output_counted = new_values['data']['is_output_counted']
 
-        if 'cost_center_id' in new_values['data'].keys():
-            if new_values['data']['cost_center_id'] <= 0:
+        if 'cost_center_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['cost_center_id'], int) or \
+                new_values['data']['cost_center_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_COST_CENTER_ID')
-            cost_center_id = new_values['data']['cost_center_id']
-        else:
-            cost_center_id = None
+        cost_center_id = new_values['data']['cost_center_id']
 
         if 'location' in new_values['data'].keys() and \
                 new_values['data']['location'] is not None and \
@@ -356,17 +354,16 @@ class EquipmentItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                    description='API.EQUIPMENT_NAME_IS_ALREADY_IN_USE')
 
-        if cost_center_id is not None:
-            cursor.execute(" SELECT name "
-                           " FROM tbl_cost_centers "
-                           " WHERE id = %s ",
-                           (new_values['data']['cost_center_id'],))
-            row = cursor.fetchone()
-            if row is None:
-                cursor.close()
-                cnx.disconnect()
-                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                       description='API.COST_CENTER_NOT_FOUND')
+        cursor.execute(" SELECT name "
+                       " FROM tbl_cost_centers "
+                       " WHERE id = %s ",
+                       (new_values['data']['cost_center_id'],))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COST_CENTER_NOT_FOUND')
 
         update_row = (" UPDATE tbl_equipments "
                       " SET name = %s, is_input_counted = %s, is_output_counted = %s, "
