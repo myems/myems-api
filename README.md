@@ -712,6 +712,7 @@ Result
 | max_hourly_value | decimal(18,3)   | Maximum energy consumption per hour|
 | cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
+| parent_meter  | Object    | Parent Meter Object                       |
 | location      | string    | Meter location                            |
 | description   | string    | Meter description                         |
 
@@ -725,11 +726,11 @@ $ curl -i -X DELETE http://BASE_URL/meters/{id}
 ```
 * POST Create a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
 ```
 * PUT Update a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
 ```
 * GET All Points associated with Meter ID
 ```bash
