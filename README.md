@@ -732,6 +732,10 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20"
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
 ```
+* GET All Children of Meter by ID
+```bash
+$ curl -i -X GET http://BASE_URL/meters/{id}/children
+```
 * GET All Points associated with Meter ID
 ```bash
 $ curl -i -X GET http://BASE_URL/meters/{id}/points
