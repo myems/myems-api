@@ -149,6 +149,8 @@ api.add_route('/meters',
               meter.MeterCollection())
 api.add_route('/meters/{id_}',
               meter.MeterItem())
+api.add_route('/meters/{id_}/children',
+              meter.MeterChildrenCollection())
 api.add_route('/meters/{id_}/points',
               meter.MeterPointCollection())
 api.add_route('/meters/{id_}/points/{pid}',

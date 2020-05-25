@@ -691,6 +691,108 @@ class MeterItem:
         resp.status = falcon.HTTP_200
 
 
+class MeterChildrenCollection:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp, id_):
+        resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_get(req, resp, id_):
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_METER_ID')
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor(dictionary=True)
+
+        cursor.execute(" SELECT name, uuid "
+                       " FROM tbl_meters "
+                       " WHERE id = %s ", (id_,))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.METER_NOT_FOUND')
+        else:
+            parent_meter = {"id": id_,
+                            "name": row['name'],
+                            "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_cost_centers ")
+        cursor.execute(query)
+        rows_cost_centers = cursor.fetchall()
+
+        cost_center_dict = dict()
+        if rows_cost_centers is not None and len(rows_cost_centers) > 0:
+            for row in rows_cost_centers:
+                cost_center_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_items ")
+        cursor.execute(query)
+        rows_energy_items = cursor.fetchall()
+
+        energy_item_dict = dict()
+        if rows_energy_items is not None and len(rows_energy_items) > 0:
+            for row in rows_energy_items:
+                energy_item_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid, energy_category_id, "
+                 "        is_counted, max_hourly_value, "
+                 "        cost_center_id, energy_item_id, parent_meter_id, "
+                 "        location, description "
+                 " FROM tbl_meters "
+                 " WHERE parent_meter_id = %s "
+                 " ORDER BY id ")
+        cursor.execute(query, (id_, ))
+        rows_meters = cursor.fetchall()
+
+        result = list()
+        if rows_meters is not None and len(rows_meters) > 0:
+            for row in rows_meters:
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                cost_center = cost_center_dict.get(row['cost_center_id'], None)
+                energy_item = energy_item_dict.get(row['energy_item_id'], None)
+                meta_result = {"id": row['id'],
+                               "name": row['name'],
+                               "uuid": row['uuid'],
+                               "energy_category": energy_category,
+                               "is_counted": True if row['is_counted'] else False,
+                               "max_hourly_value": row['max_hourly_value'],
+                               "cost_center": cost_center,
+                               "energy_item": energy_item,
+                               "parent_meter": parent_meter,
+                               "location": row['location'],
+                               "description": row['description']}
+                result.append(meta_result)
+
+        cursor.close()
+        cnx.disconnect()
+        resp.body = json.dumps(result)
+
+
 class MeterPointCollection:
     @staticmethod
     def __init__():
