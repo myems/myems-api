@@ -6,9 +6,13 @@ Providing REST API service for MyEMS Web APP, Android APP and iOS APP and/or thi
 
 ## Prerequisites
 simplejson
+
 mysql.connector
+
 falcon
+
 falcon_cors
+
 gunicorn
 
 
@@ -23,17 +27,11 @@ $ sudo python3 setup.py install
 ```
 
 * Install MySQL Connector
-
-  refer to http://dev.mysql.com/downloads/connector/python/
-  
-  select Platform:Platform Independent
-  
-  and select 'Platform Independent (Architecture Independent), Compressed TAR Archive Python' in list
 ```
   $ cd ~/tools
-  $ wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-8.0.18.tar.gz
-  $ tar xzf mysql-connector-python-8.0.18.tar.gz
-  $ cd ~/tools/mysql-connector-python-8.0.18
+  $ wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-8.0.20.tar.gz
+  $ tar xzf mysql-connector-python-8.0.20.tar.gz
+  $ cd ~/tools/mysql-connector-python-8.0.20
   $ sudo python3 setup.py install
 ```
 
@@ -87,8 +85,13 @@ ListenStream=0.0.0.0:8080
 ```
    Next enable the services so they autostart at boot:
 ```
-   $ sudo systemctl enable gunicorn.service
    $ sudo systemctl enable gunicorn.socket
+   $ sudo systemctl enable gunicorn.service
+```
+   Start the services :
+```
+   $ sudo systemctl start gunicorn.socket
+   $ sudo systemctl start gunicorn.service
 ```
 
 ## Run for debugging and testing
@@ -1079,6 +1082,18 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"sensor_id":1
 ```bash
 $ curl -i -X DELETE http://BASE_URL/spaces/{id}/sensors/{sid}
 ```
+* GET All Stores of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/stores
+```
+* POST Bind a Store to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"store_id":1}}' http://BASE_URL/spaces/{id}/stores
+```
+* DELETE a Store from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/stores/{tid}
+```
 * GET All Tenants of Space by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/spaces/{id}/tenants
@@ -1103,6 +1118,141 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_mete
 ```bash
 $ curl -i -X DELETE http://BASE_URL/spaces/{id}/virtualmeters/{mid}
 ```
+
+
+### Store
+* GET Store by ID
+```bash
+$ curl -i -X GET http://BASE_URL/stores/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Store ID                                  |
+| name          | string    | Store name                                |
+| uuid          | string    | Store UUID                                |
+| address       | string    | Address                                   |
+| latitude      | decimal(9, 6) | Latitude                              |
+| longitude     | decimal(9, 6) | Longitude                             |
+| area          | decimal(18, 3) | Area                                 |
+| store_type   | Object    | Store Type object                          |
+| is_input_counted| boolean | Indicates if this store's input energy is counted into parent space|
+| contact       | Object    | Contact Object                            |
+| cost_center   | Object    | Cost Center Object                        |
+| description   | string    | Store description                         |
+
+* GET All Stores
+```bash
+$ curl -i -X GET http://BASE_URL/stores
+```
+* POST Create New Store
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"麦当劳(新王府井店)", "address":"北京市东城区王府井大街200号工美大厦1层010-65120499", "latitude":39.909429, "longitude":116.416993, "area":418.8, "store_type_id":9, "is_input_counted": true, "contact_id":1, "cost_center_id":1, "description":"my description"}}' http://BASE_URL/stores
+```
+* PUT Update a Store
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"麦当劳(新王府井店)", "address":"北京市东城区王府井大街200号工美大厦1层010-65120499", "latitude":39.909429, "longitude":116.416993, "area":818.8, "store_type_id":9, "is_input_counted": true, "contact_id":1, "cost_center_id":1, "description":"my description"}}' http://BASE_URL/stores/{id}
+```
+* DELETE Store by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/stores/{id}
+```
+* GET All Meters of Store by ID
+```bash
+$ curl -i -X GET http://BASE_URL/stores/{id}/meters
+```
+* POST Bind a Meter to a Store
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"meter_id":1}}' http://BASE_URL/stores/{id}/meters
+```
+* DELETE a Meter from Store
+```bash
+$ curl -i -X DELETE http://BASE_URL/stores/{id}/meters/{mid}
+```
+* GET All Offline Meters of Store by ID
+```bash
+$ curl -i -X GET http://BASE_URL/stores/{id}/offlinemeters
+```
+* POST Bind an Offline Meter to a Store
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"offline_meter_id":1}}' http://BASE_URL/stores/{id}/offlinemeters
+```
+* DELETE an Offline Meter from Store
+```bash
+$ curl -i -X DELETE http://BASE_URL/stores/{id}/offlinemeters/{mid}
+```
+* GET All Points of Store by ID
+```bash
+$ curl -i -X GET http://BASE_URL/stores/{id}/points
+```
+* POST Bind a Point to a Store
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":1}}' http://BASE_URL/stores/{id}/points
+```
+* DELETE a Point from Store
+```bash
+$ curl -i -X DELETE http://BASE_URL/stores/{id}/points/{pid}
+```
+* GET All Sensors of Store by ID
+```bash
+$ curl -i -X GET http://BASE_URL/stores/{id}/sensors
+```
+* POST Bind a Sensor to a Store
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"sensor_id":1}}' http://BASE_URL/stores/{id}/sensors
+```
+* DELETE a Sensor from Store
+```bash
+$ curl -i -X DELETE http://BASE_URL/stores/{id}/sensors/{sid}
+```
+* GET All Virtual Meters of Store by ID
+```bash
+$ curl -i -X GET http://BASE_URL/stores/{id}/virtualmeters
+```
+* POST Bind an Virtual Meter to a Store
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_meter_id":1}}' http://BASE_URL/stores/{id}/virtualmeters
+```
+* DELETE an Virtual Meter from Store
+```bash
+$ curl -i -X DELETE http://BASE_URL/stores/{id}/virtualmeters/{mid}
+```
+
+
+### Store Type
+* GET a Store Type by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/storetypes/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Store Type ID                            |
+| name          | string    | Store Type name                          |
+| uuid          | string    | Store Type UUID                          |
+| description   | string    | Store Type description                   |
+| simplified_code | string  | Store Type simplified code               |
+
+* GET All Store Types
+```bash
+$ curl -i -X GET http://BASE_URL/storetypes
+```
+* POST Create New Store Types
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name": "Office", "description":"办公", "simplified_code":"OF"}}' http://BASE_URL/storetypes
+```
+* PUT Update a Store Types
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name": "Office1", "description":"办公", "simplified_code":"OF1"}}' http://BASE_URL/storetypes/{id}
+```
+* DELETE a Store Types by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/storetypes/{id}
+```
+
 
 ### Tariff
 * GET Tariff by id

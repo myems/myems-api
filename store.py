@@ -3,10 +3,9 @@ import simplejson as json
 import mysql.connector
 import config
 import uuid
-from datetime import datetime, timedelta, timezone
 
 
-class TenantCollection:
+class StoreCollection:
     @staticmethod
     def __init__():
         pass
@@ -21,14 +20,14 @@ class TenantCollection:
         cursor = cnx.cursor(dictionary=True)
 
         query = (" SELECT id, name, uuid "
-                 " FROM tbl_tenant_types ")
+                 " FROM tbl_store_types ")
         cursor.execute(query)
-        rows_tenant_types = cursor.fetchall()
+        rows_store_types = cursor.fetchall()
 
-        tenant_type_dict = dict()
-        if rows_tenant_types is not None and len(rows_tenant_types) > 0:
-            for row in rows_tenant_types:
-                tenant_type_dict[row['id']] = {"id": row['id'],
+        store_type_dict = dict()
+        if rows_store_types is not None and len(rows_store_types) > 0:
+            for row in rows_store_types:
+                store_type_dict[row['id']] = {"id": row['id'],
                                                "name": row['name'],
                                                "uuid": row['uuid']}
 
@@ -57,11 +56,9 @@ class TenantCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        buildings, floors, rooms, area, tenant_type_id, "
-                 "        is_input_counted, is_key_tenant, "
-                 "        lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
-                 "        contact_id, cost_center_id, description "
-                 " FROM tbl_tenants "
+                 "        address, latitude, longitude, area, store_type_id, "
+                 "        is_input_counted, contact_id, cost_center_id, description "
+                 " FROM tbl_stores "
                  " ORDER BY id ")
         cursor.execute(query)
         rows_spaces = cursor.fetchall()
@@ -69,27 +66,19 @@ class TenantCollection:
         result = list()
         if rows_spaces is not None and len(rows_spaces) > 0:
             for row in rows_spaces:
-                tenant_type = tenant_type_dict.get(row['tenant_type_id'], None)
+                store_type = store_type_dict.get(row['store_type_id'], None)
                 contact = contact_dict.get(row['contact_id'], None)
                 cost_center = cost_center_dict.get(row['cost_center_id'], None)
-
-                lease_start_datetime_utc = row['lease_start_datetime_utc'].replace(tzinfo=timezone.utc)
-                lease_end_datetime_utc = row['lease_end_datetime_utc'].replace(tzinfo=timezone.utc)
 
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
-                               "buildings": row['buildings'],
-                               "floors": row['floors'],
-                               "rooms": row['rooms'],
+                               "address": row['address'],
+                               "latitude": row['latitude'],
+                               "longitude": row['longitude'],
                                "area": row['area'],
-                               "tenant_type": tenant_type,
+                               "store_type": store_type,
                                "is_input_counted": bool(row['is_input_counted']),
-                               "is_key_tenant": bool(row['is_key_tenant']),
-                               "lease_number": row['lease_number'],
-                               "lease_start_datetime_utc": lease_start_datetime_utc.timestamp() * 1000,
-                               "lease_end_datetime_utc": lease_end_datetime_utc.timestamp() * 1000,
-                               "is_in_lease": bool(row['is_in_lease']),
                                "contact": contact,
                                "cost_center": cost_center,
                                "description": row['description']}
@@ -113,29 +102,29 @@ class TenantCollection:
                 not isinstance(new_values['data']['name'], str) or \
                 len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_NAME')
+                                   description='API.INVALID_STORE_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'buildings' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['buildings'], str) or \
-                len(str.strip(new_values['data']['buildings'])) == 0:
+        if 'address' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['address'], str) or \
+                len(str.strip(new_values['data']['address'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_BUILDINGS_VALUE')
-        buildings = str.strip(new_values['data']['buildings'])
+                                   description='API.INVALID_ADDRESS_VALUE')
+        address = str.strip(new_values['data']['address'])
 
-        if 'floors' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['floors'], str) or \
-                len(str.strip(new_values['data']['floors'])) == 0:
+        if 'latitude' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['latitude'], float) or
+                     isinstance(new_values['data']['latitude'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_FLOORS_VALUE')
-        floors = str.strip(new_values['data']['floors'])
+                                   description='API.INVALID_LATITUDE_VALUE')
+        latitude = new_values['data']['latitude']
 
-        if 'rooms' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['rooms'], str) or \
-                len(str.strip(new_values['data']['rooms'])) == 0:
+        if 'longitude' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['longitude'], float) or
+                     isinstance(new_values['data']['longitude'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_ROOMS_VALUE')
-        rooms = str.strip(new_values['data']['rooms'])
+                                   description='API.INVALID_LONGITUDE_VALUE')
+        longitude = new_values['data']['longitude']
 
         if 'area' not in new_values['data'].keys() or \
                 not (isinstance(new_values['data']['area'], float) or
@@ -144,52 +133,18 @@ class TenantCollection:
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']
 
-        if 'tenant_type_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['tenant_type_id'], int) or \
-                new_values['data']['tenant_type_id'] <= 0:
+        if 'store_type_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['store_type_id'], int) or \
+                new_values['data']['store_type_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_TYPE_ID')
-        tenant_type_id = new_values['data']['tenant_type_id']
+                                   description='API.INVALID_STORE_TYPE_ID')
+        store_type_id = new_values['data']['store_type_id']
 
         if 'is_input_counted' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_input_counted'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_IS_INPUT_COUNTED_VALUE')
         is_input_counted = new_values['data']['is_input_counted']
-
-        if 'is_key_tenant' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_key_tenant'], bool):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_KEY_TENANT_VALUE')
-        is_key_tenant = new_values['data']['is_key_tenant']
-
-        if 'lease_number' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['lease_number'], str) or \
-                len(str.strip(new_values['data']['lease_number'])) == 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_LEASE_NUMBER_VALUE')
-        lease_number = str.strip(new_values['data']['lease_number'])
-
-        if 'is_in_lease' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_in_lease'], bool):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_IN_LEASE_VALUE')
-        is_in_lease = new_values['data']['is_in_lease']
-
-        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
-        if config.utc_offset[0] == '-':
-            timezone_offset = -timezone_offset
-
-        # todo: validate datetime values
-        lease_start_datetime_utc = datetime.strptime(new_values['data']['lease_start_datetime_utc'],
-                                                     '%Y-%m-%dT%H:%M:%S')
-        lease_start_datetime_utc = lease_start_datetime_utc.replace(tzinfo=timezone.utc)
-        lease_start_datetime_utc -= timedelta(minutes=timezone_offset)
-
-        lease_end_datetime_utc = datetime.strptime(new_values['data']['lease_end_datetime_utc'],
-                                                   '%Y-%m-%dT%H:%M:%S')
-        lease_end_datetime_utc = lease_end_datetime_utc.replace(tzinfo=timezone.utc)
-        lease_end_datetime_utc -= timedelta(minutes=timezone_offset)
 
         if 'contact_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['contact_id'], int) or \
@@ -216,23 +171,23 @@ class TenantCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE name = %s ", (name,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                   description='API.TENANT_NAME_IS_ALREADY_IN_USE')
+                                   description='API.STORE_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenant_types "
+                       " FROM tbl_store_types "
                        " WHERE id = %s ",
-                       (tenant_type_id,))
+                       (store_type_id,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_TYPE_NOT_FOUND')
+                                   description='API.STORE_TYPE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_contacts "
@@ -256,25 +211,19 @@ class TenantCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.COST_CENTER_NOT_FOUND')
 
-        add_values = (" INSERT INTO tbl_tenants "
-                      "    (name, uuid, buildings, floors, rooms, area, tenant_type_id, "
-                      "     is_input_counted, is_key_tenant, "
-                      "     lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
+        add_values = (" INSERT INTO tbl_stores "
+                      "    (name, uuid, address, latitude, longitude, area, store_type_id, "
+                      "     is_input_counted, "
                       "     contact_id, cost_center_id, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
-                                    buildings,
-                                    floors,
-                                    rooms,
+                                    address,
+                                    latitude,
+                                    longitude,
                                     area,
-                                    tenant_type_id,
+                                    store_type_id,
                                     is_input_counted,
-                                    is_key_tenant,
-                                    lease_number,
-                                    lease_start_datetime_utc,
-                                    lease_end_datetime_utc,
-                                    is_in_lease,
                                     contact_id,
                                     cost_center_id,
                                     description))
@@ -284,10 +233,10 @@ class TenantCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/tenants/' + str(new_id)
+        resp.location = '/stores/' + str(new_id)
 
 
-class TenantItem:
+class StoreItem:
     @staticmethod
     def __init__():
         pass
@@ -300,22 +249,22 @@ class TenantItem:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
         query = (" SELECT id, name, uuid "
-                 " FROM tbl_tenant_types ")
+                 " FROM tbl_store_types ")
         cursor.execute(query)
-        rows_tenant_types = cursor.fetchall()
+        rows_store_types = cursor.fetchall()
 
-        tenant_type_dict = dict()
-        if rows_tenant_types is not None and len(rows_tenant_types) > 0:
-            for row in rows_tenant_types:
-                tenant_type_dict[row['id']] = {"id": row['id'],
-                                               "name": row['name'],
-                                               "uuid": row['uuid']}
+        store_type_dict = dict()
+        if rows_store_types is not None and len(rows_store_types) > 0:
+            for row in rows_store_types:
+                store_type_dict[row['id']] = {"id": row['id'],
+                                              "name": row['name'],
+                                              "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_contacts ")
@@ -342,11 +291,10 @@ class TenantItem:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        buildings, floors, rooms, area, tenant_type_id,"
-                 "        is_key_tenant, is_input_counted, "
-                 "        lease_number, lease_start_datetime_utc, lease_end_datetime_utc, is_in_lease, "
+                 "        address, latitude, longitude, area, store_type_id,"
+                 "        is_input_counted, "
                  "        contact_id, cost_center_id, description "
-                 " FROM tbl_tenants "
+                 " FROM tbl_stores "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
         row = cursor.fetchone()
@@ -355,25 +303,20 @@ class TenantItem:
 
         if row is None:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
         else:
-            tenant_type = tenant_type_dict.get(row['tenant_type_id'], None)
+            store_type = store_type_dict.get(row['store_type_id'], None)
             contact = contact_dict.get(row['contact_id'], None)
             cost_center = cost_center_dict.get(row['cost_center_id'], None)
             meta_result = {"id": row['id'],
                            "name": row['name'],
                            "uuid": row['uuid'],
-                           "buildings": row['buildings'],
-                           "floors": row['floors'],
-                           "rooms": row['rooms'],
+                           "address": row['address'],
+                           "latitude": row['latitude'],
+                           "longitude": row['longitude'],
                            "area": row['area'],
-                           "tenant_type": tenant_type,
+                           "store_type": store_type,
                            "is_input_counted": bool(row['is_input_counted']),
-                           "is_key_tenant": bool(row['is_key_tenant']),
-                           "lease_number": row['lease_number'],
-                           "lease_start_datetime_utc": row['lease_start_datetime_utc'].timestamp() * 1000,
-                           "lease_end_datetime_utc": row['lease_end_datetime_utc'].timestamp() * 1000,
-                           "is_in_lease": bool(row['is_in_lease']),
                            "contact": contact,
                            "cost_center": cost_center,
                            "description": row['description']}
@@ -384,24 +327,24 @@ class TenantItem:
     def on_delete(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         # check relation with space
         cursor.execute(" SELECT space_id "
-                       " FROM tbl_spaces_tenants "
-                       " WHERE tenant_id = %s ",
+                       " FROM tbl_spaces_stores "
+                       " WHERE store_id = %s ",
                        (id_,))
         rows_spaces = cursor.fetchall()
         if rows_spaces is not None and len(rows_spaces) > 0:
@@ -413,8 +356,8 @@ class TenantItem:
 
         # check relation with meter
         cursor.execute(" SELECT meter_id "
-                       " FROM tbl_tenants_meters "
-                       " WHERE tenant_id = %s ",
+                       " FROM tbl_stores_meters "
+                       " WHERE store_id = %s ",
                        (id_,))
         rows_meters = cursor.fetchall()
         if rows_meters is not None and len(rows_meters) > 0:
@@ -426,8 +369,8 @@ class TenantItem:
 
         # check relation with offline meter
         cursor.execute(" SELECT offline_meter_id "
-                       " FROM tbl_tenants_offline_meters "
-                       " WHERE tenant_id = %s ",
+                       " FROM tbl_stores_offline_meters "
+                       " WHERE store_id = %s ",
                        (id_,))
         rows_offline_meters = cursor.fetchall()
         if rows_offline_meters is not None and len(rows_offline_meters) > 0:
@@ -439,8 +382,8 @@ class TenantItem:
 
         # check relation with points
         cursor.execute(" SELECT point_id "
-                       " FROM tbl_tenants_points "
-                       " WHERE tenant_id = %s ", (id_,))
+                       " FROM tbl_stores_points "
+                       " WHERE store_id = %s ", (id_,))
         rows_points = cursor.fetchall()
         if rows_points is not None and len(rows_points) > 0:
             cursor.close()
@@ -451,8 +394,8 @@ class TenantItem:
 
         # check relation with sensor
         cursor.execute(" SELECT sensor_id "
-                       " FROM tbl_tenants_sensors "
-                       " WHERE tenant_id = %s ",
+                       " FROM tbl_stores_sensors "
+                       " WHERE store_id = %s ",
                        (id_,))
         rows_sensors = cursor.fetchall()
         if rows_sensors is not None and len(rows_sensors) > 0:
@@ -464,8 +407,8 @@ class TenantItem:
 
         # check relation with virtual meter
         cursor.execute(" SELECT virtual_meter_id "
-                       " FROM tbl_tenants_virtual_meters "
-                       " WHERE tenant_id = %s ",
+                       " FROM tbl_stores_virtual_meters "
+                       " WHERE store_id = %s ",
                        (id_,))
         rows_virtual_meters = cursor.fetchall()
         if rows_virtual_meters is not None and len(rows_virtual_meters) > 0:
@@ -475,7 +418,7 @@ class TenantItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_VIRTUAL_METER')
 
-        cursor.execute(" DELETE FROM tbl_tenants WHERE id = %s ", (id_,))
+        cursor.execute(" DELETE FROM tbl_stores WHERE id = %s ", (id_,))
         cnx.commit()
 
         cursor.close()
@@ -493,7 +436,7 @@ class TenantItem:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -501,29 +444,29 @@ class TenantItem:
                 not isinstance(new_values['data']['name'], str) or \
                 len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_NAME')
+                                   description='API.INVALID_STORE_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'buildings' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['buildings'], str) or \
-                len(str.strip(new_values['data']['buildings'])) == 0:
+        if 'address' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['address'], str) or \
+                len(str.strip(new_values['data']['address'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_BUILDINGS_VALUE')
-        buildings = str.strip(new_values['data']['buildings'])
+                                   description='API.INVALID_ADDRESS_VALUE')
+        address = str.strip(new_values['data']['address'])
 
-        if 'floors' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['floors'], str) or \
-                len(str.strip(new_values['data']['floors'])) == 0:
+        if 'latitude' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['latitude'], float) or
+                     isinstance(new_values['data']['latitude'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_FLOORS_VALUE')
-        floors = str.strip(new_values['data']['floors'])
+                                   description='API.INVALID_LATITUDE_VALUE')
+        latitude = new_values['data']['area']
 
-        if 'rooms' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['rooms'], str) or \
-                len(str.strip(new_values['data']['rooms'])) == 0:
+        if 'longitude' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['longitude'], float) or
+                     isinstance(new_values['data']['longitude'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_ROOMS_VALUE')
-        rooms = str.strip(new_values['data']['rooms'])
+                                   description='API.INVALID_LONGITUDE_VALUE')
+        longitude = new_values['data']['longitude']
 
         if 'area' not in new_values['data'].keys() or \
                 not (isinstance(new_values['data']['area'], float) or
@@ -532,52 +475,18 @@ class TenantItem:
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']
 
-        if 'tenant_type_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['tenant_type_id'], int) or \
-                new_values['data']['tenant_type_id'] <= 0:
+        if 'store_type_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['store_type_id'], int) or \
+                new_values['data']['store_type_id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_TYPE_ID')
-        tenant_type_id = new_values['data']['tenant_type_id']
+                                   description='API.INVALID_STORE_TYPE_ID')
+        store_type_id = new_values['data']['store_type_id']
 
         if 'is_input_counted' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_input_counted'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_IS_INPUT_COUNTED_VALUE')
         is_input_counted = new_values['data']['is_input_counted']
-
-        if 'is_key_tenant' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_key_tenant'], bool):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_KEY_TENANT_VALUE')
-        is_key_tenant = new_values['data']['is_key_tenant']
-
-        if 'lease_number' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['lease_number'], str) or \
-                len(str.strip(new_values['data']['lease_number'])) == 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_LEASE_NUMBER_VALUE')
-        lease_number = str.strip(new_values['data']['lease_number'])
-
-        if 'is_in_lease' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['is_in_lease'], bool):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_IS_IN_LEASE_VALUE')
-        is_in_lease = new_values['data']['is_in_lease']
-
-        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
-        if config.utc_offset[0] == '-':
-            timezone_offset = -timezone_offset
-
-        # todo: validate datetime values
-        lease_start_datetime_utc = datetime.strptime(new_values['data']['lease_start_datetime_utc'],
-                                                     '%Y-%m-%dT%H:%M:%S')
-        lease_start_datetime_utc = lease_start_datetime_utc.replace(tzinfo=timezone.utc)
-        lease_start_datetime_utc -= timedelta(minutes=timezone_offset)
-
-        lease_end_datetime_utc = datetime.strptime(new_values['data']['lease_end_datetime_utc'],
-                                                   '%Y-%m-%dT%H:%M:%S')
-        lease_end_datetime_utc = lease_end_datetime_utc.replace(tzinfo=timezone.utc)
-        lease_end_datetime_utc -= timedelta(minutes=timezone_offset)
 
         if 'contact_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['contact_id'], int) or \
@@ -604,32 +513,32 @@ class TenantItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE name = %s AND id != %s ", (name, id_))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                   description='API.TENANT_NAME_IS_ALREADY_IN_USE')
+                                   description='API.STORE_NAME_IS_ALREADY_IN_USE')
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenant_types "
+                       " FROM tbl_store_types "
                        " WHERE id = %s ",
-                       (tenant_type_id,))
+                       (store_type_id,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_TYPE_NOT_FOUND')
+                                   description='API.STORE_TYPE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_contacts "
@@ -653,25 +562,19 @@ class TenantItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.COST_CENTER_NOT_FOUND')
 
-        update_row = (" UPDATE tbl_tenants "
-                      " SET name = %s, buildings = %s, floors = %s, rooms = %s, area = %s, "
-                      "     tenant_type_id = %s, is_input_counted = %s, "
-                      "     is_key_tenant = %s, lease_number = %s, lease_start_datetime_utc = %s, "
-                      "     lease_end_datetime_utc = %s, is_in_lease = %s, contact_id = %s, cost_center_id = %s, "
+        update_row = (" UPDATE tbl_stores "
+                      " SET name = %s, address = %s, latitude = %s, longitude = %s, area = %s, "
+                      "     store_type_id = %s, is_input_counted = %s, "
+                      "     contact_id = %s, cost_center_id = %s, "
                       "     description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
-                                    buildings,
-                                    floors,
-                                    rooms,
+                                    address,
+                                    latitude,
+                                    longitude,
                                     area,
-                                    tenant_type_id,
+                                    store_type_id,
                                     is_input_counted,
-                                    is_key_tenant,
-                                    lease_number,
-                                    lease_start_datetime_utc,
-                                    lease_end_datetime_utc,
-                                    is_in_lease,
                                     contact_id,
                                     cost_center_id,
                                     description,
@@ -684,7 +587,7 @@ class TenantItem:
         resp.status = falcon.HTTP_200
 
 
-class TenantMeterCollection:
+class StoreMeterCollection:
     @staticmethod
     def __init__():
         pass
@@ -697,19 +600,19 @@ class TenantMeterCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_energy_categories ")
@@ -724,8 +627,8 @@ class TenantMeterCollection:
                                                    "uuid": row['uuid']}
 
         query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id "
-                 " FROM tbl_tenants t, tbl_tenants_meters tm, tbl_meters m "
-                 " WHERE tm.tenant_id = t.id AND m.id = tm.meter_id AND t.id = %s "
+                 " FROM tbl_stores t, tbl_stores_meters tm, tbl_meters m "
+                 " WHERE tm.store_id = t.id AND m.id = tm.meter_id AND t.id = %s "
                  " ORDER BY m.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -750,7 +653,7 @@ class TenantMeterCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -765,13 +668,13 @@ class TenantMeterCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_tenants "
+                       " from tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_meters "
@@ -783,16 +686,16 @@ class TenantMeterCollection:
                                    description='API.METER_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_tenants_meters "
-                 " WHERE tenant_id = %s AND meter_id = %s")
+                 " FROM tbl_stores_meters "
+                 " WHERE store_id = %s AND meter_id = %s")
         cursor.execute(query, (id_, meter_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.TENANT_METER_RELATION_EXISTED')
+                                   description='API.STORE_METER_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_tenants_meters (tenant_id, meter_id) "
+        add_row = (" INSERT INTO tbl_stores_meters (store_id, meter_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, meter_id,))
         new_id = cursor.lastrowid
@@ -801,10 +704,10 @@ class TenantMeterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/tenants/' + str(id_) + '/meters/' + str(meter_id)
+        resp.location = '/stores/' + str(id_) + '/meters/' + str(meter_id)
 
 
-class TenantMeterItem:
+class StoreMeterItem:
     @staticmethod
     def __init__():
         pass
@@ -817,7 +720,7 @@ class TenantMeterItem:
     def on_delete(req, resp, id_, mid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         if not mid.isdigit() or int(mid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -827,13 +730,13 @@ class TenantMeterItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_meters "
@@ -845,15 +748,15 @@ class TenantMeterItem:
                                    description='API.METER_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_tenants_meters "
-                       " WHERE tenant_id = %s AND meter_id = %s ", (id_, mid))
+                       " FROM tbl_stores_meters "
+                       " WHERE store_id = %s AND meter_id = %s ", (id_, mid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_METER_RELATION_NOT_FOUND')
+                                   description='API.STORE_METER_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_tenants_meters WHERE tenant_id = %s AND meter_id = %s ", (id_, mid))
+        cursor.execute(" DELETE FROM tbl_stores_meters WHERE store_id = %s AND meter_id = %s ", (id_, mid))
         cnx.commit()
 
         cursor.close()
@@ -862,7 +765,7 @@ class TenantMeterItem:
         resp.status = falcon.HTTP_204
 
 
-class TenantOfflineMeterCollection:
+class StoreOfflineMeterCollection:
     @staticmethod
     def __init__():
         pass
@@ -875,19 +778,19 @@ class TenantOfflineMeterCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_energy_categories ")
@@ -902,8 +805,8 @@ class TenantOfflineMeterCollection:
                                                    "uuid": row['uuid']}
 
         query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id "
-                 " FROM tbl_tenants s, tbl_tenants_offline_meters sm, tbl_offline_meters m "
-                 " WHERE sm.tenant_id = s.id AND m.id = sm.offline_meter_id AND s.id = %s "
+                 " FROM tbl_stores s, tbl_stores_offline_meters sm, tbl_offline_meters m "
+                 " WHERE sm.store_id = s.id AND m.id = sm.offline_meter_id AND s.id = %s "
                  " ORDER BY m.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -928,7 +831,7 @@ class TenantOfflineMeterCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -943,13 +846,13 @@ class TenantOfflineMeterCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_tenants "
+                       " from tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_offline_meters "
@@ -961,16 +864,16 @@ class TenantOfflineMeterCollection:
                                    description='API.OFFLINE_METER_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_tenants_offline_meters "
-                 " WHERE tenant_id = %s AND offline_meter_id = %s")
+                 " FROM tbl_stores_offline_meters "
+                 " WHERE store_id = %s AND offline_meter_id = %s")
         cursor.execute(query, (id_, offline_meter_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.TENANT_OFFLINE_METER_RELATION_EXISTED')
+                                   description='API.STORE_OFFLINE_METER_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_tenants_offline_meters (tenant_id, offline_meter_id) "
+        add_row = (" INSERT INTO tbl_stores_offline_meters (store_id, offline_meter_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, offline_meter_id,))
         new_id = cursor.lastrowid
@@ -979,10 +882,10 @@ class TenantOfflineMeterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/tenants/' + str(id_) + '/offlinemeters/' + str(offline_meter_id)
+        resp.location = '/stores/' + str(id_) + '/offlinemeters/' + str(offline_meter_id)
 
 
-class TenantOfflineMeterItem:
+class StoreOfflineMeterItem:
     @staticmethod
     def __init__():
         pass
@@ -995,7 +898,7 @@ class TenantOfflineMeterItem:
     def on_delete(req, resp, id_, mid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         if not mid.isdigit() or int(mid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1005,13 +908,13 @@ class TenantOfflineMeterItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_offline_meters "
@@ -1023,16 +926,16 @@ class TenantOfflineMeterItem:
                                    description='API.OFFLINE_METER_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_tenants_offline_meters "
-                       " WHERE tenant_id = %s AND offline_meter_id = %s ", (id_, mid))
+                       " FROM tbl_stores_offline_meters "
+                       " WHERE store_id = %s AND offline_meter_id = %s ", (id_, mid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_OFFLINE_METER_RELATION_NOT_FOUND')
+                                   description='API.STORE_OFFLINE_METER_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_tenants_offline_meters "
-                       " WHERE tenant_id = %s AND offline_meter_id = %s ", (id_, mid))
+        cursor.execute(" DELETE FROM tbl_stores_offline_meters "
+                       " WHERE store_id = %s AND offline_meter_id = %s ", (id_, mid))
         cnx.commit()
 
         cursor.close()
@@ -1041,7 +944,7 @@ class TenantOfflineMeterItem:
         resp.status = falcon.HTTP_204
 
 
-class TenantPointCollection:
+class StorePointCollection:
     @staticmethod
     def __init__():
         pass
@@ -1054,19 +957,19 @@ class TenantPointCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_data_sources ")
@@ -1081,8 +984,8 @@ class TenantPointCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT p.id, p.name, p.data_source_id "
-                 " FROM tbl_tenants t, tbl_tenants_points tp, tbl_points p "
-                 " WHERE tp.tenant_id = t.id AND p.id = tp.point_id AND t.id = %s "
+                 " FROM tbl_stores t, tbl_stores_points tp, tbl_points p "
+                 " WHERE tp.store_id = t.id AND p.id = tp.point_id AND t.id = %s "
                  " ORDER BY p.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -1106,7 +1009,7 @@ class TenantPointCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -1121,13 +1024,13 @@ class TenantPointCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_tenants "
+                       " from tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_points "
@@ -1139,16 +1042,16 @@ class TenantPointCollection:
                                    description='API.POINT_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_tenants_points "
-                 " WHERE tenant_id = %s AND point_id = %s")
+                 " FROM tbl_stores_points "
+                 " WHERE store_id = %s AND point_id = %s")
         cursor.execute(query, (id_, point_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.TENANT_POINT_RELATION_EXISTED')
+                                   description='API.STORE_POINT_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_tenants_points (tenant_id, point_id) "
+        add_row = (" INSERT INTO tbl_stores_points (store_id, point_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, point_id,))
         new_id = cursor.lastrowid
@@ -1157,10 +1060,10 @@ class TenantPointCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/tenants/' + str(id_) + '/points/' + str(point_id)
+        resp.location = '/stores/' + str(id_) + '/points/' + str(point_id)
 
 
-class TenantPointItem:
+class StorePointItem:
     @staticmethod
     def __init__():
         pass
@@ -1173,7 +1076,7 @@ class TenantPointItem:
     def on_delete(req, resp, id_, pid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         if not pid.isdigit() or int(pid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1183,13 +1086,13 @@ class TenantPointItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_points "
@@ -1201,16 +1104,16 @@ class TenantPointItem:
                                    description='API.POINT_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_tenants_points "
-                       " WHERE tenant_id = %s AND point_id = %s ", (id_, pid))
+                       " FROM tbl_stores_points "
+                       " WHERE store_id = %s AND point_id = %s ", (id_, pid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_POINT_RELATION_NOT_FOUND')
+                                   description='API.STORE_POINT_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_tenants_points "
-                       " WHERE tenant_id = %s AND point_id = %s ", (id_, pid))
+        cursor.execute(" DELETE FROM tbl_stores_points "
+                       " WHERE store_id = %s AND point_id = %s ", (id_, pid))
         cnx.commit()
 
         cursor.close()
@@ -1219,7 +1122,7 @@ class TenantPointItem:
         resp.status = falcon.HTTP_204
 
 
-class TenantSensorCollection:
+class StoreSensorCollection:
     @staticmethod
     def __init__():
         pass
@@ -1232,23 +1135,23 @@ class TenantSensorCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         query = (" SELECT s.id, s.name, s.uuid "
-                 " FROM tbl_tenants t, tbl_tenants_sensors ts, tbl_sensors s "
-                 " WHERE ts.tenant_id = t.id AND s.id = ts.sensor_id AND t.id = %s "
+                 " FROM tbl_stores t, tbl_stores_sensors ts, tbl_sensors s "
+                 " WHERE ts.store_id = t.id AND s.id = ts.sensor_id AND t.id = %s "
                  " ORDER BY s.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -1271,7 +1174,7 @@ class TenantSensorCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -1286,13 +1189,13 @@ class TenantSensorCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_tenants "
+                       " from tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_sensors "
@@ -1304,16 +1207,16 @@ class TenantSensorCollection:
                                    description='API.SENSOR_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_tenants_sensors "
-                 " WHERE tenant_id = %s AND sensor_id = %s")
+                 " FROM tbl_stores_sensors "
+                 " WHERE store_id = %s AND sensor_id = %s")
         cursor.execute(query, (id_, sensor_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.TENANT_SENSOR_RELATION_EXISTED')
+                                   description='API.STORE_SENSOR_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_tenants_sensors (tenant_id, sensor_id) "
+        add_row = (" INSERT INTO tbl_stores_sensors (store_id, sensor_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, sensor_id,))
         new_id = cursor.lastrowid
@@ -1322,10 +1225,10 @@ class TenantSensorCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/tenants/' + str(id_) + '/sensors/' + str(sensor_id)
+        resp.location = '/stores/' + str(id_) + '/sensors/' + str(sensor_id)
 
 
-class TenantSensorItem:
+class StoreSensorItem:
     @staticmethod
     def __init__():
         pass
@@ -1338,7 +1241,7 @@ class TenantSensorItem:
     def on_delete(req, resp, id_, sid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         if not sid.isdigit() or int(sid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1348,13 +1251,13 @@ class TenantSensorItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_sensors "
@@ -1366,15 +1269,15 @@ class TenantSensorItem:
                                    description='API.SENSOR_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_tenants_sensors "
-                       " WHERE tenant_id = %s AND sensor_id = %s ", (id_, sid))
+                       " FROM tbl_stores_sensors "
+                       " WHERE store_id = %s AND sensor_id = %s ", (id_, sid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_SENSOR_RELATION_NOT_FOUND')
+                                   description='API.STORE_SENSOR_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_tenants_sensors WHERE tenant_id = %s AND sensor_id = %s ", (id_, sid))
+        cursor.execute(" DELETE FROM tbl_stores_sensors WHERE store_id = %s AND sensor_id = %s ", (id_, sid))
         cnx.commit()
 
         cursor.close()
@@ -1383,7 +1286,7 @@ class TenantSensorItem:
         resp.status = falcon.HTTP_204
 
 
-class TenantVirtualMeterCollection:
+class StoreVirtualMeterCollection:
     @staticmethod
     def __init__():
         pass
@@ -1396,19 +1299,19 @@ class TenantVirtualMeterCollection:
     def on_get(req, resp, id_):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_energy_categories ")
@@ -1423,8 +1326,8 @@ class TenantVirtualMeterCollection:
                                                    "uuid": row['uuid']}
 
         query = (" SELECT m.id, m.name, m.uuid, m.energy_category_id "
-                 " FROM tbl_tenants t, tbl_tenants_virtual_meters tm, tbl_virtual_meters m "
-                 " WHERE tm.tenant_id = t.id AND m.id = tm.virtual_meter_id AND t.id = %s "
+                 " FROM tbl_stores t, tbl_stores_virtual_meters tm, tbl_virtual_meters m "
+                 " WHERE tm.store_id = t.id AND m.id = tm.virtual_meter_id AND t.id = %s "
                  " ORDER BY m.id ")
         cursor.execute(query, (id_,))
         rows = cursor.fetchall()
@@ -1449,7 +1352,7 @@ class TenantVirtualMeterCollection:
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
@@ -1464,13 +1367,13 @@ class TenantVirtualMeterCollection:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " from tbl_tenants "
+                       " from tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_virtual_meters "
@@ -1482,16 +1385,16 @@ class TenantVirtualMeterCollection:
                                    description='API.VIRTUAL_METER_NOT_FOUND')
 
         query = (" SELECT id " 
-                 " FROM tbl_tenants_virtual_meters "
-                 " WHERE tenant_id = %s AND virtual_meter_id = %s")
+                 " FROM tbl_stores_virtual_meters "
+                 " WHERE store_id = %s AND virtual_meter_id = %s")
         cursor.execute(query, (id_, virtual_meter_id,))
         if cursor.fetchone() is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.TENANT_VIRTUAL_METER_RELATION_EXISTED')
+                                   description='API.STORE_VIRTUAL_METER_RELATION_EXISTED')
 
-        add_row = (" INSERT INTO tbl_tenants_virtual_meters (tenant_id, virtual_meter_id) "
+        add_row = (" INSERT INTO tbl_stores_virtual_meters (store_id, virtual_meter_id) "
                    " VALUES (%s, %s) ")
         cursor.execute(add_row, (id_, virtual_meter_id,))
         new_id = cursor.lastrowid
@@ -1500,10 +1403,10 @@ class TenantVirtualMeterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/tenants/' + str(id_) + '/virtualmeters/' + str(virtual_meter_id)
+        resp.location = '/stores/' + str(id_) + '/virtualmeters/' + str(virtual_meter_id)
 
 
-class TenantVirtualMeterItem:
+class StoreVirtualMeterItem:
     @staticmethod
     def __init__():
         pass
@@ -1516,7 +1419,7 @@ class TenantVirtualMeterItem:
     def on_delete(req, resp, id_, mid):
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TENANT_ID')
+                                   description='API.INVALID_STORE_ID')
 
         if not mid.isdigit() or int(mid) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -1526,13 +1429,13 @@ class TenantVirtualMeterItem:
         cursor = cnx.cursor()
 
         cursor.execute(" SELECT name "
-                       " FROM tbl_tenants "
+                       " FROM tbl_stores "
                        " WHERE id = %s ", (id_,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_NOT_FOUND')
+                                   description='API.STORE_NOT_FOUND')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_virtual_meters "
@@ -1544,16 +1447,16 @@ class TenantVirtualMeterItem:
                                    description='API.VIRTUAL_METER_NOT_FOUND')
 
         cursor.execute(" SELECT id "
-                       " FROM tbl_tenants_virtual_meters "
-                       " WHERE tenant_id = %s AND virtual_meter_id = %s ", (id_, mid))
+                       " FROM tbl_stores_virtual_meters "
+                       " WHERE store_id = %s AND virtual_meter_id = %s ", (id_, mid))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TENANT_VIRTUAL_METER_RELATION_NOT_FOUND')
+                                   description='API.STORE_VIRTUAL_METER_RELATION_NOT_FOUND')
 
-        cursor.execute(" DELETE FROM tbl_tenants_virtual_meters "
-                       " WHERE tenant_id = %s AND virtual_meter_id = %s ", (id_, mid))
+        cursor.execute(" DELETE FROM tbl_stores_virtual_meters "
+                       " WHERE store_id = %s AND virtual_meter_id = %s ", (id_, mid))
         cnx.commit()
 
         cursor.close()
