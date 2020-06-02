@@ -58,14 +58,14 @@ class MeterCollection:
         query = (" SELECT id, name, uuid "
                  " FROM tbl_meters ")
         cursor.execute(query)
-        rows_meters = cursor.fetchall()
+        rows_parent_meters = cursor.fetchall()
 
-        meter_dict = dict()
-        if rows_meters is not None and len(rows_meters) > 0:
-            for row in rows_meters:
-                meter_dict[row['id']] = {"id": row['id'],
-                                         "name": row['name'],
-                                         "uuid": row['uuid']}
+        parent_meter_dict = dict()
+        if rows_parent_meters is not None and len(rows_parent_meters) > 0:
+            for row in rows_parent_meters:
+                parent_meter_dict[row['id']] = {"id": row['id'],
+                                                "name": row['name'],
+                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, max_hourly_value, "
@@ -82,7 +82,7 @@ class MeterCollection:
                 energy_category = energy_category_dict.get(row['energy_category_id'], None)
                 cost_center = cost_center_dict.get(row['cost_center_id'], None)
                 energy_item = energy_item_dict.get(row['energy_item_id'], None)
-                parent_meter = meter_dict.get(row['parent_meter_id'], None)
+                parent_meter = parent_meter_dict.get(row['parent_meter_id'], None)
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
@@ -155,7 +155,8 @@ class MeterCollection:
             energy_item_id = None
 
         if 'parent_meter_id' in new_values['data'].keys():
-            if new_values['data']['parent_meter_id'] <= 0:
+            if not isinstance(new_values['data']['parent_meter_id'], int) or \
+                    new_values['data']['parent_meter_id'] <= 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_PARENT_METER_ID')
             parent_meter_id = new_values['data']['parent_meter_id']
@@ -225,10 +226,10 @@ class MeterCollection:
                     cursor.close()
                     cnx.disconnect()
                     raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                           description='API.ENERGY_ITEM_IS_NOT_BELONG_TO_ENERGY_CATEGORY')
+                                           description='API.ENERGY_ITEM_DOES_NOT_BELONG_TO_ENERGY_CATEGORY')
 
         if parent_meter_id is not None:
-            cursor.execute(" SELECT name "
+            cursor.execute(" SELECT name, energy_category_id "
                            " FROM tbl_meters "
                            " WHERE id = %s ",
                            (new_values['data']['parent_meter_id'],))
@@ -238,6 +239,12 @@ class MeterCollection:
                 cnx.disconnect()
                 raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                        description='API.PARENT_METER_NOT_FOUND')
+            else:
+                if row[1] != energy_category_id:
+                    cursor.close()
+                    cnx.disconnect()
+                    raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                           description='API.PARENT_METER_DOES_NOT BELONG_TO_SAME_ENERGY_CATEGORY')
 
         add_values = (" INSERT INTO tbl_meters "
                       "    (name, uuid, energy_category_id, is_counted, max_hourly_value, "
@@ -319,14 +326,14 @@ class MeterItem:
         query = (" SELECT id, name, uuid "
                  " FROM tbl_meters ")
         cursor.execute(query)
-        rows_meters = cursor.fetchall()
+        rows_parent_meters = cursor.fetchall()
 
-        meter_dict = dict()
-        if rows_meters is not None and len(rows_meters) > 0:
-            for row in rows_meters:
-                meter_dict[row['id']] = {"id": row['id'],
-                                         "name": row['name'],
-                                         "uuid": row['uuid']}
+        parent_meter_dict = dict()
+        if rows_parent_meters is not None and len(rows_parent_meters) > 0:
+            for row in rows_parent_meters:
+                parent_meter_dict[row['id']] = {"id": row['id'],
+                                                "name": row['name'],
+                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, max_hourly_value, "
@@ -346,7 +353,7 @@ class MeterItem:
             energy_category = energy_category_dict.get(row['energy_category_id'], None)
             cost_center = cost_center_dict.get(row['cost_center_id'], None)
             energy_item = energy_item_dict.get(row['energy_item_id'], None)
-            parent_meter = meter_dict.get(row['parent_meter_id'], None)
+            parent_meter = parent_meter_dict.get(row['parent_meter_id'], None)
             meta_result = {"id": row['id'],
                            "name": row['name'],
                            "uuid": row['uuid'],
@@ -396,17 +403,17 @@ class MeterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THIS_METER_IS_BEING_USED_BY_A_VIRTUAL_METER')
 
-        # check relation with other meters
+        # check relation with child meters
         cursor.execute(" SELECT id "
                        " FROM tbl_meters "
                        " WHERE parent_meter_id = %s ", (id_,))
-        rows_meters = cursor.fetchall()
-        if rows_meters is not None and len(rows_meters) > 0:
+        rows_child_meters = cursor.fetchall()
+        if rows_child_meters is not None and len(rows_child_meters) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_OTHER_METERS')
+                                   description='API.THERE_IS_RELATION_WITH_CHILD_METERS')
 
         # check relation with spaces
         cursor.execute(" SELECT id "
@@ -548,7 +555,9 @@ class MeterItem:
             energy_item_id = None
 
         if 'parent_meter_id' in new_values['data'].keys():
-            if new_values['data']['parent_meter_id'] <= 0:
+            if not isinstance(new_values['data']['parent_meter_id'], int) or \
+                    new_values['data']['parent_meter_id'] <= 0 or \
+                    new_values['data']['parent_meter_id'] == int(id_):
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_PARENT_METER_ID')
             parent_meter_id = new_values['data']['parent_meter_id']
@@ -627,10 +636,10 @@ class MeterItem:
                     cursor.close()
                     cnx.disconnect()
                     raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
-                                           description='API.ENERGY_ITEM_IS_NOT_BELONG_TO_ENERGY_CATEGORY')
+                                           description='API.ENERGY_ITEM_DOES_NOT_BELONG_TO_ENERGY_CATEGORY')
 
         if parent_meter_id is not None:
-            cursor.execute(" SELECT name "
+            cursor.execute(" SELECT name, energy_category_id "
                            " FROM tbl_meters "
                            " WHERE id = %s ",
                            (new_values['data']['parent_meter_id'],))
@@ -640,6 +649,24 @@ class MeterItem:
                 cnx.disconnect()
                 raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                        description='API.PARENT_METER_NOT_FOUND')
+            else:
+                if row[1] != energy_category_id:
+                    cursor.close()
+                    cnx.disconnect()
+                    raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                           description='API.PARENT_METER_DOES_NOT BELONG_TO_SAME_ENERGY_CATEGORY')
+
+        if parent_meter_id is not None:
+            cursor.execute(" SELECT name "
+                           " FROM tbl_meters "
+                           " WHERE id = %s AND parent_meter_id = %s ",
+                           (new_values['data']['parent_meter_id'], id_))
+            row = cursor.fetchone()
+            if row is not None:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                       description='API.PARENT_METER_CAN_NOT_BE_CHILD_METER')
 
         update_row = (" UPDATE tbl_meters "
                       " SET name = %s, energy_category_id = %s, max_hourly_value = %s, is_counted = %s, "
@@ -662,6 +689,108 @@ class MeterItem:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_200
+
+
+class MeterChildrenCollection:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp, id_):
+        resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_get(req, resp, id_):
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_METER_ID')
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor(dictionary=True)
+
+        cursor.execute(" SELECT name, uuid "
+                       " FROM tbl_meters "
+                       " WHERE id = %s ", (id_,))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.METER_NOT_FOUND')
+        else:
+            parent_meter = {"id": id_,
+                            "name": row['name'],
+                            "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_categories ")
+        cursor.execute(query)
+        rows_energy_categories = cursor.fetchall()
+
+        energy_category_dict = dict()
+        if rows_energy_categories is not None and len(rows_energy_categories) > 0:
+            for row in rows_energy_categories:
+                energy_category_dict[row['id']] = {"id": row['id'],
+                                                   "name": row['name'],
+                                                   "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_cost_centers ")
+        cursor.execute(query)
+        rows_cost_centers = cursor.fetchall()
+
+        cost_center_dict = dict()
+        if rows_cost_centers is not None and len(rows_cost_centers) > 0:
+            for row in rows_cost_centers:
+                cost_center_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_energy_items ")
+        cursor.execute(query)
+        rows_energy_items = cursor.fetchall()
+
+        energy_item_dict = dict()
+        if rows_energy_items is not None and len(rows_energy_items) > 0:
+            for row in rows_energy_items:
+                energy_item_dict[row['id']] = {"id": row['id'],
+                                               "name": row['name'],
+                                               "uuid": row['uuid']}
+
+        query = (" SELECT id, name, uuid, energy_category_id, "
+                 "        is_counted, max_hourly_value, "
+                 "        cost_center_id, energy_item_id, parent_meter_id, "
+                 "        location, description "
+                 " FROM tbl_meters "
+                 " WHERE parent_meter_id = %s "
+                 " ORDER BY id ")
+        cursor.execute(query, (id_, ))
+        rows_meters = cursor.fetchall()
+
+        result = list()
+        if rows_meters is not None and len(rows_meters) > 0:
+            for row in rows_meters:
+                energy_category = energy_category_dict.get(row['energy_category_id'], None)
+                cost_center = cost_center_dict.get(row['cost_center_id'], None)
+                energy_item = energy_item_dict.get(row['energy_item_id'], None)
+                meta_result = {"id": row['id'],
+                               "name": row['name'],
+                               "uuid": row['uuid'],
+                               "energy_category": energy_category,
+                               "is_counted": True if row['is_counted'] else False,
+                               "max_hourly_value": row['max_hourly_value'],
+                               "cost_center": cost_center,
+                               "energy_item": energy_item,
+                               "parent_meter": parent_meter,
+                               "location": row['location'],
+                               "description": row['description']}
+                result.append(meta_result)
+
+        cursor.close()
+        cnx.disconnect()
+        resp.body = json.dumps(result)
 
 
 class MeterPointCollection:

@@ -22,6 +22,8 @@ import privilege
 import rule
 import sensor
 import space
+import store
+import storetype
 import tariff
 import tenant
 import tenanttype
@@ -149,6 +151,8 @@ api.add_route('/meters',
               meter.MeterCollection())
 api.add_route('/meters/{id_}',
               meter.MeterItem())
+api.add_route('/meters/{id_}/children',
+              meter.MeterChildrenCollection())
 api.add_route('/meters/{id_}/points',
               meter.MeterPointCollection())
 api.add_route('/meters/{id_}/points/{pid}',
@@ -214,6 +218,10 @@ api.add_route('/spaces/{id_}/sensors',
               space.SpaceSensorCollection())
 api.add_route('/spaces/{id_}/sensors/{sid}',
               space.SpaceSensorItem())
+api.add_route('/spaces/{id_}/stores',
+              space.SpaceStoreCollection())
+api.add_route('/spaces/{id_}/stores/{tid}',
+              space.SpaceStoreItem())
 api.add_route('/spaces/{id_}/tenants',
               space.SpaceTenantCollection())
 api.add_route('/spaces/{id_}/tenants/{tid}',
@@ -222,6 +230,36 @@ api.add_route('/spaces/{id_}/virtualmeters',
               space.SpaceVirtualMeterCollection())
 api.add_route('/spaces/{id_}/virtualmeters/{mid}',
               space.SpaceVirtualMeterItem())
+
+api.add_route('/stores',
+              store.StoreCollection())
+api.add_route('/stores/{id_}',
+              store.StoreItem())
+api.add_route('/stores/{id_}/meters',
+              store.StoreMeterCollection())
+api.add_route('/stores/{id_}/meters/{mid}',
+              store.StoreMeterItem())
+api.add_route('/stores/{id_}/offlinemeters',
+              store.StoreOfflineMeterCollection())
+api.add_route('/stores/{id_}/offlinemeters/{mid}',
+              store.StoreOfflineMeterItem())
+api.add_route('/stores/{id_}/points',
+              store.StorePointCollection())
+api.add_route('/stores/{id_}/points/{pid}',
+              store.StorePointItem())
+api.add_route('/stores/{id_}/sensors',
+              store.StoreSensorCollection())
+api.add_route('/stores/{id_}/sensors/{sid}',
+              store.StoreSensorItem())
+api.add_route('/stores/{id_}/virtualmeters',
+              store.StoreVirtualMeterCollection())
+api.add_route('/stores/{id_}/virtualmeters/{mid}',
+              store.StoreVirtualMeterItem())
+
+api.add_route('/storetypes',
+              storetype.StoreTypeCollection())
+api.add_route('/storetypes/{id_}',
+              storetype.StoreTypeItem())
 
 api.add_route('/tariffs',
               tariff.TariffCollection())

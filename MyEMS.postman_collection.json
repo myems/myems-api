@@ -2194,7 +2194,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -2218,7 +2218,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -2249,6 +2249,25 @@
 							"path": [
 								"meters",
 								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Children of a Meter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/meters/1/children",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"meters",
+								"1",
+								"children"
 							]
 						}
 					},
@@ -3423,6 +3442,68 @@
 					"response": []
 				},
 				{
+					"name": "GET All Stores of a Space",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/stores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Store to a Space",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"store_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/1/stores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Store from Space",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/1/stores/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"1",
+								"stores",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "GET All Tenants of a Space",
 					"request": {
 						"method": "GET",
@@ -3541,6 +3622,520 @@
 								"1",
 								"virtualmeters",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Store",
+			"item": [
+				{
+					"name": "GET All Sotres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"麦当劳(新王府井店)\", \"address\":\"北京市东城区王府井大街200号工美大厦1层010-65120499\", \"latitude\":39.909429, \"longitude\":116.416993, \"area\":600.000, \"store_type_id\":1, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"Classic, long-running fast-food chain known for its burgers, fries & shakes.\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Store",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"麦当劳(新王府井店)\", \"address\":\"北京市东城区王府井大街200号工美大厦1层010-65120499\", \"latitude\":39.909429, \"longitude\":116.416993, \"area\":600.000, \"store_type_id\":1, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"Classic, long-running fast-food chain known for its burgers, fries & shakes.\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Store by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Meters of Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Meter to a Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Meter from Store",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/meters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"meters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All OfflineMeters of Store",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind an OfflineMeter to a Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"offline_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Offline Meter from Store",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/offlinemeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"offlinemeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Points of Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Point to a Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"point_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Point from Store",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/points/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"points",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Sensors of Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Sensor to a Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"sensor_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Sensor from Stores",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/sensors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"sensors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Virtual Meters of Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Virtual Meter to a Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"virtual_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Virtual Meter from Store",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/1/virtualmeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"1",
+								"virtualmeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "StoreType",
+			"item": [
+				{
+					"name": "GET All Store Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/storetypes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"storetypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Store Type by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/storetypes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"storetypes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Store Type",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\": \"Car\", \"description\":\"汽车\", \"simplified_code\":\"CA\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/storetypes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"storetypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Store Type",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\": \"Auto\", \"description\":\"汽车\", \"simplified_code\":\"AT\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/storetypes/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"storetypes",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Store Type by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/storetypes/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"storetypes",
+								"4"
 							]
 						}
 					},
