@@ -769,7 +769,8 @@ Result
 | uuid          | string    | Offline Meter UUID                        |
 | energy_category| Object   | Energy Category Object                    |
 | is_counted    | boolean   | Offline Meter is counted in associated unit   |
-| max_hourly_value | decimal(18,3)   | Maximum energy consumption per hour|
+| hourly_low_limit  | decimal(18,3)   | Inclusive. Default is 0. If the meter has accuracy problems, set the value to a small positive value, such as 0.100|
+| hourly_high_limit | decimal(18,3)   | Inclusive. Maximum energy consumption per hour, Rated total active Power, Rated Flow, etc.|
 | cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
 | location      | string    | Offline Meter location                    |
@@ -785,11 +786,11 @@ $ curl -i -X DELETE http://BASE_URL/offlinemeters/{id}
 ```
 * POST Create a Offline Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "is_counted":true, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters
 ```
 * PUT Update a Offline Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "max_hourly_value":9999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "is_counted":true, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
 ```
 
 ### Offline Meter File

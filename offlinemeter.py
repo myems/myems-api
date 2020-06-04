@@ -56,7 +56,7 @@ class OfflineMeterCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id, "
-                 "        is_counted, max_hourly_value, "
+                 "        is_counted, hourly_low_limit, hourly_high_limit, "
                  "        energy_item_id, cost_center_id, location, description "
                  " FROM tbl_offline_meters "
                  " ORDER BY id ")
@@ -74,7 +74,8 @@ class OfflineMeterCollection:
                                "uuid": row['uuid'],
                                "energy_category": energy_category,
                                "is_counted": True if row['is_counted'] else False,
-                               "max_hourly_value": row['max_hourly_value'],
+                               "hourly_low_limit": row['hourly_low_limit'],
+                               "hourly_high_limit": row['hourly_high_limit'],
                                "energy_item": energy_item,
                                "cost_center": cost_center,
                                "location": row['location'],
@@ -115,12 +116,19 @@ class OfflineMeterCollection:
                                    description='API.INVALID_IS_COUNTED_VALUE')
         is_counted = new_values['data']['is_counted']
 
-        if 'max_hourly_value' not in new_values['data'].keys() or \
-                not (isinstance(new_values['data']['max_hourly_value'], float) or
-                     isinstance(new_values['data']['max_hourly_value'], int)):
+        if 'hourly_low_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['hourly_low_limit'], float) or
+                     isinstance(new_values['data']['hourly_low_limit'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_MAX_HOURLY_VALUE')
-        max_hourly_value = new_values['data']['max_hourly_value']
+                                   description='API.INVALID_HOURLY_LOW_LIMIT_VALUE')
+        hourly_low_limit = new_values['data']['hourly_low_limit']
+
+        if 'hourly_high_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['hourly_high_limit'], float) or
+                     isinstance(new_values['data']['hourly_high_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_HOURLY_HIGH_LIMIT_VALUE')
+        hourly_high_limit = new_values['data']['hourly_high_limit']
 
         if 'cost_center_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['cost_center_id'], int) or \
@@ -205,14 +213,16 @@ class OfflineMeterCollection:
                                    description='API.COST_CENTER_NOT_FOUND')
 
         add_values = (" INSERT INTO tbl_offline_meters "
-                      "    (name, uuid, energy_category_id, is_counted, max_hourly_value, "
+                      "    (name, uuid, energy_category_id, "
+                      "     is_counted, hourly_low_limit, hourly_high_limit, "
                       "     cost_center_id, energy_item_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     energy_category_id,
                                     is_counted,
-                                    max_hourly_value,
+                                    hourly_low_limit,
+                                    hourly_high_limit,
                                     cost_center_id,
                                     energy_item_id,
                                     location,
@@ -223,7 +233,7 @@ class OfflineMeterCollection:
         cnx.disconnect()
 
         resp.status = falcon.HTTP_201
-        resp.location = '/meters/' + str(new_id)
+        resp.location = '/offlinemeters/' + str(new_id)
 
 
 class OfflineMeterItem:
@@ -281,7 +291,7 @@ class OfflineMeterItem:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id, "
-                 "        is_counted, max_hourly_value, "
+                 "        is_counted, hourly_low_limit, hourly_high_limit, "
                  "        energy_item_id, cost_center_id, location, description "
                  " FROM tbl_offline_meters "
                  " WHERE id = %s ")
@@ -302,7 +312,8 @@ class OfflineMeterItem:
                            "uuid": row['uuid'],
                            "energy_category": energy_category,
                            "is_counted": True if row['is_counted'] else False,
-                           "max_hourly_value": row['max_hourly_value'],
+                           "hourly_low_limit": row['hourly_low_limit'],
+                           "hourly_high_limit": row['hourly_high_limit'],
                            "energy_item": energy_item,
                            "cost_center": cost_center,
                            "location": row['location'],
@@ -448,12 +459,19 @@ class OfflineMeterItem:
                                    description='API.INVALID_IS_COUNTED_VALUE')
         is_counted = new_values['data']['is_counted']
 
-        if 'max_hourly_value' not in new_values['data'].keys() or \
-                not (isinstance(new_values['data']['max_hourly_value'], float) or
-                     isinstance(new_values['data']['max_hourly_value'], int)):
+        if 'hourly_low_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['hourly_low_limit'], float) or
+                     isinstance(new_values['data']['hourly_low_limit'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_MAX_HOURLY_VALUE')
-        max_hourly_value = new_values['data']['max_hourly_value']
+                                   description='API.INVALID_HOURLY_LOW_LIMIT_VALUE')
+        hourly_low_limit = new_values['data']['hourly_low_limit']
+
+        if 'hourly_high_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['hourly_high_limit'], float) or
+                     isinstance(new_values['data']['hourly_high_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_HOURLY_HIGH_LIMIT_VALUE')
+        hourly_high_limit = new_values['data']['hourly_high_limit']
 
         if 'cost_center_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['cost_center_id'], int) or \
@@ -548,12 +566,14 @@ class OfflineMeterItem:
                                            description='API.ENERGY_ITEM_IS_NOT_BELONG_TO_ENERGY_CATEGORY')
 
         update_row = (" UPDATE tbl_offline_meters "
-                      " SET name = %s, energy_category_id = %s, max_hourly_value = %s, is_counted = %s, "
+                      " SET name = %s, energy_category_id = %s,"
+                      "     is_counted = %s, hourly_low_limit = %s, hourly_high_limit = %s, "
                       "     cost_center_id = %s, energy_item_id = %s, location = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     energy_category_id,
-                                    max_hourly_value,
+                                    hourly_low_limit,
+                                    hourly_high_limit,
                                     is_counted,
                                     cost_center_id,
                                     energy_item_id,
