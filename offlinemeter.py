@@ -572,9 +572,9 @@ class OfflineMeterItem:
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     energy_category_id,
+                                    is_counted,
                                     hourly_low_limit,
                                     hourly_high_limit,
-                                    is_counted,
                                     cost_center_id,
                                     energy_item_id,
                                     location,
