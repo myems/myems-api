@@ -539,8 +539,6 @@ class MeterItem:
                                    description='API.INVALID_IS_COUNTED_VALUE')
         is_counted = new_values['data']['is_counted']
 
-
-
         if 'hourly_low_limit' not in new_values['data'].keys() or \
                 not (isinstance(new_values['data']['hourly_low_limit'], float) or
                      isinstance(new_values['data']['hourly_low_limit'], int)):
