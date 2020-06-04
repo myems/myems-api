@@ -712,7 +712,8 @@ Result
 | uuid          | string    | Meter UUID                                |
 | energy_category| Object   | Energy Category Object                    |
 | is_counted    | boolean   | Meter is counted in associated unit       |
-| max_hourly_value | decimal(18,3)   | Maximum energy consumption per hour|
+| hourly_low_limit  | decimal(18,3)   | Inclusive. Default is 0. If the meter has accuracy problems, set the value to a small positive value, such as 0.100|
+| hourly_high_limit | decimal(18,3)   | Inclusive. Maximum energy consumption per hour, Rated total active Power, Rated Flow, etc.|
 | cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
 | parent_meter  | Object    | Parent Meter Object                       |
@@ -729,11 +730,11 @@ $ curl -i -X DELETE http://BASE_URL/meters/{id}
 ```
 * POST Create a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
 ```
 * PUT Update a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "max_hourly_value":999.99, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
 ```
 * GET All Children of Meter by ID
 ```bash

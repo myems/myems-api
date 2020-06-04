@@ -2194,7 +2194,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -2218,19 +2218,19 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/meters/1",
+							"raw": "{{base_url}}/meters/28",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"meters",
-								"1"
+								"28"
 							]
 						}
 					},
