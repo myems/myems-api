@@ -2112,7 +2112,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/zh/jci/FEMS/feed-doc/standards/能源管理体系-要求GB-T-23331-2012.pdf"
+									"src": "/zh/myems/standards/能源管理体系-要求GB-T-23331-2012.pdf"
 								}
 							]
 						},
@@ -2506,7 +2506,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/zh/jci/FEMS/feed-doc1/JQPT/offline-meter-files/离线表数据201905.xlsx"
+									"src": "/zh/myems/myems-normalization/offline_meter_data.xlsx"
 								}
 							]
 						},

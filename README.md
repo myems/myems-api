@@ -210,7 +210,7 @@ Result in JSON
 | id            | integer   | Data Source ID                            |
 | name          | string    | Data Source name                          |
 | uuid          | string    | Data Source UUID                          |
-| protocol      | string    | Protocol Type Supported: bacnet-ip, modbus-tcp, s7, opc-ua, control-logix, |
+| protocol      | string    | Protocol Type Supported: bacnet-ip, modbus-tcp, s7, opc-ua, controllogix, |
 | connection    | json      | Connection data in JSON. BACnet/IP example: {"host":"10.1.2.88"}, Modbus TCP example: {"host":"10.1.2.88", "port":502}, S7 example: {"host":"10.1.2.202", "port":102, "rack": 0, "slot": 2}, ControlLogix example: {"host":"10.1.2.88","port":44818,"processorslot":3} OPC UA example: {"url":"opc.tcp://10.1.2.5:49320/OPCUA/SimulationServer/"} |
 
 * GET all Data Sources
