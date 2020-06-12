@@ -57,7 +57,7 @@ class DataSourceCollection:
         if 'protocol' not in new_values['data'].keys() \
                 or new_values['data']['protocol'] not in \
                 ('modbus-tcp', 'modbus-rtu', 'bacnet-ip', 's7', 'profibus', 'profinet', 'opc-ua', 'lora', 'simulation',
-                 'controllogix'):
+                 'controllogix', 'weather'):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_PROTOCOL.')
 
@@ -182,7 +182,7 @@ class DataSourceItem:
         if 'protocol' not in new_values['data'].keys() \
                 or new_values['data']['protocol'] not in \
                 ('modbus-tcp', 'modbus-rtu', 'bacnet-ip', 's7', 'profibus', 'profinet', 'opc-ua', 'lora', 'simulation',
-                 'controllogix'):
+                 'controllogix', 'weather'):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_PROTOCOL.')
 
