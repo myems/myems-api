@@ -140,6 +140,15 @@ class PointCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                    description='API.POINT_NAME_IS_ALREADY_IN_USE')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_data_sources "
+                       " WHERE id = %s ", (data_source_id,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_DATA_SOURCE_ID')
+
         add_value = (" INSERT INTO tbl_points (name, data_source_id, "
                      "                         object_type, units, low_limit, high_limit, "
                      "                         is_trend, address, ratio) "
@@ -400,6 +409,15 @@ class PointItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.POINT_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_data_sources "
+                       " WHERE id = %s ", (data_source_id,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_DATA_SOURCE_ID')
 
         cursor.execute(" SELECT name "
                        " FROM tbl_points "

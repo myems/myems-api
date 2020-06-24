@@ -20,9 +20,20 @@ class DataSourceCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        query = (" SELECT id, name, uuid, protocol, connection "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_gateways ")
+        cursor.execute(query)
+        rows_gateways = cursor.fetchall()
+        gateway_dict = dict()
+        if rows_gateways is not None and len(rows_gateways) > 0:
+            for row in rows_gateways:
+                gateway_dict[row[0]] = {"id": row[0],
+                                        "name": row[1],
+                                        "uuid": row[2]}
+
+        query = (" SELECT id, name, uuid, gateway_id, protocol, connection "
                  " FROM tbl_data_sources "
-                 " ORDER BY id")
+                 " ORDER BY id ")
         cursor.execute(query)
         rows = cursor.fetchall()
         cursor.close()
@@ -32,7 +43,8 @@ class DataSourceCollection:
         if rows is not None and len(rows) > 0:
             for row in rows:
                 meta_result = {"id": row[0], "name": row[1], "uuid": row[2],
-                               "protocol": row[3], "connection": row[4]}
+                               "gateway": gateway_dict.get(row[3]),
+                               "protocol": row[4], "connection": row[5]}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -54,12 +66,27 @@ class DataSourceCollection:
                                    description='API.INVALID_DATA_SOURCE_NAME')
         name = str.strip(new_values['data']['name'])
 
+        if 'gateway_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['gateway_id'], int) or \
+                new_values['data']['gateway_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_GATEWAY_ID')
+        gateway_id = new_values['data']['gateway_id']
+
         if 'protocol' not in new_values['data'].keys() \
                 or new_values['data']['protocol'] not in \
                 ('modbus-tcp', 'modbus-rtu', 'bacnet-ip', 's7', 'profibus', 'profinet', 'opc-ua', 'lora', 'simulation',
                  'controllogix', 'weather'):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_PROTOCOL.')
+        protocol = new_values['data']['protocol']
+
+        if 'connection' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['connection'], str) or \
+                len(str.strip(new_values['data']['connection'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_CONNECTION')
+        connection = str.strip(new_values['data']['connection'])
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -73,12 +100,22 @@ class DataSourceCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                    description='API.DATA_SOURCE_NAME_IS_ALREADY_IN_USE')
 
-        add_values = (" INSERT INTO tbl_data_sources (name, uuid, protocol, connection) "
-                      " VALUES (%s, %s, %s, %s) ")
-        cursor.execute(add_values, (new_values['data']['name'],
+        cursor.execute(" SELECT name "
+                       " FROM tbl_gateways "
+                       " WHERE id = %s ", (gateway_id,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_GATEWAY_ID')
+
+        add_values = (" INSERT INTO tbl_data_sources (name, uuid, gateway_id, protocol, connection) "
+                      " VALUES (%s, %s, %s, %s, %s) ")
+        cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
-                                    new_values['data']['protocol'],
-                                    new_values['data']['connection']))
+                                    gateway_id,
+                                    protocol,
+                                    connection))
         new_id = cursor.lastrowid
         cnx.commit()
         cursor.close()
@@ -106,7 +143,18 @@ class DataSourceItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        query = (" SELECT id, name, uuid, protocol, connection "
+        query = (" SELECT id, name, uuid "
+                 " FROM tbl_gateways ")
+        cursor.execute(query)
+        rows_gateways = cursor.fetchall()
+        gateway_dict = dict()
+        if rows_gateways is not None and len(rows_gateways) > 0:
+            for row in rows_gateways:
+                gateway_dict[row[0]] = {"id": row[0],
+                                        "name": row[1],
+                                        "uuid": row[2]}
+
+        query = (" SELECT id, name, uuid, gateway_id, protocol, connection "
                  " FROM tbl_data_sources "
                  " WHERE id =%s ")
         cursor.execute(query, (id_,))
@@ -117,7 +165,10 @@ class DataSourceItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.DATA_SOURCE_NOT_FOUND')
 
-        result = {"id": row[0], "name": row[1], "uuid": row[2], "protocol": row[3], "connection": row[4]}
+        result = {"id": row[0], "name": row[1], "uuid": row[2],
+                  "gateway": gateway_dict.get(row[3]),
+                  "protocol": row[4], "connection": row[5]}
+
         resp.body = json.dumps(result)
 
     @staticmethod
@@ -179,12 +230,20 @@ class DataSourceItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_NAME')
 
+        if 'gateway_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['gateway_id'], int) or \
+                new_values['data']['gateway_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_GATEWAY_ID')
+        gateway_id = new_values['data']['gateway_id']
+
         if 'protocol' not in new_values['data'].keys() \
                 or new_values['data']['protocol'] not in \
                 ('modbus-tcp', 'modbus-rtu', 'bacnet-ip', 's7', 'profibus', 'profinet', 'opc-ua', 'lora', 'simulation',
                  'controllogix', 'weather'):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_PROTOCOL.')
+        protocol = new_values['data']['protocol']
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -198,11 +257,21 @@ class DataSourceItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.DATA_SOURCE_NOT_FOUND')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_gateways "
+                       " WHERE id = %s ", (gateway_id,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_GATEWAY_ID')
+
         update_row = (" UPDATE tbl_data_sources "
-                      " SET name = %s, protocol = %s, connection = %s "
+                      " SET name = %s, gateway_id = %s, protocol = %s, connection = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['protocol'],
+                                    gateway_id,
+                                    protocol,
                                     new_values['data']['connection'],
                                     id_,))
         cnx.commit()
