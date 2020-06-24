@@ -213,6 +213,8 @@ Result in JSON
 | uuid          | string    | Data Source UUID                          |
 | protocol      | string    | Protocol Type Supported: 'modbus-tcp', 'modbus-rtu', 'bacnet-ip', 's7', 'profibus', 'profinet', 'opc-ua', 'lora', 'simulation', 'controllogix', 'weather' |
 | connection    | json      | Connection data in JSON. BACnet/IP example: {"host":"10.1.2.88"}, Modbus TCP example: {"host":"10.1.2.88", "port":502}, S7 example: {"host":"10.1.2.202", "port":102, "rack": 0, "slot": 2}, ControlLogix example: {"host":"10.1.2.88","port":44818,"processorslot":3} OPC UA example: {"url":"opc.tcp://10.1.2.5:49320/OPCUA/SimulationServer/"} |
+| last_seen_datetime| float | Indicates the last time when the data source was seen in a number of milliseconds since January 1, 1970, 00:00:00, universal time |
+| status        | string    | 'online' or 'offline' determined by last seen datetime|
 
 * GET all Data Sources
 ```bash
@@ -632,6 +634,45 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_mete
 * DELETE an Virtual Meter from Equipment
 ```bash
 $ curl -i -X DELETE http://BASE_URL/equipments/{id}/virtualmeters/{mid}
+```
+
+
+### Gateway
+* GET Gateway by ID
+
+```bash
+$ curl -i -X GET http://BASE_URL/gateways/{id}
+```
+Result in JSON
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Gateway ID                                |
+| name          | string    | Gateway name                              |
+| uuid          | string    | Data Source UUID                          |
+| token         | string    | Data Source Token                         |
+| last_seen_datetime| float | Indicates the last time when the gateway was seen in a number of milliseconds since January 1, 1970, 00:00:00, universal time |
+| status        | string    | 'online' or 'offline' determined by last seen datetime|
+
+* GET all Gateways
+```bash
+$ curl -i -X GET http://BASE_URL/gateways
+```
+* DELETE Gateway by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/gateways/{id}
+```
+* POST Gateway
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Gateway 1"}}' http://BASE_URL/gateways
+```
+* PUT Gateway
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Gateway #1"}}' http://BASE_URL/gateways/{id}
+```
+* GET all data sources of the Gateway by ID
+```bash
+$ curl -i -X GET http://BASE_URL/gateways/{id}/datasources
 ```
 
 ### GSM Modem

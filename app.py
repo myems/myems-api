@@ -12,6 +12,7 @@ import energycategory
 import energyflowdiagram
 import energyitem
 import equipment
+import gateway
 import gsmmodem
 import knowledgefile
 import meter
@@ -64,8 +65,6 @@ api.add_route('/datasources/{id_}',
               datasource.DataSourceItem())
 api.add_route('/datasources/{id_}/points',
               datasource.DataSourcePointCollection())
-api.add_route('/datasources/status',
-              datasource.DataSourceStatusCollection())
 
 api.add_route('/distributioncircuits',
               distributioncircuit.DistributionCircuitCollection())
@@ -136,6 +135,13 @@ api.add_route('/equipments/{id_}/virtualmeters',
               equipment.EquipmentVirtualMeterCollection())
 api.add_route('/equipments/{id_}/virtualmeters/{mid}',
               equipment.EquipmentVirtualMeterItem())
+
+api.add_route('/gateways',
+              gateway.GatewayCollection())
+api.add_route('/gateways/{id_}',
+              gateway.GatewayItem())
+api.add_route('/gateways/{id_}/datasources',
+              gateway.GatewayDataSourceCollection())
 
 api.add_route('/gsmmodems',
               gsmmodem.GSMModemCollection())

@@ -3,7 +3,7 @@ import simplejson as json
 import mysql.connector
 import config
 import uuid
-import datetime
+from datetime import datetime
 
 
 class DataSourceCollection:
@@ -31,7 +31,7 @@ class DataSourceCollection:
                                         "name": row[1],
                                         "uuid": row[2]}
 
-        query = (" SELECT id, name, uuid, gateway_id, protocol, connection "
+        query = (" SELECT id, name, uuid, gateway_id, protocol, connection, last_seen_datetime_utc "
                  " FROM tbl_data_sources "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -40,11 +40,23 @@ class DataSourceCollection:
         cnx.disconnect()
 
         result = list()
+        now = datetime.utcnow().replace(second=0, microsecond=0, tzinfo=None)
         if rows is not None and len(rows) > 0:
             for row in rows:
+                last_seen_time = row[6]
+                if last_seen_time is not None and (now - last_seen_time).total_seconds() > 5 * 60:
+                    status = "online"
+                else:
+                    status = "offline"
                 meta_result = {"id": row[0], "name": row[1], "uuid": row[2],
                                "gateway": gateway_dict.get(row[3]),
-                               "protocol": row[4], "connection": row[5]}
+                               "protocol": row[4],
+                               "connection": row[5],
+                               "last_seen_datetime": row[4].timestamp() * 1000 if isinstance(row[4],
+                                                                                             datetime) else None,
+                               "status": status
+                               }
+
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -154,9 +166,9 @@ class DataSourceItem:
                                         "name": row[1],
                                         "uuid": row[2]}
 
-        query = (" SELECT id, name, uuid, gateway_id, protocol, connection "
+        query = (" SELECT id, name, uuid, gateway_id, protocol, connection, last_seen_datetime_utc "
                  " FROM tbl_data_sources "
-                 " WHERE id =%s ")
+                 " WHERE id = %s ")
         cursor.execute(query, (id_,))
         row = cursor.fetchone()
         cursor.close()
@@ -165,9 +177,21 @@ class DataSourceItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.DATA_SOURCE_NOT_FOUND')
 
+        last_seen_time = row[6]
+        now = datetime.utcnow().replace(second=0, microsecond=0, tzinfo=None)
+
+        if last_seen_time is not None and (now - last_seen_time).total_seconds() > 5 * 60:
+            status = "online"
+        else:
+            status = "offline"
+
         result = {"id": row[0], "name": row[1], "uuid": row[2],
                   "gateway": gateway_dict.get(row[3]),
-                  "protocol": row[4], "connection": row[5]}
+                  "protocol": row[4],
+                  "connection": row[5],
+                  "last_seen_datetime": row[4].timestamp() * 1000 if isinstance(row[4], datetime) else None,
+                  "status": status
+                  }
 
         resp.body = json.dumps(result)
 
@@ -226,9 +250,12 @@ class DataSourceItem:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        if 'name' not in new_values['data'].keys() or len(new_values['data']['name']) == 0:
+        if 'name' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_NAME')
+        name = str.strip(new_values['data']['name'])
 
         if 'gateway_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['gateway_id'], int) or \
@@ -244,6 +271,13 @@ class DataSourceItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_DATA_SOURCE_PROTOCOL.')
         protocol = new_values['data']['protocol']
+
+        if 'connection' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['connection'], str) or \
+                len(str.strip(new_values['data']['connection'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_CONNECTION')
+        connection = str.strip(new_values['data']['connection'])
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -269,10 +303,10 @@ class DataSourceItem:
         update_row = (" UPDATE tbl_data_sources "
                       " SET name = %s, gateway_id = %s, protocol = %s, connection = %s "
                       " WHERE id = %s ")
-        cursor.execute(update_row, (new_values['data']['name'],
+        cursor.execute(update_row, (name,
                                     gateway_id,
                                     protocol,
-                                    new_values['data']['connection'],
+                                    connection,
                                     id_,))
         cnx.commit()
 
@@ -311,7 +345,8 @@ class DataSourcePointCollection:
 
         result = list()
         # Get points of the data source
-        query_point = (" SELECT id, name, data_source_id, object_type, "
+        # NOTE: there is no uuid in tbl_points
+        query_point = (" SELECT id, name, object_type, "
                        "        units, low_limit, high_limit, is_trend, address, ratio "
                        " FROM tbl_points "
                        " WHERE data_source_id = %s "
@@ -323,69 +358,15 @@ class DataSourcePointCollection:
             for row in rows_point:
                 meta_result = {"id": row[0],
                                "name": row[1],
-                               "data_source_id": row[2],
-                               "object_type": row[3],
-                               "units": row[4],
-                               "low_limit": row[5],
-                               "high_limit": row[6],
-                               "is_trend": True if row[7] else False,
-                               "address": row[8],
-                               "ratio": row[9]}
+                               "object_type": row[2],
+                               "units": row[3],
+                               "low_limit": row[4],
+                               "high_limit": row[5],
+                               "is_trend": True if row[6] else False,
+                               "address": row[7],
+                               "ratio": row[8]}
                 result.append(meta_result)
 
-        cursor.close()
-        cnx.disconnect()
-        resp.body = json.dumps(result)
-
-
-class DataSourceStatusCollection:
-    @staticmethod
-    def __init__():
-        pass
-
-    @staticmethod
-    def on_options(req, resp):
-        resp.status = falcon.HTTP_200
-
-    @staticmethod
-    def on_get(req, resp):
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
-
-        # Get the data source
-        query_point = (" SELECT id, name, connection, last_seen_datetime_utc "
-                       " FROM tbl_data_sources "
-                       " ORDER BY name ")
-        cursor.execute(query_point, )
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.DATA_SOURCE_NOT_FOUND')
-        rows_point = cursor.fetchall()
-
-        result = dict()
-        if rows_point is not None and len(rows_point) > 0:
-            for row in rows_point:
-                id = row[0]
-                name = row[1]
-                connection = row[2]
-                last_time = row[3]
-                now_time = datetime.datetime.utcnow().replace(second=0, microsecond=0, tzinfo=None)
-                status = "offline"
-
-                if "host" in connection:
-                    ip = json.loads(connection)["host"]
-                else:
-                    continue
-
-                if (now_time - last_time).total_seconds() > 5 * 60:
-                    status = "online"
-
-                result[name] = {
-                    "ip": ip,
-                    "status": status
-                }
         cursor.close()
         cnx.disconnect()
         resp.body = json.dumps(result)
