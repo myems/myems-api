@@ -1951,6 +1951,133 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Gateway",
+			"item": [
+				{
+					"name": "GET All Gateways",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/gateways",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gateways"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Gateway by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/gateways/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gateways",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Gateway",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Gateway 3\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/gateways",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gateways"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Gateway by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/gateways/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gateways",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Gateway by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Gateway #3\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/gateways/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gateways",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Data Sources by Gateway ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/gateways/1/datasources",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gateways",
+								"1",
+								"datasources"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "GSM Modem",
 			"item": [
 				{
