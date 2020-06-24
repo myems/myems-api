@@ -325,7 +325,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"Modbus1\", \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.88\\\", \\\"port\\\":502}\"}}",
+							"raw": "{\"data\":{\"name\":\"Modbus1\", \"gateway_id\": 1, \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.88\\\", \\\"port\\\":502}\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -367,7 +367,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"Modbus1\", \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.99\\\", \\\"port\\\":502}\"}}",
+							"raw": "{\"data\":{\"name\":\"Modbus1\", \"gateway_id\":1, \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.99\\\", \\\"port\\\":502}\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -2112,7 +2112,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/zh/jci/FEMS/feed-doc/standards/能源管理体系-要求GB-T-23331-2012.pdf"
+									"src": "/zh/myems/standards/能源管理体系-要求GB-T-23331-2012.pdf"
 								}
 							]
 						},
@@ -2506,7 +2506,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/zh/jci/FEMS/feed-doc1/JQPT/offline-meter-files/离线表数据201905.xlsx"
+									"src": "/zh/myems/myems-normalization/offline_meter_data.xlsx"
 								}
 							]
 						},
@@ -4171,7 +4171,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"new阶梯电价\",\"energy_category_id\":1, \"tariff_type\":\"block\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2021-01-01T00:00:00\", \"block\":[{\"start_amount\":\"0\", \"end_amount\":\"10000\", \"price\":\"0.567\"}, {\"start_amount\":\"10000\", \"end_amount\":\"30000\", \"price\":\"0.678\"}, {\"start_amount\":\"30000\", \"end_amount\":\"100000\", \"price\":\"0.789\"}]}}"
+							"raw": "{\"data\":{\"name\":\"new阶梯电价\",\"energy_category\":{\"id\":1}, \"tariff_type\":\"block\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2021-01-01T00:00:00\", \"block\":[{\"start_amount\":\"0\", \"end_amount\":\"10000\", \"price\":\"0.567\"}, {\"start_amount\":\"10000\", \"end_amount\":\"30000\", \"price\":\"0.678\"}, {\"start_amount\":\"30000\", \"end_amount\":\"100000\", \"price\":\"0.789\"}]}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/tariffs",
@@ -4210,7 +4210,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"new阶梯电价\",\"energy_category_id\":1, \"tariff_type\":\"block\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2021-01-01T00:00:00\", \"block\":[{\"start_amount\":\"0\", \"end_amount\":\"20000\", \"price\":\"0.567\"}, {\"start_amount\":\"20000\", \"end_amount\":\"30000\", \"price\":\"0.678\"}, {\"start_amount\":\"30000\", \"end_amount\":\"100000\", \"price\":\"0.789\"}]}}"
+							"raw": "{\"data\":{\"name\":\"new阶梯电价\",\"energy_category\":{\"id\":1}, \"tariff_type\":\"block\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2021-01-01T00:00:00\", \"block\":[{\"start_amount\":\"0\", \"end_amount\":\"20000\", \"price\":\"0.567\"}, {\"start_amount\":\"20000\", \"end_amount\":\"30000\", \"price\":\"0.678\"}, {\"start_amount\":\"30000\", \"end_amount\":\"100000\", \"price\":\"0.789\"}]}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/tariffs/18",
@@ -4232,7 +4232,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"new2020分时电价1-6\",\"energy_category_id\":1, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}"
+							"raw": "{\"data\":{\"name\":\"new2020分时电价1-6\",\"energy_category\":{\"id\":1}, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/tariffs",
@@ -4253,7 +4253,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"new2020分时电价1-6\",\"energy_category_id\":1, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.456}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}",
+							"raw": "{\"data\":{\"name\":\"new2020分时电价1-6\",\"energy_category\":{\"id\":1}, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.456}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}",
 							"options": {
 								"raw": {}
 							}

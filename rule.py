@@ -3,7 +3,6 @@ import json
 import mysql.connector
 import config
 import uuid
-from datetime import datetime, timedelta, timezone
 
 
 class RuleCollection:
@@ -20,8 +19,7 @@ class RuleCollection:
         cnx = mysql.connector.connect(**config.myems_fdd_db)
         cursor = cnx.cursor()
 
-        query = (" SELECT id, name, uuid, channel, expression, message, is_enabled, "
-                 "        mute_start_datetime_utc, mute_end_datetime_utc "
+        query = (" SELECT id, name, uuid, channel, expression, message, is_enabled "
                  " FROM tbl_rules "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -32,14 +30,9 @@ class RuleCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                mute_start_datetime = row[7].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[7] else None
-                mute_end_datetime = row[8].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[8] else None
-
                 meta_result = {"id": row[0], "name": row[1], "uuid": row[2],
                                "channel": row[3], "expression": row[4], "message": row[5].replace("<br>", ""),
-                               "is_enabled": bool(row[6]),
-                               "mute_start_datetime": mute_start_datetime,
-                               "mute_end_datetime": mute_end_datetime}
+                               "is_enabled": bool(row[6])}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -91,41 +84,6 @@ class RuleCollection:
                                    description='API.INVALID_IS_ENABLED')
         is_enabled = new_values['data']['is_enabled']
 
-        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
-        if config.utc_offset[0] == '-':
-            timezone_offset = -timezone_offset
-
-        if 'mute_start_datetime' in new_values['data'].keys() and \
-                isinstance(new_values['data']['mute_start_datetime'], str) and \
-                len(str.strip(new_values['data']['mute_start_datetime'])) > 0:
-            mute_start_datetime = str.strip(new_values['data']['mute_start_datetime'])
-            mute_start_datetime = datetime.strptime(mute_start_datetime, '%Y-%m-%dT%H:%M:%S')
-            mute_start_datetime = mute_start_datetime.replace(tzinfo=timezone.utc)
-            mute_start_datetime -= timedelta(minutes=timezone_offset)
-        else:
-            mute_start_datetime = None
-
-        if 'mute_end_datetime' in new_values['data'].keys() and \
-                isinstance(new_values['data']['mute_end_datetime'], str) and \
-                len(str.strip(new_values['data']['mute_end_datetime'])) > 0:
-            mute_end_datetime = str.strip(new_values['data']['mute_end_datetime'])
-            mute_end_datetime = datetime.strptime(mute_end_datetime, '%Y-%m-%dT%H:%M:%S')
-            mute_end_datetime = mute_end_datetime.replace(tzinfo=timezone.utc)
-            mute_end_datetime -= timedelta(minutes=timezone_offset)
-        else:
-            mute_end_datetime = None
-
-        if (mute_start_datetime is None and mute_end_datetime is not None) or \
-                (mute_start_datetime is not None and mute_end_datetime is None):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_MUTE_DATETIME_RANGE')
-
-        if mute_start_datetime is not None and \
-            mute_end_datetime is not None and \
-                mute_start_datetime >= mute_end_datetime:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_MUTE_DATETIME_RANGE')
-
         cnx = mysql.connector.connect(**config.myems_fdd_db)
         cursor = cnx.cursor()
 
@@ -139,17 +97,14 @@ class RuleCollection:
                                    description='API.RULE_NAME_IS_ALREADY_IN_USE')
 
         add_row = (" INSERT INTO tbl_rules "
-                   "             (name, uuid, channel, expression, message, is_enabled, "
-                   "              mute_start_datetime_utc, mute_end_datetime_utc) "
-                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ")
+                   "             (name, uuid, channel, expression, message, is_enabled) "
+                   " VALUES (%s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_row, (name,
                                  str(uuid.uuid4()),
                                  channel,
                                  expression,
                                  message,
-                                 is_enabled,
-                                 mute_start_datetime,
-                                 mute_end_datetime))
+                                 is_enabled))
         new_id = cursor.lastrowid
         cnx.commit()
         cursor.close()
@@ -178,8 +133,7 @@ class RuleItem:
         cursor = cnx.cursor()
 
         query = (" SELECT id, name, uuid, "
-                 "        channel, expression, message, is_enabled, "
-                 "        mute_start_datetime_utc, mute_end_datetime_utc "
+                 "        channel, expression, message, is_enabled "
                  " FROM tbl_rules "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -190,14 +144,9 @@ class RuleItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.RULE_NOT_FOUND')
 
-        mute_start_datetime = row[7].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[7] else None
-        mute_end_datetime = row[8].replace(tzinfo=timezone.utc).timestamp() * 1000 if row[8] else None
-
         result = {"id": row[0], "name": row[1], "uuid": row[2],
                   "channel": row[3], "expression": row[4], "message": row[5].replace("<br>", ""),
-                  "is_enabled": bool(row[6]),
-                  "mute_start_datetime": mute_start_datetime,
-                  "mute_end_datetime": mute_end_datetime}
+                  "is_enabled": bool(row[6])}
         resp.body = json.dumps(result)
 
     @staticmethod
@@ -278,41 +227,6 @@ class RuleItem:
                                    description='API.INVALID_IS_ENABLED')
         is_enabled = new_values['data']['is_enabled']
 
-        timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
-        if config.utc_offset[0] == '-':
-            timezone_offset = -timezone_offset
-
-        if 'mute_start_datetime' in new_values['data'].keys() and \
-                isinstance(new_values['data']['mute_start_datetime'], str) and \
-                len(str.strip(new_values['data']['mute_start_datetime'])) > 0:
-            mute_start_datetime = str.strip(new_values['data']['mute_start_datetime'])
-            mute_start_datetime = datetime.strptime(mute_start_datetime, '%Y-%m-%dT%H:%M:%S')
-            mute_start_datetime = mute_start_datetime.replace(tzinfo=timezone.utc)
-            mute_start_datetime -= timedelta(minutes=timezone_offset)
-        else:
-            mute_start_datetime = None
-
-        if 'mute_end_datetime' in new_values['data'].keys() and \
-                isinstance(new_values['data']['mute_end_datetime'], str) and \
-                len(str.strip(new_values['data']['mute_end_datetime'])) > 0:
-            mute_end_datetime = str.strip(new_values['data']['mute_end_datetime'])
-            mute_end_datetime = datetime.strptime(mute_end_datetime, '%Y-%m-%dT%H:%M:%S')
-            mute_end_datetime = mute_end_datetime.replace(tzinfo=timezone.utc)
-            mute_end_datetime -= timedelta(minutes=timezone_offset)
-        else:
-            mute_end_datetime = None
-
-        if (mute_start_datetime is None and mute_end_datetime is not None) or \
-                (mute_start_datetime is not None and mute_end_datetime is None):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_MUTE_DATETIME_RANGE')
-
-        if mute_start_datetime is not None and \
-            mute_end_datetime is not None and \
-                mute_start_datetime >= mute_end_datetime:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_MUTE_DATETIME_RANGE')
-
         cnx = mysql.connector.connect(**config.myems_fdd_db)
         cursor = cnx.cursor()
 
@@ -335,16 +249,13 @@ class RuleItem:
                                    description='API.RULE_NAME_IS_ALREADY_IN_USE')
 
         update_row = (" UPDATE tbl_rules "
-                      " SET name = %s, channel = %s, expression = %s, message = %s, is_enabled = %s, "
-                      "     mute_start_datetime_utc = %s, mute_end_datetime_utc = %s "
+                      " SET name = %s, channel = %s, expression = %s, message = %s, is_enabled = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     channel,
                                     expression,
                                     message,
                                     is_enabled,
-                                    mute_start_datetime,
-                                    mute_end_datetime,
                                     id_,))
         cnx.commit()
 

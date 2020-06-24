@@ -106,12 +106,13 @@ class TariffCollection:
                                    description='API.INVALID_METER_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'energy_category_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['energy_category_id'], int) or \
-                new_values['data']['energy_category_id'] <= 0:
+        if 'energy_category' not in new_values['data'].keys() or \
+                'id' not in new_values['data']['energy_category'].keys() or \
+                not isinstance(new_values['data']['energy_category']['id'], int) or \
+                new_values['data']['energy_category']['id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_ENERGY_CATEGORY_ID')
-        energy_category_id = new_values['data']['energy_category_id']
+        energy_category_id = new_values['data']['energy_category']['id']
 
         if 'tariff_type' not in new_values['data'].keys() \
            or str.strip(new_values['data']['tariff_type']) not in ('block', 'timeofuse'):
@@ -155,8 +156,7 @@ class TariffCollection:
 
         cursor.execute(" SELECT name "
                        " FROM tbl_energy_categories "
-                       " WHERE id = %s ",
-                       (new_values['data']['energy_category_id'],))
+                       " WHERE id = %s ", (energy_category_id,))
         if cursor.fetchone() is None:
             cursor.close()
             cnx.disconnect()
@@ -368,12 +368,13 @@ class TariffItem:
                                    description='API.INVALID_METER_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'energy_category_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['energy_category_id'], int) or \
-                new_values['data']['energy_category_id'] <= 0:
+        if 'energy_category' not in new_values['data'].keys() or \
+                'id' not in new_values['data']['energy_category'].keys() or \
+                not isinstance(new_values['data']['energy_category']['id'], int) or \
+                new_values['data']['energy_category']['id'] <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_ENERGY_CATEGORY_ID')
-        energy_category_id = new_values['data']['energy_category_id']
+        energy_category_id = new_values['data']['energy_category']['id']
 
         if 'tariff_type' not in new_values['data'].keys() \
            or str.strip(new_values['data']['tariff_type']) not in ('block', 'timeofuse'):
