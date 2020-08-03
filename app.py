@@ -1,6 +1,7 @@
 import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
+import combinedequipment
 import contact
 import costcenter
 import datasource
@@ -44,6 +45,27 @@ cors = CORS(allow_all_origins=True,
             allow_all_methods=True)
 api = falcon.API(middleware=[cors.middleware, MultipartMiddleware()])
 
+
+api.add_route('/combinedequipments',
+              combinedequipment.CombinedEquipmentCollection())
+api.add_route('/combinedequipments/{id_}',
+              combinedequipment.CombinedEquipmentItem())
+api.add_route('/combinedequipments/{id_}/meters',
+              combinedequipment.CombinedEquipmentMeterCollection())
+api.add_route('/combinedequipments/{id_}/meters/{mid}',
+              combinedequipment.CombinedEquipmentMeterItem())
+api.add_route('/combinedequipments/{id_}/offlinemeters',
+              combinedequipment.CombinedEquipmentOfflineMeterCollection())
+api.add_route('/combinedequipments/{id_}/offlinemeters/{mid}',
+              combinedequipment.CombinedEquipmentOfflineMeterItem())
+api.add_route('/combinedequipments/{id_}/parameters',
+              combinedequipment.CombinedEquipmentParameterCollection())
+api.add_route('/combinedequipments/{id_}/parameters/{pid}',
+              combinedequipment.CombinedEquipmentParameterItem())
+api.add_route('/combinedequipments/{id_}/virtualmeters',
+              combinedequipment.CombinedEquipmentVirtualMeterCollection())
+api.add_route('/combinedequipments/{id_}/virtualmeters/{mid}',
+              combinedequipment.CombinedEquipmentVirtualMeterItem())
 
 api.add_route('/contacts',
               contact.ContactCollection())
