@@ -115,7 +115,7 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
 
-[Equipment](#Equipment)
+[Equipment](#Equipment) | [Combined Equipment](#Combined-Equipment)
 
 [Energy Flow Diagram](#Energy-Flow-Diagram)
 
@@ -535,11 +535,11 @@ Result
 | id            | integer   | Equipment ID                              |
 | name          | string    | Equipment name                            |
 | uuid          | string    | Equipment UUID                            |
-| is_input_counted | boolean | Indicates if the space's energy input is counted for aggregating|                        |
-| is_output_counted | boolean | Indicates if the space's energy output is counted for aggregating|                        |
+| is_input_counted | boolean | Indicates if the Equipment's energy input is counted for aggregating|                        |
+| is_output_counted | boolean | Indicates if the Equipment's energy output is counted for aggregating|                        |
 | cost_center   | Object    | Cost Center Object                        |
-| location      | string    | Space location                            |
-| description   | string    | Space description                         |
+| location      | string    | Equipment location                            |
+| description   | string    | Equipment description                         |
 
 * GET All Equipments
 ```bash
@@ -611,7 +611,7 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"test 
 ```bash
 $ curl -i -X DELETE http://BASE_URL/equipments/{id}/parameters/{pid}
 ```
-* GET All Offline Meters of Equipment by ID
+* GET All Offline Meters of an Equipment by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/equipments/{id}/offlinemeters
 ```
@@ -619,21 +619,134 @@ $ curl -i -X GET http://BASE_URL/equipments/{id}/offlinemeters
 ```bash
 $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"offline_meter_id":1}}' http://BASE_URL/equipments/{id}/offlinemeters
 ```
-* DELETE an Offline Meter from Equipment
+* DELETE an Offline Meter from an Equipment
 ```bash
 $ curl -i -X DELETE http://BASE_URL/equipments/{id}/offlinemeters/{mid}
 ```
-* GET All Virtual Meters of Equipment by ID
+* GET All Virtual Meters of an Equipment by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/equipments/{id}/virtualmeters
 ```
-* POST Bind an Virtual Meter to a Equipment
+* POST Bind an Virtual Meter to an Equipment
 ```bash
 $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_meter_id":1}}' http://BASE_URL/equipments/{id}/virtualmeters
 ```
-* DELETE an Virtual Meter from Equipment
+* DELETE an Virtual Meter from an Equipment
 ```bash
 $ curl -i -X DELETE http://BASE_URL/equipments/{id}/virtualmeters/{mid}
+```
+
+### Combined Equipment
+* GET a Combined Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Combined Equipment ID                     |
+| name          | string    | Combined Equipment name                   |
+| uuid          | string    | Combined Equipment UUID                   |
+| is_input_counted | boolean | Indicates if the combined equipment's energy input is counted for aggregating|                        |
+| is_output_counted | boolean | Indicates if the combined equipment's energy output is counted for aggregating|                        |
+| cost_center   | Object    | Cost Center Object                        |
+| location      | string    | Combined Equipment location               |
+| description   | string    | Combined Equipment description            |
+
+* GET All Equipments
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments
+```
+* DELETE a Combined Equipment by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/combinedequipments/{id}
+```
+* POST Create a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Chiller Plant", "is_input_counted":true, "is_output_counted":false, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/combinedequipments
+```
+* PUT Update a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Chiller Plant", "is_input_counted":true, "is_output_counted":true, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/combinedequipments/{id}
+```
+* POST Clone a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{}}' http://BASE_URL/combinedequipments/{id}
+```
+* GET All Meters of a Combined Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments/{id}/meters
+```
+* POST Bind a Meter to a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"meter_id":1}}' http://BASE_URL/combinedequipments/{id}/meters
+```
+* DELETE a Meter from a Combined Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/combinedequipments/{id}/meters/{mid}
+```
+* GET All Parameters of a Combined Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments/{id}/parameters
+```
+* GET a Parameter of a Combined Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments/{id}/parameters/{pid}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Parameter ID                              |
+| name          | string    | Parameter name                            |
+| parameter_type | string   | Parameter Type: constant, point, meter    |
+| is_input_counted  | boolean | Indicates if the Combined Equipment's energy input is counted for aggregating|                        |
+| is_output_counted | boolean | Indicates if the Combined Equipment's energy output is counted for aggregating|                        |
+| constant            | string    | Parameter constant value            |
+| point               | object    | Parameter point object              |
+| numerator_meter     | object    | Parameter numerator meter object    |
+| denominator_meter   | object    | Parameter numerator meter object    |
+
+* POST Create a constant Parameter for a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"test parameter", "parameter_type":"constant", "constant":"test constant", "point_id":null, "numerator_meter_uuid":null, "denominator_meter_uuid":null}}' http://BASE_URL/combinedequipments/{id}/parameters
+```
+* POST Create a point Parameter for a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"test parameter", "parameter_type":"point", "constant":null, "point_id":1, "numerator_meter_uuid":null, "denominator_meter_uuid":null}}' http://BASE_URL/combinedequipments/{id}/parameters
+```
+* POST Create a meter Parameter for a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"test parameter", "parameter_type":"fraction", "constant":null, "point_id":null, "numerator_meter_uuid":"89ff5118-d0c2-4dd8-8098-a8698189b2ea", "denominator_meter_uuid":"5ca62d2a-908e-40c5-a6b5-a8e436d60db4"}}' http://BASE_URL/combinedequipments/{id}/parameters
+```
+* DELETE a Parameter from a Combined Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/combinedequipments/{id}/parameters/{pid}
+```
+* GET All Offline Meters of a Combined Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments/{id}/offlinemeters
+```
+* POST Bind an Offline Meter to a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"offline_meter_id":1}}' http://BASE_URL/combinedequipments/{id}/offlinemeters
+```
+* DELETE an Offline Meter from a Combined Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/combinedequipments/{id}/offlinemeters/{mid}
+```
+* GET All Virtual Meters of a Combined Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments/{id}/virtualmeters
+```
+* POST Bind an Virtual Meter to a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_meter_id":1}}' http://BASE_URL/combinedequipments/{id}/virtualmeters
+```
+* DELETE an Virtual Meter from a Combined Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/combinedequipments/{id}/virtualmeters/{mid}
 ```
 
 
