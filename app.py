@@ -284,6 +284,10 @@ api.add_route('/spaces/{id_}/sensors',
               space.SpaceSensorCollection())
 api.add_route('/spaces/{id_}/sensors/{sid}',
               space.SpaceSensorItem())
+api.add_route('/spaces/{id_}/shopfloors',
+              space.SpaceShopfloorCollection())
+api.add_route('/spaces/{id_}/shopfloors/{sid}',
+              space.SpaceShopfloorItem())
 api.add_route('/spaces/{id_}/stores',
               space.SpaceStoreCollection())
 api.add_route('/spaces/{id_}/stores/{tid}',
