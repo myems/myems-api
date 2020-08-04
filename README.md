@@ -113,7 +113,7 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) | [Offline Meter File](#Offline-Meter-File) 
 
-[Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
+[Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type) | [Store](#Store) | [Store Type](#Store-Type)
 
 [Equipment](#Equipment) | [Combined Equipment](#Combined-Equipment)
 
