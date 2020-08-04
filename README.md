@@ -1191,6 +1191,18 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMSS
 ```bash
 $ curl -i -X GET http://BASE_URL/spaces/{id}/children
 ```
+* GET All Combined Equipments of Space by ID
+```bash
+$ curl -i -X GET http://BASE_URL/spaces/{id}/combinedequipments
+```
+* POST Bind a Combined Equipment to a Space
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"combined_equipment_id":1}}' http://BASE_URL/spaces/{id}/equipments
+```
+* DELETE a Combined Equipment from Space
+```bash
+$ curl -i -X DELETE http://BASE_URL/spaces/{id}/combinedequipments/{eid}
+```
 * GET All Equipments of Space by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/spaces/{id}/equipments

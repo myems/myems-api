@@ -805,6 +805,171 @@ class SpaceChildrenCollection:
         resp.body = json.dumps(result)
 
 
+class SpaceCombinedEquipmentCollection:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp, id_):
+        resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_get(req, resp, id_):
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_SPACE_ID')
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_spaces "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.SPACE_NOT_FOUND')
+
+        query = (" SELECT e.id, e.name, e.uuid "
+                 " FROM tbl_spaces s, tbl_spaces_combined_equipments se, tbl_combined_equipments e "
+                 " WHERE se.space_id = s.id AND e.id = se.combined_equipment_id AND s.id = %s "
+                 " ORDER BY e.id ")
+        cursor.execute(query, (id_,))
+        rows = cursor.fetchall()
+
+        result = list()
+        if rows is not None and len(rows) > 0:
+            for row in rows:
+                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
+                result.append(meta_result)
+
+        resp.body = json.dumps(result)
+
+    @staticmethod
+    def on_post(req, resp, id_):
+        """Handles POST requests"""
+        try:
+            raw_json = req.stream.read().decode('utf-8')
+        except Exception as ex:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
+
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_SPACE_ID')
+
+        new_values = json.loads(raw_json, encoding='utf-8')
+
+        if 'combined_equipment_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['combined_equipment_id'], int) or \
+                new_values['data']['combined_equipment_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_COMBINED_EQUIPMENT_ID')
+        combined_equipment_id = new_values['data']['combined_equipment_id']
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " from tbl_spaces "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.SPACE_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_combined_equipments "
+                       " WHERE id = %s ", (combined_equipment_id,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COMBINED_EQUIPMENT_NOT_FOUND')
+
+        query = (" SELECT id " 
+                 " FROM tbl_spaces_combined_equipments "
+                 " WHERE space_id = %s AND combined_equipment_id = %s")
+        cursor.execute(query, (id_, combined_equipment_id,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
+                                   description='API.SPACE_COMBINED_EQUIPMENT_RELATION_EXISTED')
+
+        add_row = (" INSERT INTO tbl_spaces_combined_equipments (space_id, combined_equipment_id) "
+                   " VALUES (%s, %s) ")
+        cursor.execute(add_row, (id_, combined_equipment_id,))
+        new_id = cursor.lastrowid
+        cnx.commit()
+        cursor.close()
+        cnx.disconnect()
+
+        resp.status = falcon.HTTP_201
+        resp.location = '/spaces/' + str(id_) + '/combinedequipments/' + str(combined_equipment_id)
+
+
+class SpaceCombinedEquipmentItem:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp, id_, eid):
+            resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_delete(req, resp, id_, eid):
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_SPACE_ID')
+
+        if not eid.isdigit() or int(eid) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_COMBINED_EQUIPMENT_ID')
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_spaces "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.SPACE_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_combined_equipments "
+                       " WHERE id = %s ", (eid,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COMBINED_EQUIPMENT_NOT_FOUND')
+
+        cursor.execute(" SELECT id "
+                       " FROM tbl_spaces_combined_equipments "
+                       " WHERE space_id = %s AND combined_equipment_id = %s ", (id_, eid))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.SPACE_COMBINED_EQUIPMENT_RELATION_NOT_FOUND')
+
+        cursor.execute(" DELETE FROM tbl_spaces_combined_equipments "
+                       " WHERE space_id = %s AND combined_equipment_id = %s ", (id_, eid))
+        cnx.commit()
+
+        cursor.close()
+        cnx.disconnect()
+
+        resp.status = falcon.HTTP_204
+
+
 class SpaceEquipmentCollection:
     @staticmethod
     def __init__():
