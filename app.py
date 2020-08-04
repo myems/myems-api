@@ -230,6 +230,10 @@ api.add_route('/spaces/{id_}',
               space.SpaceItem())
 api.add_route('/spaces/{id_}/children',
               space.SpaceChildrenCollection())
+api.add_route('/spaces/{id_}/combinedequipments',
+              space.SpaceCombinedEquipmentCollection())
+api.add_route('/spaces/{id_}/combinedequipments/{eid}',
+              space.SpaceCombinedEquipmentItem())
 api.add_route('/spaces/{id_}/equipments',
               space.SpaceEquipmentCollection())
 api.add_route('/spaces/{id_}/equipments/{eid}',
