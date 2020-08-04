@@ -113,7 +113,7 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Meter](#Meter) | [Virtual Meter](#Virtual-Meter) | [Offline Meter](#Offline-Meter) | [Offline Meter File](#Offline-Meter-File) 
 
-[Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type)
+[Space](#Space) | [Tenant](#Tenant) | [Tenant Type](#Tenant-Type) | [Store](#Store) | [Store Type](#Store-Type) | [Shopfloor](#Shopfloor) 
 
 [Equipment](#Equipment) | [Combined Equipment](#Combined-Equipment)
 
@@ -1148,6 +1148,114 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":"3
 $ curl -i -X DELETE http://BASE_URL/sensors/{id}/points/{pid}
 ```
 
+### Shopfloor
+* GET Shopfloor by ID
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Shopfloor ID                              |
+| name          | string    | Shopfloor name                            |
+| uuid          | string    | Shopfloor UUID                            |
+| area          | decimal(18, 3) | Area                                 |
+| timezone      | Object    | Timezone Object                           |
+| is_input_counted | boolean | Indicates if the Shopfloor's energy input is counted for aggregating|                        |
+| contact       | Object    | Contact Object                            |
+| cost_center   | Object    | Cost Center Object                        |
+| location      | string    | Shopfloor location                        |
+| description   | string    | Shopfloor description                     |
+
+* GET All Shopfloors
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors
+```
+* DELETE a Shopfloor by ID
+```bash
+$ curl -i -X DELETE http://BASE_URL/shopfloors/{id}
+```
+* POST Create a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Shopfloor", "area":999.99, "timezone_id":56, "is_input_counted":true, "contact_id":1, "cost_center_id":1, "location":"My location", "description":"Shopfloor description"}}' http://BASE_URL/shopfloors
+```
+* PUT Update a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Shopfloor", "area":999.99, "timezone_id":56, "is_input_counted":true, "contact_id":1, "cost_center_id":1, "location":"My location", "description":"Shopfloor description"}}' http://BASE_URL/shopfloors/{id}
+```
+* GET All Equipments of Shopfloor by ID
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors/{id}/equipments
+```
+* POST Bind an Equipment to a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"equipment_id":1}}' http://BASE_URL/shopfloors/{id}/equipments
+```
+* DELETE an Equipment from Shopfloor
+```bash
+$ curl -i -X DELETE http://BASE_URL/shopfloors/{id}/equipments/{eid}
+```
+* GET All Meters of Shopfloor by ID
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors/{id}/meters
+```
+* POST Bind a Meter to a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"meter_id":1}}' http://BASE_URL/shopfloors/{id}/meters
+```
+* DELETE a Meter from Shopfloor
+```bash
+$ curl -i -X DELETE http://BASE_URL/shopfloors/{id}/meters/{mid}
+```
+* GET All Offline Meters of Shopfloor by ID
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors/{id}/offlinemeters
+```
+* POST Bind an Offline Meter to a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"offline_meter_id":1}}' http://BASE_URL/shopfloors/{id}/offlinemeters
+```
+* DELETE an Offline Meter from Shopfloor
+```bash
+$ curl -i -X DELETE http://BASE_URL/shopfloors/{id}/offlinemeters/{mid}
+```
+* GET All Points of Shopfloor by ID
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors/{id}/points
+```
+* POST Bind a Point to a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":1}}' http://BASE_URL/shopfloors/{id}/points
+```
+* DELETE a Point from Shopfloor
+```bash
+$ curl -i -X DELETE http://BASE_URL/shopfloors/{id}/points/{pid}
+```
+* GET All Sensors of Shopfloor by ID
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors/{id}/sensors
+```
+* POST Bind a Sensor to a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"sensor_id":1}}' http://BASE_URL/shopfloors/{id}/sensors
+```
+* DELETE a Sensor from Shopfloor
+```bash
+$ curl -i -X DELETE http://BASE_URL/shopfloors/{id}/sensors/{sid}
+```
+* GET All Virtual Meters of Shopfloor by ID
+```bash
+$ curl -i -X GET http://BASE_URL/shopfloors/{id}/virtualmeters
+```
+* POST Bind an Virtual Meter to a Shopfloor
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_meter_id":1}}' http://BASE_URL/shopfloors/{id}/virtualmeters
+```
+* DELETE an Virtual Meter from Shopfloor
+```bash
+$ curl -i -X DELETE http://BASE_URL/shopfloors/{id}/virtualmeters/{mid}
+```
 
 ### Space
 * GET Space by ID
