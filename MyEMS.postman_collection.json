@@ -3722,6 +3722,480 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Shopfloor",
+			"item": [
+				{
+					"name": "GET All Shopfloors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET a Shopfloor by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create New Shopfloor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Shopfloor1\", \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Shopfloor description\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update a Shopfloor",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"name\":\"MyEMS Shopfloor2\", \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Shopfloor description\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Shopfloor by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Equipments of a Shopfloor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind an Equipment to a Shopfloor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"equipment_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Equipment from Shopfloor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/equipments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"equipments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Meters of a Shopfloor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Meter to a Shopfloor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/meters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"meters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Meter from Shopfloor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/meters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"meters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All OfflineMeters of a Shopfloor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind an OfflineMeter to a Shopfloor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"offline_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/offlinemeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"offlinemeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Offline Meter from Shopfloor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/offlinemeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"offlinemeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Points of a Shopfloor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Point to a Shopfloor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"point_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/points",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"points"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Point from Shopfloor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/points/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"points",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Sensors of a Shopfloor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Sensor to a Shopfloor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"sensor_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/sensors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Sensor from Shopfloor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/sensors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"sensors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Virtual Meters of a Shopfloor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Bind a Virtual Meter to a Shopfloor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"virtual_meter_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/virtualmeters",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"virtualmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE a Virtual Meter from Shopfloor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/shopfloors/1/virtualmeters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shopfloors",
+								"1",
+								"virtualmeters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Space",
 			"item": [
 				{

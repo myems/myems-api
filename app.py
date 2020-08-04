@@ -23,6 +23,7 @@ import point
 import privilege
 import rule
 import sensor
+import shopfloor
 import space
 import store
 import storetype
@@ -223,6 +224,35 @@ api.add_route('/sensors/{id_}/points',
               sensor.SensorPointCollection())
 api.add_route('/sensors/{id_}/points/{pid}',
               sensor.SensorPointItem())
+
+api.add_route('/shopfloors',
+              shopfloor.ShopfloorCollection())
+api.add_route('/shopfloors/{id_}',
+              shopfloor.ShopfloorItem())
+api.add_route('/shopfloors/{id_}/equipments',
+              shopfloor.ShopfloorEquipmentCollection())
+api.add_route('/shopfloors/{id_}/equipments/{eid}',
+              shopfloor.ShopfloorEquipmentItem())
+api.add_route('/shopfloors/{id_}/meters',
+              shopfloor.ShopfloorMeterCollection())
+api.add_route('/shopfloors/{id_}/meters/{mid}',
+              shopfloor.ShopfloorMeterItem())
+api.add_route('/shopfloors/{id_}/offlinemeters',
+              shopfloor.ShopfloorOfflineMeterCollection())
+api.add_route('/shopfloors/{id_}/offlinemeters/{mid}',
+              shopfloor.ShopfloorOfflineMeterItem())
+api.add_route('/shopfloors/{id_}/points',
+              shopfloor.ShopfloorPointCollection())
+api.add_route('/shopfloors/{id_}/points/{pid}',
+              shopfloor.ShopfloorPointItem())
+api.add_route('/shopfloors/{id_}/sensors',
+              shopfloor.ShopfloorSensorCollection())
+api.add_route('/shopfloors/{id_}/sensors/{sid}',
+              shopfloor.ShopfloorSensorItem())
+api.add_route('/shopfloors/{id_}/virtualmeters',
+              shopfloor.ShopfloorVirtualMeterCollection())
+api.add_route('/shopfloors/{id_}/virtualmeters/{mid}',
+              shopfloor.ShopfloorVirtualMeterItem())
 
 api.add_route('/spaces',
               space.SpaceCollection())
