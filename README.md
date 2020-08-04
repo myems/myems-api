@@ -674,6 +674,18 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS 
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{}}' http://BASE_URL/combinedequipments/{id}
 ```
+* GET All Equipments of a Combined Equipment by ID
+```bash
+$ curl -i -X GET http://BASE_URL/combinedequipments/{id}/equipments
+```
+* POST Bind an Equipment to a Combined Equipment
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"equipment_id":1}}' http://BASE_URL/combinedequipments/{id}/equipments
+```
+* DELETE an Equipment from a Combined Equipment
+```bash
+$ curl -i -X DELETE http://BASE_URL/combinedequipments/{id}/equipments/{eid}
+```
 * GET All Meters of a Combined Equipment by ID
 ```bash
 $ curl -i -X GET http://BASE_URL/combinedequipments/{id}/meters
