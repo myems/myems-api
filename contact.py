@@ -171,6 +171,18 @@ class ContactItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.CONTACT_NOT_FOUND')
 
+        # check relation with shopfloors
+        cursor.execute(" SELECT id "
+                       " FROM tbl_shopfloors "
+                       " WHERE contact_id = %s ", (id_,))
+        rows_shopfloors = cursor.fetchall()
+        if rows_shopfloors is not None and len(rows_shopfloors) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_SHOPFLOORS')
+
         # check relation with spaces
         cursor.execute(" SELECT id "
                        " FROM tbl_spaces "
@@ -182,6 +194,18 @@ class ContactItem:
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_SPACES')
+
+        # check relation with stores
+        cursor.execute(" SELECT id "
+                       " FROM tbl_stores "
+                       " WHERE contact_id = %s ", (id_,))
+        rows_stores = cursor.fetchall()
+        if rows_stores is not None and len(rows_stores) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_STORES')
 
         # check relation with tenants
         cursor.execute(" SELECT id "

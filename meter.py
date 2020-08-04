@@ -438,7 +438,7 @@ class MeterItem:
                                    description='API.THERE_IS_RELATION_WITH_SPACES')
 
         # check relation with tenants
-        cursor.execute(" SELECT id "
+        cursor.execute(" SELECT tenant_id "
                        " FROM tbl_tenants_meters "
                        " WHERE meter_id = %s ", (id_,))
         rows_tenants = cursor.fetchall()
@@ -449,8 +449,57 @@ class MeterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_TENANTS')
 
+        # check relation with stores
+        cursor.execute(" SELECT store_id "
+                       " FROM tbl_stores_meters "
+                       " WHERE meter_id = %s ", (id_,))
+        rows_stores = cursor.fetchall()
+        if rows_stores is not None and len(rows_stores) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_STORES')
+
+        # check relation with shopfloors
+        cursor.execute(" SELECT shopfloor_id "
+                       " FROM tbl_shopfloors_meters "
+                       " WHERE meter_id = %s ", (id_,))
+        rows_shopfloors = cursor.fetchall()
+        if rows_shopfloors is not None and len(rows_shopfloors) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_SHOPFLOORS')
+
+        # check relation with combined equipments
+        cursor.execute(" SELECT combined_equipment_id "
+                       " FROM tbl_combined_equipments_meters "
+                       " WHERE meter_id = %s ",
+                       (id_,))
+        rows_combined_equipments = cursor.fetchall()
+        if rows_combined_equipments is not None and len(rows_combined_equipments) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_COMBINED_EQUIPMENTS')
+
+        # check relation with combined equipment parameters
+        cursor.execute(" SELECT combined_equipment_id "
+                       " FROM tbl_combined_equipments_parameters "
+                       " WHERE numerator_meter_uuid = %s OR denominator_meter_uuid = %s", (meter_uuid, meter_uuid,))
+        rows_combined_equipments = cursor.fetchall()
+        if rows_combined_equipments is not None and len(rows_combined_equipments) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_COMBINED_EQUIPMENT_PARAMETERS')
+
         # check relation with equipments
-        cursor.execute(" SELECT id "
+        cursor.execute(" SELECT equipment_id "
                        " FROM tbl_equipments_meters "
                        " WHERE meter_id = %s ", (id_,))
         rows_equipments = cursor.fetchall()
@@ -462,11 +511,11 @@ class MeterItem:
                                    description='API.THERE_IS_RELATION_WITH_EQUIPMENTS')
 
         # check relation with equipment parameters
-        cursor.execute(" SELECT id "
+        cursor.execute(" SELECT equipment_id "
                        " FROM tbl_equipments_parameters "
                        " WHERE numerator_meter_uuid = %s OR denominator_meter_uuid = %s", (meter_uuid, meter_uuid, ))
-        rows_links = cursor.fetchall()
-        if rows_links is not None and len(rows_links) > 0:
+        rows_equipments = cursor.fetchall()
+        if rows_equipments is not None and len(rows_equipments) > 0:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,

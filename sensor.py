@@ -178,6 +178,18 @@ class SensorItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_TENANTS')
 
+        # check relation with stores
+        cursor.execute(" SELECT store_id "
+                       " FROM tbl_stores_sensors "
+                       " WHERE sensor_id = %s ", (id_,))
+        rows_stores = cursor.fetchall()
+        if rows_stores is not None and len(rows_stores) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_STORES')
+
         # check relation with points
         cursor.execute(" SELECT id "
                        " FROM tbl_sensors_points "

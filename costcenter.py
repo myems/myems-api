@@ -158,6 +158,18 @@ class CostCenterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_EQUIPMENTS')
 
+        # check relation with combined equipments
+        cursor.execute(" SELECT id "
+                       " FROM tbl_combined_equipments "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_combined_equipments = cursor.fetchall()
+        if rows_combined_equipments is not None and len(rows_combined_equipments) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_COMBINED_EQUIPMENTS')
+
         # check relation with tariffs
         cursor.execute(" SELECT id "
                        " FROM tbl_cost_centers_tariffs "
@@ -218,6 +230,18 @@ class CostCenterItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_TENANTS')
 
+        # check relation with stores
+        cursor.execute(" SELECT id "
+                       " FROM tbl_stores "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_stores = cursor.fetchall()
+        if rows_stores is not None and len(rows_stores) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_STORES')
+
         # check relation with spaces
         cursor.execute(" SELECT id "
                        " FROM tbl_spaces "
@@ -229,6 +253,18 @@ class CostCenterItem:
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATIONSHIP_WITH_SPACES')
+
+        # check relation with shopfloors
+        cursor.execute(" SELECT id "
+                       " FROM tbl_shopfloors "
+                       " WHERE cost_center_id = %s ", (id_,))
+        rows_shopfloors = cursor.fetchall()
+        if rows_shopfloors is not None and len(rows_shopfloors) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_SHOPFLOORS')
 
         cursor.execute(" DELETE FROM tbl_cost_centers WHERE id = %s ", (id_,))
         cnx.commit()

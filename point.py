@@ -256,7 +256,7 @@ class PointItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_METER')
+                                   description='API.THERE_IS_RELATION_WITH_METERS')
 
         # check if this point is being used by sensors
         cursor.execute(" SELECT sensor_id "
@@ -270,7 +270,35 @@ class PointItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_SENSOR')
+                                   description='API.THERE_IS_RELATION_WITH_SENSORS')
+
+        # check if this point is being used by shopfloors
+        cursor.execute(" SELECT shopfloor_id "
+                       " FROM tbl_shopfloors_points "
+                       " WHERE point_id = %s "
+                       " LIMIT 1 ",
+                       (id_,))
+        row_shopfloor = cursor.fetchone()
+        if row_shopfloor is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_SHOPFLOORS')
+
+        # check if this point is being used by stores
+        cursor.execute(" SELECT store_id "
+                       " FROM tbl_stores_points "
+                       " WHERE point_id = %s "
+                       " LIMIT 1 ",
+                       (id_,))
+        row_store = cursor.fetchone()
+        if row_store is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_STORES')
 
         # check if this point is being used by spaces
         cursor.execute(" SELECT space_id "
@@ -284,7 +312,7 @@ class PointItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_SPACE')
+                                   description='API.THERE_IS_RELATION_WITH_SPACES')
 
         # check if this point is being used by tenants
         cursor.execute(" SELECT tenant_id "
@@ -298,7 +326,7 @@ class PointItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_TENANT')
+                                   description='API.THERE_IS_RELATION_WITH_TENANTS')
 
         # check if this point is being used by equipment parameters
         cursor.execute(" SELECT equipment_id "
@@ -306,13 +334,27 @@ class PointItem:
                        " WHERE point_id = %s "
                        " LIMIT 1 ",
                        (id_,))
-        row_tenant = cursor.fetchone()
-        if row_tenant is not None:
+        row_equipment = cursor.fetchone()
+        if row_equipment is not None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THIS_POINT_IS_BEING_USED_BY_A_EQUIPMENT_PARAMETER')
+                                   description='API.THERE_IS_RELATION_WITH_EQUIPMENT_PARAMETERS')
+
+        # check if this point is being used by combined equipment parameters
+        cursor.execute(" SELECT combined_equipment_id "
+                       " FROM tbl_combined_equipments_parameters "
+                       " WHERE point_id = %s "
+                       " LIMIT 1 ",
+                       (id_,))
+        row_combined_equipment = cursor.fetchone()
+        if row_combined_equipment is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_COMBINED_EQUIPMENT_PARAMETERS')
 
         cursor.execute(" DELETE FROM tbl_points WHERE id = %s ", (id_,))
         cnx.commit()

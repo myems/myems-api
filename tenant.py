@@ -409,7 +409,7 @@ class TenantItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_SPACE')
+                                   description='API.THERE_IS_RELATION_WITH_SPACES')
 
         # check relation with meter
         cursor.execute(" SELECT meter_id "
@@ -422,7 +422,7 @@ class TenantItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_METER')
+                                   description='API.THERE_IS_RELATION_WITH_METERS')
 
         # check relation with offline meter
         cursor.execute(" SELECT offline_meter_id "
@@ -435,7 +435,7 @@ class TenantItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METER')
+                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METERS')
 
         # check relation with points
         cursor.execute(" SELECT point_id "
@@ -447,7 +447,7 @@ class TenantItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_POINT')
+                                   description='API.THERE_IS_RELATION_WITH_POINTS')
 
         # check relation with sensor
         cursor.execute(" SELECT sensor_id "

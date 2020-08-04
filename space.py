@@ -406,7 +406,20 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_EQUIPMENT')
+                                   description='API.THERE_IS_RELATION_WITH_EQUIPMENTS')
+
+        # check relation with combined equipment
+        cursor.execute(" SELECT combined_equipment_id "
+                       " FROM tbl_spaces_combined_equipments "
+                       " WHERE space_id = %s ",
+                       (id_,))
+        rows_combined_equipments = cursor.fetchall()
+        if rows_combined_equipments is not None and len(rows_combined_equipments) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_COMBINED_EQUIPMENTS')
 
         # check relation with meter
         cursor.execute(" SELECT meter_id "
@@ -419,7 +432,7 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_METER')
+                                   description='API.THERE_IS_RELATION_WITH_METERS')
 
         # check relation with offline meter
         cursor.execute(" SELECT offline_meter_id "
@@ -432,7 +445,7 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METER')
+                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METERS')
 
         # check relation with points
         cursor.execute(" SELECT point_id "
@@ -444,7 +457,7 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_POINT')
+                                   description='API.THERE_IS_RELATION_WITH_POINTS')
 
         # check relation with sensor
         cursor.execute(" SELECT sensor_id "
@@ -457,7 +470,7 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_SENSOR')
+                                   description='API.THERE_IS_RELATION_WITH_SENSORS')
 
         # check relation with store
         cursor.execute(" SELECT id "
@@ -469,7 +482,7 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_STORE')
+                                   description='API.THERE_IS_RELATION_WITH_STORES')
 
         # check relation with tenant
         cursor.execute(" SELECT id "
@@ -481,7 +494,7 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_TENANT')
+                                   description='API.THERE_IS_RELATION_WITH_TENANTS')
 
         # check relation with virtual meter
         cursor.execute(" SELECT virtual_meter_id "
@@ -494,7 +507,7 @@ class SpaceItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_VIRTUAL_METER')
+                                   description='API.THERE_IS_RELATION_WITH_VIRTUAL_METERS')
 
         cursor.execute(" DELETE FROM tbl_spaces WHERE id = %s ", (id_,))
         cnx.commit()
