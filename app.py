@@ -50,6 +50,10 @@ api.add_route('/combinedequipments',
               combinedequipment.CombinedEquipmentCollection())
 api.add_route('/combinedequipments/{id_}',
               combinedequipment.CombinedEquipmentItem())
+api.add_route('/combinedequipments/{id_}/equipments',
+              combinedequipment.CombinedEquipmentEquipmentCollection())
+api.add_route('/combinedequipments/{id_}/equipments/{eid}',
+              combinedequipment.CombinedEquipmentEquipmentItem())
 api.add_route('/combinedequipments/{id_}/meters',
               combinedequipment.CombinedEquipmentMeterCollection())
 api.add_route('/combinedequipments/{id_}/meters/{mid}',

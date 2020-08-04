@@ -130,6 +130,68 @@
 					"response": []
 				},
 				{
+					"name": "POST Bind an Equipment to a Combined Equipment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"equipment_id\":1}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/combinedequipments/1/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"combinedequipments",
+								"1",
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Equipments of a Combined Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/combinedequipments/1/equipments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"combinedequipments",
+								"1",
+								"equipments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE an Equipment from a Combined Equipment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/combinedequipments/1/equipments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"combinedequipments",
+								"1",
+								"equipments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST Bind a Meter to a Combined Equipment",
 					"request": {
 						"method": "POST",

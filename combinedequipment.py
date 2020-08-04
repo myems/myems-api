@@ -531,6 +531,171 @@ class CombinedEquipmentItem:
         resp.location = '/combinedequipments/' + str(new_id)
 
 
+class CombinedEquipmentEquipmentCollection:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp, id_):
+        resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_get(req, resp, id_):
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_COMBINED_EQUIPMENT_ID')
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_combined_equipments "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COMBINED_EQUIPMENT_NOT_FOUND')
+
+        query = (" SELECT e.id, e.name, e.uuid "
+                 " FROM tbl_combined_equipments c, tbl_combined_equipments_equipments ce, tbl_equipments e "
+                 " WHERE ce.combined_equipment_id = c.id AND e.id = ce.equipment_id AND c.id = %s "
+                 " ORDER BY e.id ")
+        cursor.execute(query, (id_,))
+        rows = cursor.fetchall()
+
+        result = list()
+        if rows is not None and len(rows) > 0:
+            for row in rows:
+                meta_result = {"id": row[0], "name": row[1], "uuid": row[2]}
+                result.append(meta_result)
+
+        resp.body = json.dumps(result)
+
+    @staticmethod
+    def on_post(req, resp, id_):
+        """Handles POST requests"""
+        try:
+            raw_json = req.stream.read().decode('utf-8')
+        except Exception as ex:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
+
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_COMBINED_EQUIPMENT_ID')
+
+        new_values = json.loads(raw_json, encoding='utf-8')
+
+        if 'equipment_id' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['equipment_id'], int) or \
+                new_values['data']['equipment_id'] <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_EQUIPMENT_ID')
+        equipment_id = new_values['data']['equipment_id']
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " from tbl_combined_equipments "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COMBINED_EQUIPMENT_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_equipments "
+                       " WHERE id = %s ", (equipment_id,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.EQUIPMENT_NOT_FOUND')
+
+        query = (" SELECT id " 
+                 " FROM tbl_combined_equipments_equipments "
+                 " WHERE combined_equipment_id = %s AND equipment_id = %s")
+        cursor.execute(query, (id_, equipment_id,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
+                                   description='API.COMBINED_EQUIPMENT_EQUIPMENT_RELATION_EXISTED')
+
+        add_row = (" INSERT INTO tbl_combined_equipments_equipments (combined_equipment_id, equipment_id) "
+                   " VALUES (%s, %s) ")
+        cursor.execute(add_row, (id_, equipment_id,))
+        new_id = cursor.lastrowid
+        cnx.commit()
+        cursor.close()
+        cnx.disconnect()
+
+        resp.status = falcon.HTTP_201
+        resp.location = '/combinedequipments/' + str(id_) + '/equipments/' + str(equipment_id)
+
+
+class CombinedEquipmentEquipmentItem:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp, id_, eid):
+            resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_delete(req, resp, id_, eid):
+        if not id_.isdigit() or int(id_) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_COMBINED_EQUIPMENT_ID')
+
+        if not eid.isdigit() or int(eid) <= 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_EQUIPMENT_ID')
+
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_combined_equipments "
+                       " WHERE id = %s ", (id_,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COMBINED_EQUIPMENT_NOT_FOUND')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_equipments "
+                       " WHERE id = %s ", (eid,))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.EQUIPMENT_NOT_FOUND')
+
+        cursor.execute(" SELECT id "
+                       " FROM tbl_combined_equipments_equipments "
+                       " WHERE combined_equipment_id = %s AND equipment_id = %s ", (id_, eid))
+        if cursor.fetchone() is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.COMBINED_EQUIPMENT_EQUIPMENT_RELATION_NOT_FOUND')
+
+        cursor.execute(" DELETE FROM tbl_combined_equipments_equipments "
+                       " WHERE combined_equipment_id = %s AND equipment_id = %s ", (id_, eid))
+        cnx.commit()
+
+        cursor.close()
+        cnx.disconnect()
+
+        resp.status = falcon.HTTP_204
+
+
 class CombinedEquipmentParameterCollection:
     @staticmethod
     def __init__():
