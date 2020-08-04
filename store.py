@@ -352,7 +352,7 @@ class StoreItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_SPACE')
+                                   description='API.THERE_IS_RELATION_WITH_SPACES')
 
         # check relation with meter
         cursor.execute(" SELECT meter_id "
@@ -365,7 +365,7 @@ class StoreItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_METER')
+                                   description='API.THERE_IS_RELATION_WITH_METERS')
 
         # check relation with offline meter
         cursor.execute(" SELECT offline_meter_id "
@@ -378,7 +378,7 @@ class StoreItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METER')
+                                   description='API.THERE_IS_RELATION_WITH_OFFLINE_METERS')
 
         # check relation with points
         cursor.execute(" SELECT point_id "
@@ -390,7 +390,7 @@ class StoreItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_POINT')
+                                   description='API.THERE_IS_RELATION_WITH_POINTS')
 
         # check relation with sensor
         cursor.execute(" SELECT sensor_id "
@@ -403,7 +403,7 @@ class StoreItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_SENSOR')
+                                   description='API.THERE_IS_RELATION_WITH_SENSORS')
 
         # check relation with virtual meter
         cursor.execute(" SELECT virtual_meter_id "
@@ -416,7 +416,7 @@ class StoreItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.THERE_IS_RELATION_WITH_VIRTUAL_METER')
+                                   description='API.THERE_IS_RELATION_WITH_VIRTUAL_METERS')
 
         cursor.execute(" DELETE FROM tbl_stores WHERE id = %s ", (id_,))
         cnx.commit()

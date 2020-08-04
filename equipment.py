@@ -229,6 +229,19 @@ class EquipmentItem:
                                    title='API.BAD_REQUEST',
                                    description='API.THERE_IS_RELATION_WITH_SPACE')
 
+        # check relation with combined equipments
+        cursor.execute(" SELECT combined_equipment_id "
+                       " FROM tbl_combined_equipments_equipments "
+                       " WHERE equipment_id = %s ",
+                       (id_,))
+        rows_combined_equipments = cursor.fetchall()
+        if rows_combined_equipments is not None and len(rows_combined_equipments) > 0:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.THERE_IS_RELATION_WITH_COMBINED_EQUIPMENTS')
+
         # check relation with meter
         cursor.execute(" SELECT meter_id "
                        " FROM tbl_equipments_meters "
