@@ -69,7 +69,7 @@ class ShopfloorCollection:
 
         query = (" SELECT id, name, uuid, "
                  "        area, timezone_id, is_input_counted, "
-                 "        contact_id, cost_center_id, location, description "
+                 "        contact_id, cost_center_id, description "
                  " FROM tbl_shopfloors "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -89,7 +89,6 @@ class ShopfloorCollection:
                                "is_input_counted": bool(row['is_input_counted']),
                                "contact": contact,
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -150,13 +149,6 @@ class ShopfloorCollection:
         else:
             cost_center_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -211,8 +203,8 @@ class ShopfloorCollection:
 
         add_values = (" INSERT INTO tbl_shopfloors "
                       "    (name, uuid, area, timezone_id, is_input_counted, "
-                      "     contact_id, cost_center_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      "     contact_id, cost_center_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     area,
@@ -220,7 +212,6 @@ class ShopfloorCollection:
                                     is_input_counted,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -299,7 +290,7 @@ class ShopfloorItem:
 
         query = (" SELECT id, name, uuid, "
                  "        area, timezone_id, is_input_counted, "
-                 "        contact_id, cost_center_id, location, description "
+                 "        contact_id, cost_center_id, description "
                  " FROM tbl_shopfloors "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -322,7 +313,6 @@ class ShopfloorItem:
                            "is_input_counted": bool(row['is_input_counted']),
                            "contact": contact,
                            "cost_center": cost_center,
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -503,13 +493,6 @@ class ShopfloorItem:
         else:
             cost_center_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -573,8 +556,7 @@ class ShopfloorItem:
 
         update_row = (" UPDATE tbl_shopfloors "
                       " SET name = %s, area = %s, timezone_id = %s, "
-                      "     is_input_counted = %s, contact_id = %s, cost_center_id = %s, "
-                      "     location = %s, description = %s "
+                      "     is_input_counted = %s, contact_id = %s, cost_center_id = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     area,
@@ -582,7 +564,6 @@ class ShopfloorItem:
                                     is_input_counted,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description,
                                     id_))
         cnx.commit()
