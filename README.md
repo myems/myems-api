@@ -1161,7 +1161,6 @@ Result
 | name          | string    | Shopfloor name                            |
 | uuid          | string    | Shopfloor UUID                            |
 | area          | decimal(18, 3) | Area                                 |
-| timezone      | Object    | Timezone Object                           |
 | is_input_counted | boolean | Indicates if the Shopfloor's energy input is counted for aggregating|                        |
 | contact       | Object    | Contact Object                            |
 | cost_center   | Object    | Cost Center Object                        |
@@ -1177,11 +1176,11 @@ $ curl -i -X DELETE http://BASE_URL/shopfloors/{id}
 ```
 * POST Create a Shopfloor
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Shopfloor", "area":999.99, "timezone_id":56, "is_input_counted":true, "contact_id":1, "cost_center_id":1, "description":"Shopfloor description"}}' http://BASE_URL/shopfloors
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Shopfloor", "area":999.99, "is_input_counted":true, "contact_id":1, "cost_center_id":1, "description":"Shopfloor description"}}' http://BASE_URL/shopfloors
 ```
 * PUT Update a Shopfloor
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Shopfloor", "area":999.99, "timezone_id":56, "is_input_counted":true, "contact_id":1, "cost_center_id":1, "description":"Shopfloor description"}}' http://BASE_URL/shopfloors/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Shopfloor", "area":999.99, "is_input_counted":true, "contact_id":1, "cost_center_id":1, "description":"Shopfloor description"}}' http://BASE_URL/shopfloors/{id}
 ```
 * GET All Equipments of Shopfloor by ID
 ```bash
