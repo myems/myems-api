@@ -33,7 +33,7 @@ class CombinedEquipmentCollection:
 
         query = (" SELECT id, name, uuid, "
                  "        is_input_counted, is_output_counted, "
-                 "        cost_center_id, location, description "
+                 "        cost_center_id, description "
                  " FROM tbl_combined_equipments "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -49,7 +49,6 @@ class CombinedEquipmentCollection:
                                "is_input_counted": bool(row['is_input_counted']),
                                "is_output_counted": bool(row['is_output_counted']),
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -93,13 +92,6 @@ class CombinedEquipmentCollection:
                                        description='API.INVALID_COST_CENTER_ID')
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -133,14 +125,13 @@ class CombinedEquipmentCollection:
 
         add_values = (" INSERT INTO tbl_combined_equipments "
                       "    (name, uuid, is_input_counted, is_output_counted, "
-                      "     cost_center_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s) ")
+                      "     cost_center_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     is_input_counted,
                                     is_output_counted,
                                     cost_center_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -183,7 +174,7 @@ class CombinedEquipmentItem:
 
         query = (" SELECT id, name, uuid, "
                  "        is_input_counted, is_output_counted, "
-                 "        cost_center_id, location, description "
+                 "        cost_center_id, description "
                  " FROM tbl_combined_equipments "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -202,7 +193,6 @@ class CombinedEquipmentItem:
                            "is_input_counted": bool(row['is_input_counted']),
                            "is_output_counted": bool(row['is_output_counted']),
                            "cost_center": cost_center,
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -319,13 +309,6 @@ class CombinedEquipmentItem:
                                        description='API.INVALID_COST_CENTER_ID')
         cost_center_id = new_values['data']['cost_center_id']
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -367,13 +350,12 @@ class CombinedEquipmentItem:
 
         update_row = (" UPDATE tbl_combined_equipments "
                       " SET name = %s, is_input_counted = %s, is_output_counted = %s, "
-                      "     cost_center_id = %s, location = %s, description = %s "
+                      "     cost_center_id = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     is_input_counted,
                                     is_output_counted,
                                     cost_center_id,
-                                    location,
                                     description,
                                     id_))
         cnx.commit()
@@ -409,7 +391,7 @@ class CombinedEquipmentItem:
                                    description='API.COMBINED_EQUIPMENT_NOT_FOUND')
 
         query = (" SELECT name, is_input_counted, is_output_counted, "
-                 "        cost_center_id, location, description "
+                 "        cost_center_id, description "
                  " FROM tbl_combined_equipments "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -422,14 +404,13 @@ class CombinedEquipmentItem:
 
             add_values = (" INSERT INTO tbl_combined_equipments "
                           "    (name, uuid, is_input_counted, is_output_counted, "
-                          "     cost_center_id, location, description) "
-                          " VALUES (%s, %s, %s, %s, %s, %s, %s) ")
+                          "     cost_center_id, description) "
+                          " VALUES (%s, %s, %s, %s, %s, %s) ")
             cursor.execute(add_values, (row['name'] + ' Copy',
                                         str(uuid.uuid4()),
                                         row['is_input_counted'],
                                         row['is_output_counted'],
                                         row['cost_center_id'],
-                                        row['location'],
                                         row['description']))
             new_id = cursor.lastrowid
             cnx.commit()

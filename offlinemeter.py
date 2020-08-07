@@ -57,7 +57,7 @@ class OfflineMeterCollection:
 
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, hourly_low_limit, hourly_high_limit, "
-                 "        energy_item_id, cost_center_id, location, description "
+                 "        energy_item_id, cost_center_id, description "
                  " FROM tbl_offline_meters "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -78,7 +78,6 @@ class OfflineMeterCollection:
                                "hourly_high_limit": row['hourly_high_limit'],
                                "energy_item": energy_item,
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -148,13 +147,6 @@ class OfflineMeterCollection:
         else:
             energy_item_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -215,8 +207,8 @@ class OfflineMeterCollection:
         add_values = (" INSERT INTO tbl_offline_meters "
                       "    (name, uuid, energy_category_id, "
                       "     is_counted, hourly_low_limit, hourly_high_limit, "
-                      "     cost_center_id, energy_item_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      "     cost_center_id, energy_item_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     energy_category_id,
@@ -225,7 +217,6 @@ class OfflineMeterCollection:
                                     hourly_high_limit,
                                     cost_center_id,
                                     energy_item_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -292,7 +283,7 @@ class OfflineMeterItem:
 
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, hourly_low_limit, hourly_high_limit, "
-                 "        energy_item_id, cost_center_id, location, description "
+                 "        energy_item_id, cost_center_id, description "
                  " FROM tbl_offline_meters "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -316,7 +307,6 @@ class OfflineMeterItem:
                            "hourly_high_limit": row['hourly_high_limit'],
                            "energy_item": energy_item,
                            "cost_center": cost_center,
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -541,13 +531,6 @@ class OfflineMeterItem:
         else:
             energy_item_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -618,7 +601,7 @@ class OfflineMeterItem:
         update_row = (" UPDATE tbl_offline_meters "
                       " SET name = %s, energy_category_id = %s,"
                       "     is_counted = %s, hourly_low_limit = %s, hourly_high_limit = %s, "
-                      "     cost_center_id = %s, energy_item_id = %s, location = %s, description = %s "
+                      "     cost_center_id = %s, energy_item_id = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     energy_category_id,
@@ -627,7 +610,6 @@ class OfflineMeterItem:
                                     hourly_high_limit,
                                     cost_center_id,
                                     energy_item_id,
-                                    location,
                                     description,
                                     id_,))
         cnx.commit()

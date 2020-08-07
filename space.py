@@ -69,7 +69,7 @@ class SpaceCollection:
 
         query = (" SELECT id, name, uuid, "
                  "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
-                 "        contact_id, cost_center_id, location, description "
+                 "        contact_id, cost_center_id, description "
                  " FROM tbl_spaces "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -92,7 +92,6 @@ class SpaceCollection:
                                "is_output_counted": bool(row['is_output_counted']),
                                "contact": contact,
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -167,13 +166,6 @@ class SpaceCollection:
         else:
             cost_center_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -240,8 +232,8 @@ class SpaceCollection:
 
         add_values = (" INSERT INTO tbl_spaces "
                       "    (name, uuid, parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
-                      "     contact_id, cost_center_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      "     contact_id, cost_center_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     parent_space_id,
@@ -251,7 +243,6 @@ class SpaceCollection:
                                     is_output_counted,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -330,7 +321,7 @@ class SpaceItem:
 
         query = (" SELECT id, name, uuid, "
                  "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
-                 "        contact_id, cost_center_id, location, description "
+                 "        contact_id, cost_center_id, description "
                  " FROM tbl_spaces "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -356,7 +347,6 @@ class SpaceItem:
                            "is_output_counted": bool(row['is_output_counted']),
                            "contact": contact,
                            "cost_center": cost_center,
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -591,13 +581,6 @@ class SpaceItem:
         else:
             cost_center_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -674,7 +657,7 @@ class SpaceItem:
         update_row = (" UPDATE tbl_spaces "
                       " SET name = %s, parent_space_id = %s, area = %s, timezone_id = %s, "
                       "     is_input_counted = %s, is_output_counted = %s, contact_id = %s, cost_center_id = %s, "
-                      "     location = %s, description = %s "
+                      "     description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     parent_space_id,
@@ -684,7 +667,6 @@ class SpaceItem:
                                     is_output_counted,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description,
                                     id_))
         cnx.commit()
@@ -772,7 +754,7 @@ class SpaceChildrenCollection:
 
         query = (" SELECT id, name, uuid, "
                  "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
-                 "        contact_id, cost_center_id, location, description "
+                 "        contact_id, cost_center_id, description "
                  " FROM tbl_spaces "
                  " WHERE parent_space_id = %s "
                  " ORDER BY id ")
@@ -796,7 +778,6 @@ class SpaceChildrenCollection:
                                "is_output_counted": bool(row['is_output_counted']),
                                "contact": contact,
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 

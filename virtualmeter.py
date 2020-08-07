@@ -56,7 +56,7 @@ class VirtualMeterCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id, is_counted, "
-                 "        energy_item_id, cost_center_id, location, description "
+                 "        energy_item_id, cost_center_id, description "
                  " FROM tbl_virtual_meters "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -75,7 +75,6 @@ class VirtualMeterCollection:
                                "is_counted": True if row['is_counted'] else False,
                                "energy_item": energy_item,
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description'],
                                "expression": {}}
 
@@ -188,13 +187,6 @@ class VirtualMeterCollection:
             energy_item_id = new_values['data']['energy_item_id']
         else:
             energy_item_id = None
-
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
 
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
@@ -318,15 +310,14 @@ class VirtualMeterCollection:
 
         add_values = (" INSERT INTO tbl_virtual_meters "
                       "     (name, uuid, energy_category_id, is_counted, "
-                      "      cost_center_id, energy_item_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ")
+                      "      cost_center_id, energy_item_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     energy_category_id,
                                     is_counted,
                                     cost_center_id,
                                     energy_item_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -423,7 +414,7 @@ class VirtualMeterItem:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, energy_category_id, is_counted, "
-                 "        energy_item_id, cost_center_id, location, description "
+                 "        energy_item_id, cost_center_id, description "
                  " FROM tbl_virtual_meters "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -442,7 +433,6 @@ class VirtualMeterItem:
                            "is_counted": True if row['is_counted'] else False,
                            "energy_item": energy_item,
                            "cost_center": cost_center,
-                           "location": row['location'],
                            "description": row['description'],
                            "expression": {}}
 
@@ -559,7 +549,7 @@ class VirtualMeterItem:
 
         # check relation with combined equipments
         cursor.execute(" SELECT combined_equipment_id "
-                       " FROM tbl_combined_equipments_meters "
+                       " FROM tbl_combined_equipments_virtual_meters "
                        " WHERE virtual_meter_id = %s ",
                        (id_,))
         rows_combined_equipments = cursor.fetchall()
@@ -724,13 +714,6 @@ class VirtualMeterItem:
         else:
             energy_item_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -862,14 +845,13 @@ class VirtualMeterItem:
 
         update_row = (" UPDATE tbl_virtual_meters "
                       " SET name = %s, energy_category_id = %s, is_counted = %s, "
-                      "     cost_center_id = %s, energy_item_id = %s, location = %s, description = %s "
+                      "     cost_center_id = %s, energy_item_id = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     energy_category_id,
                                     is_counted,
                                     cost_center_id,
                                     energy_item_id,
-                                    location,
                                     description,
                                     id_,))
         cnx.commit()

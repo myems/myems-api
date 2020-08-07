@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMS Chiller Plant\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"location\":\"equipment location\", \"description\":\"equipment description\"}}",
+							"raw": "{\"data\":{\"name\":\"MyEMS Chiller Plant\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"description\":\"equipment description\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -74,7 +74,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMS Combined Chiller Plant\", \"is_input_counted\":true, \"is_output_counted\":true, \"cost_center_id\":1, \"location\":\"equipment location\", \"description\":\"equipment description\"}}"
+							"raw": "{\"data\":{\"name\":\"MyEMS Combined Chiller Plant\", \"is_input_counted\":true, \"is_output_counted\":true, \"cost_center_id\":1, \"description\":\"equipment description\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/combinedequipments/1",
@@ -2022,7 +2022,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"location\":\"equipment location\", \"description\":\"equipment description\"}}",
+							"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"description\":\"equipment description\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -2081,7 +2081,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":true, \"cost_center_id\":1, \"location\":\"equipment location\", \"description\":\"equipment description\"}}"
+							"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":true, \"cost_center_id\":1, \"description\":\"equipment description\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/equipments/3",
@@ -2902,7 +2902,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -2926,7 +2926,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -3091,7 +3091,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"OfflinePM21\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"OfflinePM21\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -3115,7 +3115,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"OfflinePM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"OfflinePM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"空调用电\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -3596,7 +3596,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"Sensor10\", \"location\":\"sensor location\", \"description\":\"sensor description\"}}",
+							"raw": "{\"data\":{\"name\":\"Sensor10\", \"description\":\"sensor description\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -3614,25 +3614,25 @@
 					"response": []
 				},
 				{
-					"name": "PUT Update a Meter",
+					"name": "PUT Update a Sensor",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"max_hourly_value\":999.99, \"is_counted\":true, \"energy_item_id\":1, \"cost_center_id\":1, \"location\":\"floor1\", \"description\":\"空调用电\"}}",
+							"raw": "{\"data\":{\"name\":\"Sensor10\", \"description\":\"sensor description\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/meters/13",
+							"raw": "{{base_url}}/sensors/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"meters",
-								"13"
+								"sensors",
+								"1"
 							]
 						}
 					},
@@ -4240,7 +4240,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMSSpace\", \"parent_space_id\":1, \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"is_output_counted\":false, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Space description\"}}"
+							"raw": "{\"data\":{\"name\":\"MyEMSSpace\", \"parent_space_id\":1, \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"is_output_counted\":false, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"Space description\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/spaces",
@@ -4261,16 +4261,16 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMSSpace\", \"parent_space_id\":2, \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"is_output_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Space description\"}}"
+							"raw": "{\"data\":{\"name\":\"MyEMSSpace\", \"parent_space_id\":2, \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"is_output_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"Space description\"}}"
 						},
 						"url": {
-							"raw": "{{base_url}}/spaces/4",
+							"raw": "{{base_url}}/spaces/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"spaces",
-								"4"
+								"1"
 							]
 						}
 					},
@@ -4282,13 +4282,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/spaces/4",
+							"raw": "{{base_url}}/spaces/57",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"spaces",
-								"4"
+								"57"
 							]
 						}
 					},
@@ -6598,7 +6598,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM10\", \"energy_category_id\":1, \"is_counted\": true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"VM10\", \"energy_category_id\":1, \"is_counted\": true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1+x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
 							"raw": "{{base_url}}/virtualmeters",
@@ -6619,16 +6619,16 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"VM51\", \"energy_category_id\":1, \"is_counted\": true, \"cost_center_id\":1, \"energy_item_id\":1, \"location\":\"virtual location\", \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
+							"raw": "{\"data\":{\"name\":\"VM51\", \"energy_category_id\":1, \"is_counted\": true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"virtual description\", \"expression\": {\"equation\":\"x1-x2-x3\", \"variables\":[{\"name\":\"x1\", \"meter_type\":\"meter\", \"meter_id\":3},{\"name\":\"x2\", \"meter_type\":\"meter\", \"meter_id\":4},{\"name\":\"x3\", \"meter_type\":\"meter\", \"meter_id\":5}] } }}"
 						},
 						"url": {
-							"raw": "{{base_url}}/virtualmeters/5",
+							"raw": "{{base_url}}/virtualmeters/3",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"virtualmeters",
-								"5"
+								"3"
 							]
 						}
 					},
@@ -6640,13 +6640,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/virtualmeters/2",
+							"raw": "{{base_url}}/virtualmeters/3",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"virtualmeters",
-								"2"
+								"3"
 							]
 						}
 					},
