@@ -31,18 +31,6 @@ class ShopfloorCollection:
                                              "name": row['name'],
                                              "uuid": row['uuid']}
 
-        query = (" SELECT id, name, utc_offset "
-                 " FROM tbl_timezones ")
-        cursor.execute(query)
-        rows_timezones = cursor.fetchall()
-
-        timezone_dict = dict()
-        if rows_timezones is not None and len(rows_timezones) > 0:
-            for row in rows_timezones:
-                timezone_dict[row['id']] = {"id": row['id'],
-                                            "name": row['name'],
-                                            "utc_offset": row['utc_offset']}
-
         query = (" SELECT id, name, uuid "
                  " FROM tbl_contacts ")
         cursor.execute(query)
@@ -68,8 +56,8 @@ class ShopfloorCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        area, timezone_id, is_input_counted, "
-                 "        contact_id, cost_center_id, location, description "
+                 "        area, is_input_counted, "
+                 "        contact_id, cost_center_id, description "
                  " FROM tbl_shopfloors "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -78,18 +66,15 @@ class ShopfloorCollection:
         result = list()
         if rows_shopfloors is not None and len(rows_shopfloors) > 0:
             for row in rows_shopfloors:
-                timezone = timezone_dict.get(row['timezone_id'], None)
                 contact = contact_dict.get(row['contact_id'], None)
                 cost_center = cost_center_dict.get(row['cost_center_id'], None)
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
                                "area": row['area'],
-                               "timezone": timezone,
                                "is_input_counted": bool(row['is_input_counted']),
                                "contact": contact,
                                "cost_center": cost_center,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -121,13 +106,6 @@ class ShopfloorCollection:
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']
 
-        if 'timezone_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['timezone_id'], int) or \
-                new_values['data']['timezone_id'] <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TIMEZONE_ID')
-        timezone_id = new_values['data']['timezone_id']
-
         if 'is_input_counted' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_input_counted'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -150,13 +128,6 @@ class ShopfloorCollection:
         else:
             cost_center_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -176,15 +147,6 @@ class ShopfloorCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                    description='API.SHOPFLOOR_NAME_IS_ALREADY_IN_USE')
 
-        cursor.execute(" SELECT name "
-                       " FROM tbl_timezones "
-                       " WHERE id = %s ",
-                       (new_values['data']['timezone_id'],))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TIMEZONE_NOT_FOUND')
         if contact_id is not None:
             cursor.execute(" SELECT name "
                            " FROM tbl_contacts "
@@ -210,17 +172,15 @@ class ShopfloorCollection:
                                        description='API.COST_CENTER_NOT_FOUND')
 
         add_values = (" INSERT INTO tbl_shopfloors "
-                      "    (name, uuid, area, timezone_id, is_input_counted, "
-                      "     contact_id, cost_center_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      "    (name, uuid, area, is_input_counted, "
+                      "     contact_id, cost_center_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     area,
-                                    timezone_id,
                                     is_input_counted,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -261,18 +221,6 @@ class ShopfloorItem:
                                              "name": row['name'],
                                              "uuid": row['uuid']}
 
-        query = (" SELECT id, name, utc_offset "
-                 " FROM tbl_timezones ")
-        cursor.execute(query)
-        rows_timezones = cursor.fetchall()
-
-        timezone_dict = dict()
-        if rows_timezones is not None and len(rows_timezones) > 0:
-            for row in rows_timezones:
-                timezone_dict[row['id']] = {"id": row['id'],
-                                            "name": row['name'],
-                                            "utc_offset": row['utc_offset']}
-
         query = (" SELECT id, name, uuid "
                  " FROM tbl_contacts ")
         cursor.execute(query)
@@ -298,8 +246,7 @@ class ShopfloorItem:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid, "
-                 "        area, timezone_id, is_input_counted, "
-                 "        contact_id, cost_center_id, location, description "
+                 "        area, is_input_counted, contact_id, cost_center_id, description "
                  " FROM tbl_shopfloors "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -311,18 +258,15 @@ class ShopfloorItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.SHOPFLOOR_NOT_FOUND')
         else:
-            timezone = timezone_dict.get(row['timezone_id'], None)
             contact = contact_dict.get(row['contact_id'], None)
             cost_center = cost_center_dict.get(row['cost_center_id'], None)
             meta_result = {"id": row['id'],
                            "name": row['name'],
                            "uuid": row['uuid'],
                            "area": row['area'],
-                           "timezone": timezone,
                            "is_input_counted": bool(row['is_input_counted']),
                            "contact": contact,
                            "cost_center": cost_center,
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -474,13 +418,6 @@ class ShopfloorItem:
                                    description='API.INVALID_AREA_VALUE')
         area = new_values['data']['area']
 
-        if 'timezone_id' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['timezone_id'], int) or \
-                new_values['data']['timezone_id'] <= 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TIMEZONE_ID')
-        timezone_id = new_values['data']['timezone_id']
-
         if 'is_input_counted' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_input_counted'], bool):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -502,13 +439,6 @@ class ShopfloorItem:
             cost_center_id = new_values['data']['cost_center_id']
         else:
             cost_center_id = None
-
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
 
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
@@ -538,15 +468,6 @@ class ShopfloorItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                    description='API.SHOPFLOOR_NAME_IS_ALREADY_IN_USE')
 
-        cursor.execute(" SELECT name "
-                       " FROM tbl_timezones "
-                       " WHERE id = %s ",
-                       (new_values['data']['timezone_id'],))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.TIMEZONE_NOT_FOUND')
         if contact_id is not None:
             cursor.execute(" SELECT name "
                            " FROM tbl_contacts "
@@ -572,17 +493,14 @@ class ShopfloorItem:
                                        description='API.COST_CENTER_NOT_FOUND')
 
         update_row = (" UPDATE tbl_shopfloors "
-                      " SET name = %s, area = %s, timezone_id = %s, "
-                      "     is_input_counted = %s, contact_id = %s, cost_center_id = %s, "
-                      "     location = %s, description = %s "
+                      " SET name = %s, area = %s, is_input_counted = %s, contact_id = %s, cost_center_id = %s, "
+                      "     description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     area,
-                                    timezone_id,
                                     is_input_counted,
                                     contact_id,
                                     cost_center_id,
-                                    location,
                                     description,
                                     id_))
         cnx.commit()

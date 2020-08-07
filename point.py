@@ -31,7 +31,7 @@ class PointCollection:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, data_source_id, object_type, units, "
-                 "        low_limit, high_limit, is_trend, address, ratio "
+                 "        high_limit, low_limit, ratio, is_trend, address, description "
                  " FROM tbl_points ")
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -47,11 +47,12 @@ class PointCollection:
                                "data_source": data_source,
                                "object_type": row['object_type'],
                                "units": row['units'],
-                               "low_limit": row['low_limit'],
                                "high_limit": row['high_limit'],
+                               "low_limit": row['low_limit'],
+                               "ratio": float(row['ratio']),
                                "is_trend": row['is_trend'],
                                "address": row['address'],
-                               "ratio": float(row['ratio'])}
+                               "description": row['description']}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -94,6 +95,13 @@ class PointCollection:
                                    description='API.INVALID_UNITS')
         units = str.strip(new_values['data']['units'])
 
+        if 'high_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['high_limit'], float) or
+                     isinstance(new_values['data']['high_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_LOW_LIMIT_VALUE')
+        high_limit = new_values['data']['high_limit']
+
         if 'low_limit' not in new_values['data'].keys() or \
                 not (isinstance(new_values['data']['low_limit'], float) or
                      isinstance(new_values['data']['low_limit'], int)):
@@ -101,12 +109,12 @@ class PointCollection:
                                    description='API.INVALID_LOW_LIMIT_VALUE')
         low_limit = new_values['data']['low_limit']
 
-        if 'high_limit' not in new_values['data'].keys() or \
-                not (isinstance(new_values['data']['high_limit'], float) or
-                     isinstance(new_values['data']['high_limit'], int)):
+        if 'ratio' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['ratio'], float) or
+                     isinstance(new_values['data']['ratio'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_LOW_LIMIT_VALUE')
-        high_limit = new_values['data']['high_limit']
+                                   description='API.INVALID_RATIO_VALUE')
+        ratio = new_values['data']['ratio']
 
         if 'is_trend' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_trend'], bool):
@@ -121,12 +129,12 @@ class PointCollection:
                                    description='API.INVALID_ADDRESS')
         address = str.strip(new_values['data']['address'])
 
-        if 'ratio' not in new_values['data'].keys() or \
-                not (isinstance(new_values['data']['ratio'], float) or
-                     isinstance(new_values['data']['ratio'], int)):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_RATIO_VALUE')
-        ratio = new_values['data']['ratio']
+        if 'description' in new_values['data'].keys() and \
+                new_values['data']['description'] is not None and \
+                len(str(new_values['data']['description'])) > 0:
+            description = str.strip(new_values['data']['description'])
+        else:
+            description = None
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -150,18 +158,19 @@ class PointCollection:
                                    description='API.INVALID_DATA_SOURCE_ID')
 
         add_value = (" INSERT INTO tbl_points (name, data_source_id, "
-                     "                         object_type, units, low_limit, high_limit, "
-                     "                         is_trend, address, ratio) "
-                     " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                     "                         object_type, units, high_limit, low_limit, ratio, "
+                     "                         is_trend, address, description) "
+                     " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_value, (name,
                                    data_source_id,
                                    object_type,
                                    units,
-                                   low_limit,
                                    high_limit,
+                                   low_limit,
+                                   ratio,
                                    is_trend,
                                    address,
-                                   ratio))
+                                   description))
         new_id = cursor.lastrowid
         cnx.commit()
         cursor.close()
@@ -202,7 +211,7 @@ class PointItem:
                                                "uuid": row['uuid']}
 
         query = (" SELECT id, name, data_source_id, object_type, units, "
-                 "        low_limit, high_limit, is_trend, address, ratio "
+                 "        high_limit, low_limit, ratio, is_trend, address, description "
                  " FROM tbl_points "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -219,11 +228,12 @@ class PointItem:
                   "data_source": data_source,
                   "object_type": row['object_type'],
                   "units": row['units'],
-                  "low_limit": row['low_limit'],
                   "high_limit": row['high_limit'],
+                  "low_limit": row['low_limit'],
+                  "ratio": float(row['ratio']),
                   "is_trend": bool(row['is_trend']),
                   "address": row['address'],
-                  "ratio": float(row['ratio'])}
+                  "description": row['description']}
         resp.body = json.dumps(result)
 
     @staticmethod
@@ -406,6 +416,13 @@ class PointItem:
                                    description='API.INVALID_UNITS')
         units = str.strip(new_values['data']['units'])
 
+        if 'high_limit' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['high_limit'], float) or
+                     isinstance(new_values['data']['high_limit'], int)):
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_LOW_LIMIT_VALUE')
+        high_limit = new_values['data']['high_limit']
+
         if 'low_limit' not in new_values['data'].keys() or \
                 not (isinstance(new_values['data']['low_limit'], float) or
                      isinstance(new_values['data']['low_limit'], int)):
@@ -413,12 +430,12 @@ class PointItem:
                                    description='API.INVALID_LOW_LIMIT_VALUE')
         low_limit = new_values['data']['low_limit']
 
-        if 'high_limit' not in new_values['data'].keys() or \
-                not (isinstance(new_values['data']['high_limit'], float) or
-                     isinstance(new_values['data']['high_limit'], int)):
+        if 'ratio' not in new_values['data'].keys() or \
+                not (isinstance(new_values['data']['ratio'], float) or
+                     isinstance(new_values['data']['ratio'], int)):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_LOW_LIMIT_VALUE')
-        high_limit = new_values['data']['high_limit']
+                                   description='API.INVALID_RATIO_VALUE')
+        ratio = new_values['data']['ratio']
 
         if 'is_trend' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_trend'], bool):
@@ -433,12 +450,12 @@ class PointItem:
                                    description='API.INVALID_ADDRESS')
         address = str.strip(new_values['data']['address'])
 
-        if 'ratio' not in new_values['data'].keys() or \
-                not (isinstance(new_values['data']['ratio'], float) or
-                     isinstance(new_values['data']['ratio'], int)):
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_RATIO_VALUE')
-        ratio = new_values['data']['ratio']
+        if 'description' in new_values['data'].keys() and \
+                new_values['data']['description'] is not None and \
+                len(str(new_values['data']['description'])) > 0:
+            description = str.strip(new_values['data']['description'])
+        else:
+            description = None
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
@@ -473,18 +490,19 @@ class PointItem:
         update_row = (" UPDATE tbl_points "
                       " SET name = %s, data_source_id = %s, "
                       "     object_type = %s, units = %s, "
-                      "     low_limit = %s, high_limit = %s, is_trend = %s, address = %s, "
-                      "     ratio = %s "
+                      "     high_limit = %s, low_limit = %s, ratio = %s, "
+                      "     is_trend = %s, address = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     data_source_id,
                                     object_type,
                                     units,
-                                    low_limit,
                                     high_limit,
+                                    low_limit,
+                                    ratio,
                                     is_trend,
                                     address,
-                                    ratio,
+                                    description,
                                     id_,))
         cnx.commit()
 

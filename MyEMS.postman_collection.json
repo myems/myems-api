@@ -3296,7 +3296,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"high_limit\":999999999, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
+							"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}",
 							"options": {
 								"raw": {}
 							}
@@ -3338,7 +3338,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"high_limit\":999999999, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
+							"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}",
 							"options": {
 								"raw": {}
 							}
@@ -3766,7 +3766,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMS Shopfloor1\", \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Shopfloor description\"}}"
+							"raw": "{\"data\":{\"name\":\"MyEMS Shopfloor2\", \"area\":999.99, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"Shopfloor description\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/shopfloors",
@@ -3787,7 +3787,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"MyEMS Shopfloor2\", \"area\":999.99, \"timezone_id\":56, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"location\":\"My location\", \"description\":\"Shopfloor description\"}}"
+							"raw": "{\"data\":{\"name\":\"MyEMS Shopfloor2\", \"area\":999.99, \"is_input_counted\":true, \"contact_id\":1, \"cost_center_id\":1, \"description\":\"Shopfloor description\"}}"
 						},
 						"url": {
 							"raw": "{{base_url}}/shopfloors/2",
