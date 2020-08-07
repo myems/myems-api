@@ -69,8 +69,7 @@ class MeterCollection:
 
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, hourly_low_limit, hourly_high_limit, "
-                 "        cost_center_id, energy_item_id, parent_meter_id, "
-                 "        location, description "
+                 "        cost_center_id, energy_item_id, parent_meter_id, description "
                  " FROM tbl_meters "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -93,7 +92,6 @@ class MeterCollection:
                                "cost_center": cost_center,
                                "energy_item": energy_item,
                                "parent_meter": parent_meter,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -170,13 +168,6 @@ class MeterCollection:
             parent_meter_id = new_values['data']['parent_meter_id']
         else:
             parent_meter_id = None
-
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
 
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
@@ -256,8 +247,8 @@ class MeterCollection:
 
         add_values = (" INSERT INTO tbl_meters "
                       "    (name, uuid, energy_category_id, is_counted, hourly_low_limit, hourly_high_limit,"
-                      "     cost_center_id, energy_item_id, parent_meter_id, location, description) "
-                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+                      "     cost_center_id, energy_item_id, parent_meter_id, description) "
+                      " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
                                     energy_category_id,
@@ -267,7 +258,6 @@ class MeterCollection:
                                     cost_center_id,
                                     energy_item_id,
                                     parent_meter_id,
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -346,8 +336,7 @@ class MeterItem:
 
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, hourly_low_limit, hourly_high_limit, "
-                 "        cost_center_id, energy_item_id, parent_meter_id, "
-                 "        location, description "
+                 "        cost_center_id, energy_item_id, parent_meter_id, description "
                  " FROM tbl_meters "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -373,7 +362,6 @@ class MeterItem:
                            "cost_center": cost_center,
                            "energy_item": energy_item,
                            "parent_meter": parent_meter,
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -630,13 +618,6 @@ class MeterItem:
         else:
             parent_meter_id = None
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -737,8 +718,7 @@ class MeterItem:
         update_row = (" UPDATE tbl_meters "
                       " SET name = %s, energy_category_id = %s, is_counted = %s, "
                       "     hourly_low_limit = %s, hourly_high_limit = %s, "
-                      "     cost_center_id = %s, energy_item_id = %s, parent_meter_id = %s, "
-                      "     location = %s, description = %s "
+                      "     cost_center_id = %s, energy_item_id = %s, parent_meter_id = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
                                     energy_category_id,
@@ -748,7 +728,6 @@ class MeterItem:
                                     cost_center_id,
                                     energy_item_id,
                                     parent_meter_id,
-                                    location,
                                     description,
                                     id_,))
         cnx.commit()
@@ -829,8 +808,7 @@ class MeterChildrenCollection:
 
         query = (" SELECT id, name, uuid, energy_category_id, "
                  "        is_counted, hourly_low_limit, hourly_high_limit, "
-                 "        cost_center_id, energy_item_id, parent_meter_id, "
-                 "        location, description "
+                 "        cost_center_id, energy_item_id, parent_meter_id, description "
                  " FROM tbl_meters "
                  " WHERE parent_meter_id = %s "
                  " ORDER BY id ")
@@ -853,7 +831,6 @@ class MeterChildrenCollection:
                                "cost_center": cost_center,
                                "energy_item": energy_item,
                                "parent_meter": parent_meter,
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 

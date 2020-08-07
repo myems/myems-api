@@ -19,7 +19,7 @@ class SensorCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
-        query = (" SELECT id, name, uuid, location, description "
+        query = (" SELECT id, name, uuid, description "
                  " FROM tbl_sensors "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -31,7 +31,6 @@ class SensorCollection:
                 meta_result = {"id": row['id'],
                                "name": row['name'],
                                "uuid": row['uuid'],
-                               "location": row['location'],
                                "description": row['description']}
                 result.append(meta_result)
 
@@ -56,13 +55,6 @@ class SensorCollection:
                                    description='API.INVALID_SENSOR_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -83,11 +75,10 @@ class SensorCollection:
                                    description='API.SENSOR_NAME_IS_ALREADY_IN_USE')
 
         add_values = (" INSERT INTO tbl_sensors "
-                      "    (name, uuid, location, description) "
-                      " VALUES (%s, %s, %s, %s) ")
+                      "    (name, uuid, description) "
+                      " VALUES (%s, %s, %s) ")
         cursor.execute(add_values, (name,
                                     str(uuid.uuid4()),
-                                    location,
                                     description))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -116,7 +107,7 @@ class SensorItem:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
-        query = (" SELECT id, name, uuid, location, description "
+        query = (" SELECT id, name, uuid, description "
                  " FROM tbl_sensors "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -131,7 +122,6 @@ class SensorItem:
             meta_result = {"id": row['id'],
                            "name": row['name'],
                            "uuid": row['uuid'],
-                           "location": row['location'],
                            "description": row['description']}
 
         resp.body = json.dumps(meta_result)
@@ -231,13 +221,6 @@ class SensorItem:
                                    description='API.INVALID_SENSOR_NAME')
         name = str.strip(new_values['data']['name'])
 
-        if 'location' in new_values['data'].keys() and \
-                new_values['data']['location'] is not None and \
-                len(str(new_values['data']['location'])) > 0:
-            location = str.strip(new_values['data']['location'])
-        else:
-            location = None
-
         if 'description' in new_values['data'].keys() and \
                 new_values['data']['description'] is not None and \
                 len(str(new_values['data']['description'])) > 0:
@@ -267,10 +250,9 @@ class SensorItem:
                                    description='API.SENSOR_NAME_IS_ALREADY_IN_USE')
 
         update_row = (" UPDATE tbl_sensors "
-                      " SET name = %s, location = %s, description = %s "
+                      " SET name = %s, description = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
-                                    location,
                                     description,
                                     id_,))
         cnx.commit()

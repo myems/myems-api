@@ -538,8 +538,7 @@ Result
 | is_input_counted | boolean | Indicates if the Equipment's energy input is counted for aggregating|                        |
 | is_output_counted | boolean | Indicates if the Equipment's energy output is counted for aggregating|                        |
 | cost_center   | Object    | Cost Center Object                        |
-| location      | string    | Equipment location                            |
-| description   | string    | Equipment description                         |
+| description   | string    | Equipment description                     |
 
 * GET All Equipments
 ```bash
@@ -551,11 +550,11 @@ $ curl -i -X DELETE http://BASE_URL/equipments/{id}
 ```
 * POST Create an Equipment
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Chiller", "is_input_counted":true, "is_output_counted":false, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/equipments
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Chiller", "is_input_counted":true, "is_output_counted":false, "cost_center_id":1, "description":"equipment description"}}' http://BASE_URL/equipments
 ```
 * PUT Update an Equipment
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Chiller", "is_input_counted":true, "is_output_counted":true, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/equipments/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Chiller", "is_input_counted":true, "is_output_counted":true, "cost_center_id":1, "description":"equipment description"}}' http://BASE_URL/equipments/{id}
 ```
 * POST Clone an Equipment
 ```bash
@@ -651,7 +650,6 @@ Result
 | is_input_counted | boolean | Indicates if the combined equipment's energy input is counted for aggregating|                        |
 | is_output_counted | boolean | Indicates if the combined equipment's energy output is counted for aggregating|                        |
 | cost_center   | Object    | Cost Center Object                        |
-| location      | string    | Combined Equipment location               |
 | description   | string    | Combined Equipment description            |
 
 * GET All Equipments
@@ -664,11 +662,11 @@ $ curl -i -X DELETE http://BASE_URL/combinedequipments/{id}
 ```
 * POST Create a Combined Equipment
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Chiller Plant", "is_input_counted":true, "is_output_counted":false, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/combinedequipments
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMS Chiller Plant", "is_input_counted":true, "is_output_counted":false, "cost_center_id":1, "description":"equipment description"}}' http://BASE_URL/combinedequipments
 ```
 * PUT Update a Combined Equipment
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Chiller Plant", "is_input_counted":true, "is_output_counted":true, "cost_center_id":1, "location":"equipment location", "description":"equipment description"}}' http://BASE_URL/combinedequipments/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMS Chiller Plant", "is_input_counted":true, "is_output_counted":true, "cost_center_id":1, "description":"equipment description"}}' http://BASE_URL/combinedequipments/{id}
 ```
 * POST Clone a Combined Equipment
 ```bash
@@ -884,7 +882,6 @@ Result
 | cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
 | parent_meter  | Object    | Parent Meter Object                       |
-| location      | string    | Meter location                            |
 | description   | string    | Meter description                         |
 
 * GET All Meters
@@ -897,11 +894,11 @@ $ curl -i -X DELETE http://BASE_URL/meters/{id}
 ```
 * POST Create a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "description":"空调用电"}}' http://BASE_URL/meters
 ```
 * PUT Update a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "location":"floor1", "description":"空调用电"}}' http://BASE_URL/meters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "description":"空调用电"}}' http://BASE_URL/meters/{id}
 ```
 * GET All Children of Meter by ID
 ```bash
@@ -940,7 +937,6 @@ Result
 | hourly_high_limit | decimal(18,3)   | Inclusive. Maximum energy consumption per hour, Rated total active Power, Rated Flow, etc.|
 | cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
-| location      | string    | Offline Meter location                    |
 | description   | string    | Offline Meter description                 |
 
 * GET All Offline Meters
@@ -953,11 +949,11 @@ $ curl -i -X DELETE http://BASE_URL/offlinemeters/{id}
 ```
 * POST Create a Offline Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "is_counted":true, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "is_counted":true, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "cost_center_id":1, "energy_item_id":1, "description":"空调用电"}}' http://BASE_URL/offlinemeters
 ```
 * PUT Update a Offline Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "is_counted":true, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "cost_center_id":1, "energy_item_id":1, location":"floor1", "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"OfflinePM20", "energy_category_id":1, "is_counted":true, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "cost_center_id":1, "energy_item_id":1, "description":"空调用电"}}' http://BASE_URL/offlinemeters/{id}
 ```
 
 ### Offline Meter File
@@ -1117,7 +1113,6 @@ Result
 | id            | integer   | Sensor ID                                 |
 | name          | string    | Sensor name                               |
 | uuid          | string    | Sensor UUID                               |
-| location      | string    | Sensor location                           |
 | description   | string    | Sensor description                        |
 
 * GET All Sensors
@@ -1130,11 +1125,11 @@ $ curl -i -X DELETE http://BASE_URL/sensors/{id}
 ```
 * POST Create New Sensor
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Sensor10", "location":"sensor location", "description":"sensor description"}}' http://BASE_URL/sensors
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Sensor10", "description":"sensor description"}}' http://BASE_URL/sensors
 ```
 * PUT Update a Sensor
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Sensor10", "location":"sensor location", "description":"sensor description"}}' http://BASE_URL/sensors/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Sensor10", "description":"sensor description"}}' http://BASE_URL/sensors/{id}
 ```
 * GET All Points associated with Sensor ID
 ```bash
@@ -1275,7 +1270,6 @@ Result
 | is_output_counted | boolean | Indicates if the space's energy output is counted for aggregating|                        |
 | contact       | Object    | Contact Object                            |
 | cost_center   | Object    | Cost Center Object                        |
-| location      | string    | Space location                            |
 | description   | string    | Space description                         |
 
 * GET All Spaces
@@ -1288,11 +1282,11 @@ $ curl -i -X DELETE http://BASE_URL/spaces/{id}
 ```
 * POST Create a Space
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMSSpace", "parent_space_id":1, "area":999.99, "timezone_id":56, "is_input_counted":true, "is_output_counted":false, "contact_id":1, "cost_center_id":1, "location":"My location", "description":"Space description"}}' http://BASE_URL/spaces
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"MyEMSSpace", "parent_space_id":1, "area":999.99, "timezone_id":56, "is_input_counted":true, "is_output_counted":false, "contact_id":1, "cost_center_id":1, "description":"Space description"}}' http://BASE_URL/spaces
 ```
 * PUT Update a Space
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMSSpace", "parent_space_id":2, "area":999.99, "timezone_id":56, "is_input_counted":true, "is_output_counted":true, "contact_id":1, "cost_center_id":1, "location":"My location", "description":"Space description"}}' http://BASE_URL/spaces/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"MyEMSSpace", "parent_space_id":2, "area":999.99, "timezone_id":56, "is_input_counted":true, "is_output_counted":true, "contact_id":1, "cost_center_id":1, "description":"Space description"}}' http://BASE_URL/spaces/{id}
 ```
 * GET All Children of Space by ID
 ```bash
@@ -1837,7 +1831,6 @@ Result
 | is_counted    | boolean   | the Virtual Meter is counted in           |
 | cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
-| location      | string    | Offline Meter location                    |
 | description   | string    | Offline Meter description                 |
 | expression    | json      | Expression                                |
 |  ├ id         | integer   | Expression ID                             |
@@ -1860,11 +1853,11 @@ $ curl -i -X DELETE http://BASE_URL/virtualmeters/{id}
 ```
 * POST Create New Virtual Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "cost_center_id":1, "energy_item_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "cost_center_id":1, "energy_item_id":1, "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters
 ```
 * PUT Update a Virtual Meter by ID
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "cost_center_id":1, "energy_item_id":1, "location":"virtual location", "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"VM21", "energy_category_id":1, "is_counted": true, "cost_center_id":1, "energy_item_id":1, "description":"virtual description", "expression": {"equation":"x1-x2-x3", "variables":[{"name":"x1", "meter_type":"meter", "meter_id":3},{"name":"x2", "meter_type":"meter", "meter_id":4},{"name":"x3", "meter_type":"meter", "meter_id":5}] } }}' http://BASE_URL/virtualmeters/{id}
 ```
 
 ### Web Message
