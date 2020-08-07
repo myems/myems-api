@@ -1007,8 +1007,9 @@ Result in JSON
 | data_source   | object    | Data Source Object                        |
 | object_type   | string    | Object Type ('ENERGY_VALUE', 'ANALOG_VALUE, 'BINARY_VALUE')   |
 | units         | string    | Units of Measure                          |
-| low_limit     | float     | Low Limit of the Point Value              |
 | high_limit    | float     | High Limit of the Point Value             |
+| low_limit     | float     | Low Limit of the Point Value              |
+| ratio         | float     | Raw value will be multiplied by ratio value|                            |
 | is_trend      | boolean   | The Point Value is Recorded as Trend      |
 | address       | json      | Address structure varied by protocol      |
 |               |           | Modbus TCP Structure                      |
@@ -1022,7 +1023,7 @@ Result in JSON
 | ├object_id    | integer   | BACnet Object Instance Number             |
 | ├property_name| string    | BACnet Property Name ('presentValue')     |
 | └property_array_index| integer/null    | BACnet Property Array Index or None of Object Type is not Array   |
-
+| description   | string    | Point description, allow null             |
 
 * GET all Points
 ```bash
@@ -1034,11 +1035,11 @@ $ curl -i -X DELETE http://BASE_URL/points/{id}
 ```
 * POST Point
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"ModbusPoint1", "data_source_id":1, "object_type": "ENERGY_VALUE", "units":"kWh", "low_limit":0, "high_limit":999999999, "is_trend":true, "address":"{\"slave_id\":1, \"function_code\":3, \"offset\":1, \"number_of_registers\":2, \"data_format\":\"float\"}"}}' http://BASE_URL/points
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"ModbusPoint1", "data_source_id":1, "object_type": "ENERGY_VALUE", "units":"kWh", "low_limit":0, "high_limit":999999999, "is_trend":true, "address":"{\"slave_id\":1, \"function_code\":3, \"offset\":1, \"number_of_registers\":2, \"data_format\":\"float\"}", "description":null}}' http://BASE_URL/points
 ```
 * PUT Point
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"ModbusPoint1", "data_source_id":1, "object_type": "ENERGY_VALUE", "units":"kWh", "low_limit":0, "high_limit":999999999, "is_trend":true, "address":"{\"slave_id\":1, \"function_code\":3, \"offset\":1, \"number_of_registers\":2, \"data_format\":\"float\"}"}}' http://BASE_URL/points/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"ModbusPoint1", "data_source_id":1, "object_type": "ENERGY_VALUE", "units":"kWh", "low_limit":0, "high_limit":999999999, "is_trend":true, "address":"{\"slave_id\":1, \"function_code\":3, \"offset\":1, \"number_of_registers\":2, \"data_format\":\"float\"}", "description":null}}' http://BASE_URL/points/{id}
 ```
 
 

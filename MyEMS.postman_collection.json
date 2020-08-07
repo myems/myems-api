@@ -3296,7 +3296,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"high_limit\":999999999, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
+							"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}",
 							"options": {
 								"raw": {}
 							}
@@ -3338,7 +3338,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"low_limit\":0, \"high_limit\":999999999, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\"}}",
+							"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}",
 							"options": {
 								"raw": {}
 							}

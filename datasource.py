@@ -347,7 +347,7 @@ class DataSourcePointCollection:
         # Get points of the data source
         # NOTE: there is no uuid in tbl_points
         query_point = (" SELECT id, name, object_type, "
-                       "        units, low_limit, high_limit, is_trend, address, ratio "
+                       "        units, high_limit, low_limit, ratio, is_trend, address, description "
                        " FROM tbl_points "
                        " WHERE data_source_id = %s "
                        " ORDER BY name ")
@@ -360,11 +360,12 @@ class DataSourcePointCollection:
                                "name": row[1],
                                "object_type": row[2],
                                "units": row[3],
-                               "low_limit": row[4],
-                               "high_limit": row[5],
-                               "is_trend": True if row[6] else False,
-                               "address": row[7],
-                               "ratio": row[8]}
+                               "high_limit": row[4],
+                               "low_limit": row[5],
+                               "ratio": float(row[6]),
+                               "is_trend": True if row[7] else False,
+                               "address": row[8],
+                               "description": row[9]}
                 result.append(meta_result)
 
         cursor.close()
