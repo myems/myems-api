@@ -129,7 +129,7 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Timezone](#Timezone)
 
-[Help File](#Help-File)
+[Knowledge File](#Knowledge-File)
 
 ### Contact
 * GET Contact by ID
@@ -830,35 +830,35 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"serial_port":
 ```
 
 
-### Help File
-* GET Help File by ID
+### Knowledge File
+* GET Knowledge File by ID
 
 ```bash
-$ curl -i -X GET http://BASE_URL/helpfiles/{id}
+$ curl -i -X GET http://BASE_URL/knowledgefiles/{id}
 ```
 Result
 
 | Name          | Data Type | Description                               |
 |---------------|-----------|-------------------------------------------|
-| id            | integer   | Help File ID                              |
-| file_name     | string    | Help File name                            |
-| uuid          | string    | Help File UUID                            |
+| id            | integer   | Knowledge File ID                         |
+| file_name     | string    | Knowledge File name                       |
+| uuid          | string    | Knowledge File UUID                       |
 | upload_datetime | float | the number of milliseconds since January 1, 1970, 00:00:00, universal time |
 | user_display_name | string| Upload user's display name                |
-| file_object   | BLOB      | Help File Object                 |
+| file_object   | BLOB      | Knowledge File Object                     |
 
-* GET All Help Files
+* GET All Knowledge Files
 ```bash
-$ curl -i -X GET http://BASE_URL/helpfiles
+$ curl -i -X GET http://BASE_URL/knowledgefiles
 ```
-* DELETE a Help File by id
+* DELETE a Knowledge File by id
 ```bash
-$ curl -i -X DELETE http://BASE_URL/helpfiles/{id}
+$ curl -i -X DELETE http://BASE_URL/knowledgefiles/{id}
 ```
-* POST Upload a Help File
+* POST Upload a Knowledge File
  (user must login first to get cookie)
 ```bash
-$ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/helpfiles
+$ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/knowledgefiles
 ```
 
 
