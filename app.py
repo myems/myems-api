@@ -36,6 +36,7 @@ import user
 import virtualmeter
 import webmessage
 import wechatmessage
+import version
 
 
 # https://github.com/lwcolton/falcon-cors
@@ -405,6 +406,9 @@ api.add_route('/wechatmessages/from/{startdate}/to/{enddate}',
               wechatmessage.WechatMessageCollection())
 api.add_route('/wechatmessages/{id_}',
               wechatmessage.WechatMessageItem())
+
+api.add_route('/version',
+              version.VersionItem())
 
 # from waitress import serve
 # serve(api, host='0.0.0.0', port=8886)
