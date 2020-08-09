@@ -117,13 +117,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/combinedequipments/2",
+							"raw": "{{base_url}}/combinedequipments/6",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"combinedequipments",
-								"2"
+								"6"
 							]
 						}
 					},
@@ -3626,13 +3626,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/sensors/1",
+							"raw": "{{base_url}}/sensors/5",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"sensors",
-								"1"
+								"5"
 							]
 						}
 					},
@@ -6892,6 +6892,23 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Version",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/version",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"version"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
