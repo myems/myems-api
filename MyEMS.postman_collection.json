@@ -2799,6 +2799,25 @@
 					"response": []
 				},
 				{
+					"name": "GET Rstore a Knowledge File by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/knowledgefiles/1/restore",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"knowledgefiles",
+								"1",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST Upload a Knowledge File",
 					"request": {
 						"method": "POST",

@@ -180,6 +180,8 @@ api.add_route('/knowledgefiles',
               knowledgefile.KnowledgeFileCollection())
 api.add_route('/knowledgefiles/{id_}',
               knowledgefile.KnowledgeFileItem())
+api.add_route('/knowledgefiles/{id_}/restore',
+              knowledgefile.KnowledgeFileRestore())
 
 api.add_route('/meters',
               meter.MeterCollection())

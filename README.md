@@ -860,7 +860,10 @@ $ curl -i -X DELETE http://BASE_URL/knowledgefiles/{id}
 ```bash
 $ curl -i -H "Content-Type: application/TBD" -X POST -d 'file: (binary)' http://BASE_URL/knowledgefiles
 ```
-
+* GET Restore a Knowledge File by id from database to disk
+```bash
+$ curl -i -X GET http://BASE_URL/knowledgefiles/{id}/restore
+```
 
 ### Meter
 * GET Meter by ID
