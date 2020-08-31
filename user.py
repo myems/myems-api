@@ -112,6 +112,15 @@ class UserCollection:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                    description='API.USER_NAME_IS_ALREADY_IN_USE')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_users "
+                       " WHERE email = %s ", (email,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.EMAIL_IS_ALREADY_IN_USE')
+
         if privilege_id is not None:
             cursor.execute(" SELECT name "
                            " FROM tbl_privileges "
@@ -287,6 +296,15 @@ class UserItem:
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
                                    description='API.USER_NAME_IS_ALREADY_IN_USE')
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_users "
+                       " WHERE email = %s AND id != %s ", (email, id_))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.EMAIL_IS_ALREADY_IN_USE')
 
         if privilege_id is not None:
             cursor.execute(" SELECT name "
