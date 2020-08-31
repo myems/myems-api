@@ -354,37 +354,69 @@ class UserLogin:
 
         new_values = json.loads(raw_json, encoding='utf-8')
 
-        if len(new_values['data']['username']) <= 0:
+        if 'username' not in new_values['data'] and 'email' not in new_values['data']:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_USER_NAME')
+                                   description='API.INVALID_USER_NAME_OR_EMAIL')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
+        result = dict()
 
-        query = (" SELECT id, name, uuid, display_name, email, salt, password, is_admin "
-                 " FROM tbl_users "
-                 " WHERE name = %s ")
-        cursor.execute(query, (new_values['data']['username'].lower(),))
-        row = cursor.fetchone()
-        if row is None:
-            cursor.close()
-            cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, 'API.ERROR', 'API.USER_NOT_FOUND')
+        if 'username' in new_values['data']:
+            if len(new_values['data']['username']) <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_USER_NAME')
 
-        result = {"id": row[0],
-                  "name": row[1],
-                  "uuid": row[2],
-                  "display_name": row[3],
-                  "email": row[4],
-                  "salt": row[5],
-                  "password": row[6],
-                  "is_admin": True if row[7] else False}
+            query = (" SELECT id, name, uuid, display_name, email, salt, password, is_admin "
+                     " FROM tbl_users "
+                     " WHERE name = %s ")
+            cursor.execute(query, (new_values['data']['username'].lower(),))
+            row = cursor.fetchone()
+            if row is None:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_404, 'API.ERROR', 'API.USER_NOT_FOUND')
+
+            result = {"id": row[0],
+                      "name": row[1],
+                      "uuid": row[2],
+                      "display_name": row[3],
+                      "email": row[4],
+                      "salt": row[5],
+                      "password": row[6],
+                      "is_admin": True if row[7] else False}
+
+        elif 'email' in new_values['data']:
+            if len(new_values['data']['email']) <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.INVALID_EMAIL')
+
+            query = (" SELECT id, name, uuid, display_name, email, salt, password, is_admin "
+                     " FROM tbl_users "
+                     " WHERE email = %s ")
+            cursor.execute(query, (new_values['data']['email'].lower(),))
+            row = cursor.fetchone()
+            if row is None:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_404, 'API.ERROR', 'API.USER_NOT_FOUND')
+
+            result = {"id": row[0],
+                      "name": row[1],
+                      "uuid": row[2],
+                      "display_name": row[3],
+                      "email": row[4],
+                      "salt": row[5],
+                      "password": row[6],
+                      "is_admin": True if row[7] else False}
 
         salt = result['salt']
         password = new_values['data']['password']
         hashed_password = hashlib.sha512(salt.encode() + password.encode()).hexdigest()
 
         if hashed_password != result['password']:
+            cursor.close()
+            cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, 'API.BAD_REQUEST', 'API.INVALID_PASSWORD')
 
         add_session = (" INSERT INTO tbl_sessions "
