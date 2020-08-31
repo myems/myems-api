@@ -1799,9 +1799,13 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"alber
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"albert", "display_name":"Mr. Albert", "email":"albert@myems.io", "is_admin":false, "privilege_id":1, "password":"!MyEMS1"}}' http://BASE_URL/users/{id}
 ```
-* PUT User Login
+* PUT User Login by Username
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"username":"johnson", "password":"!Password1"}}' http://BASE_URL/users/login
+```
+* PUT User Login by Email
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"email":"johnson@myems.io", "password":"!Password1"}}' http://BASE_URL/users/login
 ```
 * PUT User Logout
 ```bash

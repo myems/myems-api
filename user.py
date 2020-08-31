@@ -424,7 +424,7 @@ class UserLogin:
                        " VALUES (%s, %s, %s) ")
         user_uuid = result['uuid']
         token = hashlib.sha1(os.urandom(24)).hexdigest()
-        utc_expires = datetime.utcnow() + timedelta(seconds=3600)
+        utc_expires = datetime.utcnow() + timedelta(seconds=1000 * 60 * 60 * 8)
         cursor.execute(add_session, (user_uuid, token, utc_expires))
         cnx.commit()
         cursor.close()
@@ -435,6 +435,7 @@ class UserLogin:
                         domain=config.myems_api_domain, path='/', secure=False, http_only=False)
         del result['salt']
         del result['password']
+        result['token'] = token
 
         resp.body = json.dumps(result)
         resp.status = falcon.HTTP_200
