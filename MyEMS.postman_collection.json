@@ -6347,13 +6347,38 @@
 					"response": []
 				},
 				{
-					"name": "PUT User Login",
+					"name": "PUT User Login by Username",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"username\":\"administrator\", \"password\":\"!MyEMS1\"}}",
+							"raw": "{\"data\":{\"name\":\"administrator\", \"password\":\"!MyEMS1\"}}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT User Login by Email",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"email\":\"administrator@myems.io\", \"password\":\"!MyEMS1\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -6396,19 +6421,19 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":3, \"password\":\"!MyEMS1\"}}",
+							"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/users/4",
+							"raw": "{{base_url}}/users/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"users",
-								"4"
+								"2"
 							]
 						}
 					},
@@ -6429,6 +6454,10 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"0e14130abc9f739858be0be9aeac9d1012b25e03\"}}"
+						},
 						"url": {
 							"raw": "{{base_url}}/users/logout",
 							"host": [
@@ -6502,7 +6531,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"password\":\"NewPassword1\"}}",
+							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"f6670e633d7962734f1fe2398d714e3d6858fce0\", \"old_password\":\"!MyEMS1\", \"new_password\":\"!MyEMS2\"}}",
 							"options": {
 								"raw": {}
 							}
