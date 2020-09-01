@@ -6454,6 +6454,10 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"0e14130abc9f739858be0be9aeac9d1012b25e03\"}}"
+						},
 						"url": {
 							"raw": "{{base_url}}/users/logout",
 							"host": [

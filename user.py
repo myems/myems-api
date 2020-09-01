@@ -453,18 +453,26 @@ class UserLogout:
     @staticmethod
     def on_put(req, resp):
         """Handles PUT requests"""
+        try:
+            raw_json = req.stream.read().decode('utf-8')
+        except Exception as ex:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        cookies = req.cookies
+        new_values = json.loads(raw_json, encoding='utf-8')
 
-        if 'user_uuid' not in cookies or 'token' not in cookies:
+        if 'user_uuid' not in new_values['data']:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.INVALID_USER_UUID')
+
+        if 'token' not in new_values['data']:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_TOKEN')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
         query = (" DELETE FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s ")
-        cursor.execute(query, (cookies['user_uuid'], cookies['token'],))
+        cursor.execute(query, (new_values['data']['user_uuid'], new_values['data']['token'],))
         rowcount = cursor.rowcount
         cnx.commit()
         cursor.close()
@@ -477,6 +485,7 @@ class UserLogout:
                         domain=config.myems_api_domain, path='/', secure=False, http_only=False)
         resp.set_cookie('token', '',
                         domain=config.myems_api_domain, path='/', secure=False, http_only=False)
+        resp.body = json.dumps("OK")
         resp.status = falcon.HTTP_200
 
 

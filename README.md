@@ -1809,7 +1809,7 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"email":"johns
 ```
 * PUT User Logout
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT --cookie "user_uuid=793f1bb4-6e25-4242-8cdc-2f662b25484f;token=a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" http://BASE_URL/users/logout
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"user_uuid":"793f1bb4-6e25-4242-8cdc-2f662b25484f", "token":"a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338"}}' http://BASE_URL/users/logout
 ```
 * PUT User change password
 ```bash
