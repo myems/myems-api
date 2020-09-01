@@ -349,28 +349,30 @@ class UserLogin:
         """Handles PUT requests"""
         try:
             raw_json = req.stream.read().decode('utf-8')
+            new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
-
-        if 'username' not in new_values['data'] and 'email' not in new_values['data']:
+        if not isinstance(new_values['data']['password'], str) or \
+                len(str.strip(new_values['data']['password'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_USER_NAME_OR_EMAIL')
+                                   description='API.INVALID_PASSWORD')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
         result = dict()
 
-        if 'username' in new_values['data']:
-            if len(new_values['data']['username']) <= 0:
+        if 'name' in new_values['data']:
+
+            if not isinstance(new_values['data']['name'], str) or \
+                    len(str.strip(new_values['data']['name'])) == 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_USER_NAME')
 
             query = (" SELECT id, name, uuid, display_name, email, salt, password, is_admin "
                      " FROM tbl_users "
                      " WHERE name = %s ")
-            cursor.execute(query, (new_values['data']['username'].lower(),))
+            cursor.execute(query, (str.strip(new_values['data']['name']).lower(),))
             row = cursor.fetchone()
             if row is None:
                 cursor.close()
@@ -387,14 +389,15 @@ class UserLogin:
                       "is_admin": True if row[7] else False}
 
         elif 'email' in new_values['data']:
-            if len(new_values['data']['email']) <= 0:
+            if not isinstance(new_values['data']['email'], str) or \
+                    len(str.strip(new_values['data']['email'])) == 0:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.INVALID_EMAIL')
 
             query = (" SELECT id, name, uuid, display_name, email, salt, password, is_admin "
                      " FROM tbl_users "
                      " WHERE email = %s ")
-            cursor.execute(query, (new_values['data']['email'].lower(),))
+            cursor.execute(query, (str.strip(new_values['data']['email']).lower(),))
             row = cursor.fetchone()
             if row is None:
                 cursor.close()
@@ -409,9 +412,14 @@ class UserLogin:
                       "salt": row[5],
                       "password": row[6],
                       "is_admin": True if row[7] else False}
+        else:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_USER_NAME_OR_EMAIL')
 
         salt = result['salt']
-        password = new_values['data']['password']
+        password = str.strip(new_values['data']['password'])
         hashed_password = hashlib.sha512(salt.encode() + password.encode()).hexdigest()
 
         if hashed_password != result['password']:
@@ -455,24 +463,29 @@ class UserLogout:
         """Handles PUT requests"""
         try:
             raw_json = req.stream.read().decode('utf-8')
+            new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
-
-        if 'user_uuid' not in new_values['data']:
+        if 'user_uuid' not in new_values['data'] or \
+                not isinstance(new_values['data']['user_uuid'], str) or \
+                len(str.strip(new_values['data']['user_uuid'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_USER_UUID')
+        user_uuid = str.strip(new_values['data']['user_uuid'])
 
-        if 'token' not in new_values['data']:
+        if 'token' not in new_values['data'] or \
+                not isinstance(new_values['data']['token'], str) or \
+                len(str.strip(new_values['data']['token'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TOKEN')
+        token = str.strip(new_values['data']['token'])
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
         query = (" DELETE FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s ")
-        cursor.execute(query, (new_values['data']['user_uuid'], new_values['data']['token'],))
+        cursor.execute(query, (user_uuid, token,))
         rowcount = cursor.rowcount
         cnx.commit()
         cursor.close()
@@ -501,25 +514,48 @@ class ChangePassword:
     @staticmethod
     def on_put(req, resp):
         """Handles PUT requests"""
-        # Get Request Data
         try:
             raw_json = req.stream.read().decode('utf-8')
             new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, 'API.ERROR', ex.args)
 
-        # Verify User Session
-        cookies = req.cookies
-        if 'user_uuid' not in cookies or 'token' not in cookies:
+        if 'user_uuid' not in new_values['data'] or \
+                not isinstance(new_values['data']['user_uuid'], str) or \
+                len(str.strip(new_values['data']['user_uuid'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.INVALID_USER_UUID')
+        user_uuid = str.strip(new_values['data']['user_uuid'])
+
+        if 'token' not in new_values['data'] or \
+                not isinstance(new_values['data']['token'], str) or \
+                len(str.strip(new_values['data']['token'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_TOKEN')
+        token = str.strip(new_values['data']['token'])
+
+        if 'old_password' not in new_values['data'] or \
+                not isinstance(new_values['data']['old_password'], str) or \
+                len(str.strip(new_values['data']['old_password'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_OLD_PASSWORD')
+        old_password = str.strip(new_values['data']['old_password'])
+
+        if 'new_password' not in new_values['data'] or \
+                not isinstance(new_values['data']['new_password'], str) or \
+                len(str.strip(new_values['data']['new_password'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_NEW_PASSWORD')
+        new_password = str.strip(new_values['data']['new_password'])
+
+        # Verify User Session
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s")
-        cursor.execute(query, (cookies['user_uuid'], cookies['token'],))
+        cursor.execute(query, (user_uuid, token,))
         row = cursor.fetchone()
 
         if row is None:
@@ -535,32 +571,43 @@ class ChangePassword:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.USER_SESSION_TIMEOUT')
 
-        cursor.execute(" SELECT id "
-                       " FROM tbl_users "
-                       " WHERE uuid = %s ",
-                       (cookies['user_uuid'],))
-        if cursor.fetchone() is None:
+        query = (" SELECT salt, password "
+                 " FROM tbl_users "
+                 " WHERE uuid = %s ")
+        cursor.execute(query, (user_uuid,))
+        row = cursor.fetchone()
+        if row is None:
             cursor.close()
             cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.USER_NOT_FOUND')
+            raise falcon.HTTPError(falcon.HTTP_404, 'API.NOT_FOUND', 'API.USER_NOT_FOUND')
+
+        result = {'salt': row[0], 'password': row[1]}
+
+        # verify old password
+        salt = result['salt']
+        hashed_password = hashlib.sha512(salt.encode() + old_password.encode()).hexdigest()
+
+        if hashed_password != result['password']:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_400, 'API.BAD_REQUEST', 'API.INVALID_OLD_PASSWORD')
 
         # Update User password
         salt = uuid.uuid4().hex
-        password = new_values['data']['password']
-        hashed_password = hashlib.sha512(salt.encode() + password.encode()).hexdigest()
+        hashed_password = hashlib.sha512(salt.encode() + new_password.encode()).hexdigest()
 
         update_user = (" UPDATE tbl_users "
                        " SET salt = %s, password = %s "
                        " WHERE uuid = %s ")
-        cursor.execute(update_user, (salt, hashed_password, cookies['user_uuid'],))
+        cursor.execute(update_user, (salt, hashed_password, user_uuid,))
         cnx.commit()
 
         # Refresh User session
         update_session = (" UPDATE tbl_sessions "
                           " SET utc_expires = %s "
                           " WHERE user_uuid = %s AND token = %s ")
-        utc_expires = datetime.utcnow() + timedelta(seconds=3600)
-        cursor.execute(update_session, (utc_expires, cookies['user_uuid'], cookies['token'], ))
+        utc_expires = datetime.utcnow() + timedelta(seconds=1000 * 60 * 60 * 8)
+        cursor.execute(update_session, (utc_expires, user_uuid, token, ))
         cnx.commit()
 
         cursor.close()
@@ -644,7 +691,7 @@ class ResetPassword:
         update_session = (" UPDATE tbl_sessions "
                           " SET utc_expires = %s "
                           " WHERE user_uuid = %s and token = %s ")
-        utc_expires = datetime.utcnow() + timedelta(seconds=3600)
+        utc_expires = datetime.utcnow() + timedelta(seconds=1000 * 60 * 60 * 8)
         cursor.execute(update_session, (utc_expires, cookies['user_uuid'], cookies['token'], ))
         cnx.commit()
 

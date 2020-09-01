@@ -1801,7 +1801,7 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"albert
 ```
 * PUT User Login by Username
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"username":"johnson", "password":"!Password1"}}' http://BASE_URL/users/login
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnson", "password":"!Password1"}}' http://BASE_URL/users/login
 ```
 * PUT User Login by Email
 ```bash
@@ -1813,7 +1813,7 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"user_uuid":"7
 ```
 * PUT User change password
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"password":"NewPassword1"}}' --cookie "user_uuid=793f1bb4-6e25-4242-8cdc-2f662b25484f;token=a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" http://BASE_URL/users/changepassword
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"user_uuid":"793f1bb4-6e25-4242-8cdc-2f662b25484f", "token":"a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338", "old_password":"Password1", "new_password":"Password2"}}' http://BASE_URL/users/changepassword
 ```
 * PUT User reset any user's password called by administrator
 ```bash

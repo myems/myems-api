@@ -6353,7 +6353,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"username\":\"administrator\", \"password\":\"!MyEMS1\"}}",
+							"raw": "{\"data\":{\"name\":\"administrator\", \"password\":\"!MyEMS1\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -6531,7 +6531,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"password\":\"NewPassword1\"}}",
+							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"f6670e633d7962734f1fe2398d714e3d6858fce0\", \"old_password\":\"!MyEMS1\", \"new_password\":\"!MyEMS2\"}}",
 							"options": {
 								"raw": {}
 							}
