@@ -612,7 +612,7 @@ class ChangePassword:
 
         cursor.close()
         cnx.disconnect()
-
+        resp.body = json.dumps("OK")
         resp.status = falcon.HTTP_200
 
 
