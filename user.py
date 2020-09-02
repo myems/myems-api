@@ -461,25 +461,20 @@ class UserLogout:
     @staticmethod
     def on_put(req, resp):
         """Handles PUT requests"""
-        try:
-            raw_json = req.stream.read().decode('utf-8')
-            new_values = json.loads(raw_json, encoding='utf-8')
-        except Exception as ex:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        if 'user_uuid' not in new_values['data'] or \
-                not isinstance(new_values['data']['user_uuid'], str) or \
-                len(str.strip(new_values['data']['user_uuid'])) == 0:
+        if 'USER-UUID' not in req.headers or \
+                not isinstance(req.headers['USER-UUID'], str) or \
+                len(str.strip(req.headers['USER-UUID'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_USER_UUID')
-        user_uuid = str.strip(new_values['data']['user_uuid'])
+        user_uuid = str.strip(req.headers['USER-UUID'])
 
-        if 'token' not in new_values['data'] or \
-                not isinstance(new_values['data']['token'], str) or \
-                len(str.strip(new_values['data']['token'])) == 0:
+        if 'TOKEN' not in req.headers or \
+                not isinstance(req.headers['TOKEN'], str) or \
+                len(str.strip(req.headers['TOKEN'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TOKEN')
-        token = str.strip(new_values['data']['token'])
+        token = str.strip(req.headers['TOKEN'])
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -514,25 +509,25 @@ class ChangePassword:
     @staticmethod
     def on_put(req, resp):
         """Handles PUT requests"""
+        if 'USER-UUID' not in req.headers or \
+                not isinstance(req.headers['USER-UUID'], str) or \
+                len(str.strip(req.headers['USER-UUID'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_USER_UUID')
+        user_uuid = str.strip(req.headers['USER-UUID'])
+
+        if 'TOKEN' not in req.headers or \
+                not isinstance(req.headers['TOKEN'], str) or \
+                len(str.strip(req.headers['TOKEN'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_TOKEN')
+        token = str.strip(req.headers['TOKEN'])
+
         try:
             raw_json = req.stream.read().decode('utf-8')
             new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, 'API.ERROR', ex.args)
-
-        if 'user_uuid' not in new_values['data'] or \
-                not isinstance(new_values['data']['user_uuid'], str) or \
-                len(str.strip(new_values['data']['user_uuid'])) == 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_USER_UUID')
-        user_uuid = str.strip(new_values['data']['user_uuid'])
-
-        if 'token' not in new_values['data'] or \
-                not isinstance(new_values['data']['token'], str) or \
-                len(str.strip(new_values['data']['token'])) == 0:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_TOKEN')
-        token = str.strip(new_values['data']['token'])
 
         if 'old_password' not in new_values['data'] or \
                 not isinstance(new_values['data']['old_password'], str) or \
