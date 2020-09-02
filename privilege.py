@@ -41,20 +41,41 @@ class PrivilegeCollection:
         """Handles POST requests"""
         try:
             raw_json = req.stream.read().decode('utf-8')
+            new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        if 'name' not in new_values['data'] or \
+            not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_PRIVILEGE_NAME')
+        name = str.strip(new_values['data']['name'])
+
+        if 'data' not in new_values['data'] or \
+            not isinstance(new_values['data']['data'], str) or \
+                len(str.strip(new_values['data']['data'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_PRIVILEGE_DATA')
+        data = str.strip(new_values['data']['data'])
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
+
+        cursor.execute(" SELECT name "
+                       " FROM tbl_privileges "
+                       " WHERE name = %s ", (name,))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.PRIVILEGE_NAME_IS_ALREADY_IN_USE')
+
         add_row = (" INSERT INTO tbl_privileges "
                    "             (name, data) "
                    " VALUES (%s, %s) ")
 
-        cursor.execute(add_row, (new_values['data']['name'],
-                                 new_values['data']['data'],
-                                 ))
+        cursor.execute(add_row, (name, data, ))
         new_id = cursor.lastrowid
         cnx.commit()
         cursor.close()
@@ -117,14 +138,26 @@ class PrivilegeItem:
         """Handles PUT requests"""
         try:
             raw_json = req.stream.read().decode('utf-8')
+            new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
         if not id_.isdigit() or int(id_) <= 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_PRIVILEGE_ID_')
+        if 'name' not in new_values['data'] or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_PRIVILEGE_NAME')
+        name = str.strip(new_values['data']['name'])
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        if 'data' not in new_values['data'] or \
+                not isinstance(new_values['data']['data'], str) or \
+                len(str.strip(new_values['data']['data'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_PRIVILEGE_DATA')
+        data = str.strip(new_values['data']['data'])
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -138,12 +171,19 @@ class PrivilegeItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.PRIVILEGE_NOT_FOUND')
 
+        cursor.execute(" SELECT name "
+                       " FROM tbl_privileges "
+                       " WHERE name = %s AND id != %s ", (name, id_))
+        if cursor.fetchone() is not None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.BAD_REQUEST',
+                                   description='API.PRIVILEGE_NAME_IS_ALREADY_IN_USE')
+
         update_row = (" UPDATE tbl_privileges "
                       " SET name = %s, data = %s "
                       " WHERE id = %s ")
-        cursor.execute(update_row, (new_values['data']['name'],
-                                    new_values['data']['data'],
-                                    id_,))
+        cursor.execute(update_row, (name, data, id_,))
         cnx.commit()
 
         cursor.close()
