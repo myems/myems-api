@@ -3399,49 +3399,25 @@
 					"response": []
 				},
 				{
-					"name": "POST Create Privilege",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/privileges",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "PUT Update Privilege Data",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"superusers\", \"data\":\"{\\\"spaces\\\":[1, 3]}\"}}",
+							"raw": "{\"data\":{\"name\":\"privilege 1\", \"data\":\"{\\\"spaces\\\":[1, 3]}\"}}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/privileges/3",
+							"raw": "{{base_url}}/privileges/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"privileges",
-								"3"
+								"2"
 							]
 						}
 					},
@@ -3460,6 +3436,27 @@
 							"path": [
 								"privileges",
 								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Privilege",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"data\": {\"name\": \"privilege 1\", \"data\":\"{\\\"spaces\\\":[1, 3]}\"}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/privileges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"privileges"
 							]
 						}
 					},
@@ -6531,7 +6528,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"f6670e633d7962734f1fe2398d714e3d6858fce0\", \"old_password\":\"!MyEMS1\", \"new_password\":\"!MyEMS2\"}}",
+							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"f6670e633d7962734f1fe2398d714e3d6858fce0\", \"old_password\":\"!MyEMS2\", \"new_password\":\"!MyEMS1\"}}",
 							"options": {
 								"raw": {}
 							}
@@ -6569,30 +6566,6 @@
 							"path": [
 								"users",
 								"resetpassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Create Privilege",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"data\":{\"name\":\"superusers\",\"data\":\"{\\\"spaces\\\":[4,3,5,2]}\"}}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/privileges",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"privileges"
 							]
 						}
 					},
