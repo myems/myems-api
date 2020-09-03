@@ -3,6 +3,9 @@ import simplejson as json
 import mysql.connector
 import config
 import uuid
+from datetime import datetime
+from treelib.node import Node
+from treelib.tree import Tree
 
 
 class SpaceCollection:
@@ -2485,3 +2488,112 @@ class SpaceVirtualMeterItem:
         resp.status = falcon.HTTP_204
 
 
+class SpaceTreeCollection:
+    @staticmethod
+    def __init__():
+        pass
+
+    @staticmethod
+    def on_options(req, resp):
+        resp.status = falcon.HTTP_200
+
+    @staticmethod
+    def on_get(req, resp):
+        if 'USER-UUID' not in req.headers or \
+                not isinstance(req.headers['USER-UUID'], str) or \
+                len(str.strip(req.headers['USER-UUID'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_USER_UUID')
+        user_uuid = str.strip(req.headers['USER-UUID'])
+
+        if 'TOKEN' not in req.headers or \
+                not isinstance(req.headers['TOKEN'], str) or \
+                len(str.strip(req.headers['TOKEN'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_TOKEN')
+        token = str.strip(req.headers['TOKEN'])
+
+        # Verify User Session
+        cnx = mysql.connector.connect(**config.myems_user_db)
+        cursor = cnx.cursor()
+        query = (" SELECT utc_expires "
+                 " FROM tbl_sessions "
+                 " WHERE user_uuid = %s AND token = %s")
+        cursor.execute(query, (user_uuid, token,))
+        row = cursor.fetchone()
+
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.USER_SESSION_NOT_FOUND')
+        else:
+            utc_expires = row[0]
+            if datetime.utcnow() > utc_expires:
+                cursor.close()
+                cnx.disconnect()
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                       description='API.USER_SESSION_TIMEOUT')
+        # get privilege
+        query = (" SELECT is_admin, privilege_id "
+                 " FROM tbl_users "
+                 " WHERE uuid = %s ")
+        cursor.execute(query, (user_uuid,))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404, 'API.NOT_FOUND', 'API.USER_NOT_FOUND')
+        else:
+            is_admin = bool(row[0])
+            privilege_id = row[1]
+
+        # get space_id in privilege
+        if is_admin:
+            space_id = 1
+        elif privilege_id is None:
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.PRIVILEGE_NOT_FOUND')
+        else:
+            query = (" SELECT data "
+                     " FROM tbl_privileges "
+                     " WHERE id =%s ")
+            cursor.execute(query, (privilege_id,))
+            row = cursor.fetchone()
+            cursor.close()
+            cnx.disconnect()
+
+            if row is None:
+                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                       description='API.PRIVILEGE_NOT_FOUND')
+
+            data = json.dumps(row[0])
+            if 'spaces' not in data or len(data['spaces']) == 0:
+                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                       description='API.SPACE_NOT_FOUND_IN_PRIVILEGE')
+
+            space_id = data['spaces'][0]
+
+        # get all spaces
+        cnx = mysql.connector.connect(**config.myems_system_db)
+        cursor = cnx.cursor(dictionary=True)
+
+        tree = Tree()
+
+        query = (" SELECT id, name, parent_space_id "
+                 " FROM tbl_spaces "
+                 " ORDER BY id ")
+        cursor.execute(query)
+        rows_spaces = cursor.fetchall()
+
+        if rows_spaces is not None and len(rows_spaces) > 0:
+            for row in rows_spaces:
+                tree.create_node(tag=row['name'], identifier=row['id'], parent=row['parent_space_id'])
+
+        cursor.close()
+        cnx.disconnect()
+        if space_id is None:
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                   description='API.PRIVILEGE_NOT_FOUND')
+        else:
+            resp.body = tree.to_json(nid=space_id)

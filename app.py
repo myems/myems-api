@@ -303,6 +303,8 @@ api.add_route('/spaces/{id_}/virtualmeters',
               space.SpaceVirtualMeterCollection())
 api.add_route('/spaces/{id_}/virtualmeters/{mid}',
               space.SpaceVirtualMeterItem())
+api.add_route('/spaces/tree',
+              space.SpaceTreeCollection())
 
 api.add_route('/stores',
               store.StoreCollection())

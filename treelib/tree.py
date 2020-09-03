@@ -923,32 +923,25 @@ class Tree(object):
             else:
                 setattr(cn, attr, val)
 
-    def to_dict(self, nid=None, key=None, sort=True, reverse=False, with_data=False):
+    def to_dict(self, nid=None,):
         """Transform the whole tree into a dict."""
 
         nid = self.root if (nid is None) else nid
         ntag = self[nid].tag
-        tree_dict = {ntag: {"children": []}}
-        if with_data:
-            tree_dict[ntag]["data"] = self[nid].data
+        tree_dict = {nid: {"label": ntag, "value": nid, "children": []}}
 
         if self[nid].expanded:
             queue = [self[i] for i in self[nid].successors(self._identifier)]
-            key = (lambda x: x) if (key is None) else key
-            if sort:
-                queue.sort(key=key, reverse=reverse)
-
             for elem in queue:
-                tree_dict[ntag]["children"].append(
-                    self.to_dict(elem.identifier, with_data=with_data, sort=sort, reverse=reverse))
-            if len(tree_dict[ntag]["children"]) == 0:
-                tree_dict = self[nid].tag if not with_data else \
-                    {ntag: {"data": self[nid].data}}
+                tree_dict[nid]["children"].append(
+                    self.to_dict(elem.identifier))
+            if len(tree_dict[nid]["children"]) == 0:
+                tree_dict = self[nid].tag
             return tree_dict
 
-    def to_json(self, with_data=False, sort=True, reverse=False):
+    def to_json(self, nid=None,):
         """To format the tree in JSON format."""
-        return json.dumps(self.to_dict(with_data=with_data, sort=sort, reverse=reverse))
+        return json.dumps(self.to_dict(nid=nid, ))
 
     def to_graphviz(self, filename=None, shape='circle', graph='digraph'):
         """Exports the tree in the dot format of the graphviz software"""
