@@ -623,74 +623,90 @@ class ResetPassword:
     @staticmethod
     def on_put(req, resp):
         """Handles PUT requests"""
-        # Get Request Data
+        if 'USER-UUID' not in req.headers or \
+                not isinstance(req.headers['USER-UUID'], str) or \
+                len(str.strip(req.headers['USER-UUID'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_USER_UUID')
+        admin_user_uuid = str.strip(req.headers['USER-UUID'])
+
+        if 'TOKEN' not in req.headers or \
+                not isinstance(req.headers['TOKEN'], str) or \
+                len(str.strip(req.headers['TOKEN'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_TOKEN')
+        admin_token = str.strip(req.headers['TOKEN'])
+
         try:
             raw_json = req.stream.read().decode('utf-8')
             new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
-            raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
+            raise falcon.HTTPError(falcon.HTTP_400, 'API.ERROR', ex.args)
 
-        # Verify User Session
-        cookies = req.cookies
-        if 'user_uuid' not in cookies or 'token' not in cookies:
+        if 'name' not in new_values['data'] or \
+                not isinstance(new_values['data']['name'], str) or \
+                len(str.strip(new_values['data']['name'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.INVALID_USER_NAME')
+        user_name = str.strip(new_values['data']['name'])
 
+        if 'password' not in new_values['data'] or \
+                not isinstance(new_values['data']['password'], str) or \
+                len(str.strip(new_values['data']['password'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.INVALID_PASSWORD')
+        new_password = str.strip(new_values['data']['password'])
+
+        # Verify Administrator
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s")
-        cursor.execute(query, (cookies['user_uuid'], cookies['token'],))
+        cursor.execute(query, (admin_user_uuid, admin_token,))
         row = cursor.fetchone()
 
         if row is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.USER_SESSION_NOT_FOUND')
+                                   description='API.ADMINISTRATOR_SESSION_NOT_FOUND')
         else:
             utc_expires = row[0]
             if datetime.utcnow() > utc_expires:
                 cursor.close()
                 cnx.disconnect()
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description='API.USER_SESSION_TIMEOUT')
+                                       description='API.ADMINISTRATOR_SESSION_TIMEOUT')
 
-        # Update User password
-        query = (" SELECT id, name "
+        query = (" SELECT name "
                  " FROM tbl_users "
-                 " WHERE uuid = %s ")
-        cursor.execute(query, (cookies['user_uuid'],))
+                 " WHERE uuid = %s AND is_admin = true ")
+        cursor.execute(query, (admin_user_uuid,))
         row = cursor.fetchone()
         if row is None:
             cursor.close()
             cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.USER_NOT_FOUND')
-        elif row[0] != 1 or row[1] != 'administrator':
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.ERROR',
-                                   description='API.INVALID_PRIVILEGE_TO_RESET_PASSWORD')
+            raise falcon.HTTPError(falcon.HTTP_400, 'API.BAD_REQUEST', 'API.INVALID_PRIVILEGE')
 
         salt = uuid.uuid4().hex
-        password = new_values['data']['password']
-        hashed_password = hashlib.sha512(salt.encode() + password.encode()).hexdigest()
+        hashed_password = hashlib.sha512(salt.encode() + new_password.encode()).hexdigest()
 
         update_user = (" UPDATE tbl_users "
                        " SET salt = %s, password = %s "
                        " WHERE name = %s ")
-        cursor.execute(update_user, (salt, hashed_password, new_values['data']['name'],))
+        cursor.execute(update_user, (salt, hashed_password, user_name,))
         cnx.commit()
 
-        # Refresh User session
+        # Refresh administrator session
         update_session = (" UPDATE tbl_sessions "
                           " SET utc_expires = %s "
                           " WHERE user_uuid = %s and token = %s ")
         utc_expires = datetime.utcnow() + timedelta(seconds=1000 * 60 * 60 * 8)
-        cursor.execute(update_session, (utc_expires, cookies['user_uuid'], cookies['token'], ))
+        cursor.execute(update_session, (utc_expires, admin_user_uuid, admin_token, ))
         cnx.commit()
 
         cursor.close()
         cnx.disconnect()
-
+        resp.body = json.dumps("OK")
         resp.status = falcon.HTTP_200
