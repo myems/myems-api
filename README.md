@@ -5,6 +5,9 @@ Providing REST API service for MyEMS Web APP, Android APP and iOS APP and/or thi
 
 
 ## Prerequisites
+
+anytree
+
 simplejson
 
 mysql.connector
@@ -17,6 +20,14 @@ gunicorn
 
 
 ## Installation
+
+* Install anytree
+```
+$ cd ~/tools
+$ git clone https://github.com/c0fec0de/anytree.git
+$ cd anytree
+$ sudo python3 setup.py install 
+```
 
 * Install simplejson
 ```
@@ -1403,6 +1414,10 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"virtual_mete
 ```bash
 $ curl -i -X DELETE http://BASE_URL/spaces/{id}/virtualmeters/{mid}
 ```
+* GET Space Tree of User
+```bash
+$ curl -i -H "User-UUID: 793f1bb4-6e25-4242-8cdc-2f662b25484f" -H "Token: a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" -X GET http://BASE_URL/spaces/tree
+```
 
 
 ### Store
@@ -1809,15 +1824,15 @@ $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"email":"johns
 ```
 * PUT User Logout
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"user_uuid":"793f1bb4-6e25-4242-8cdc-2f662b25484f", "token":"a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338"}}' http://BASE_URL/users/logout
+$ curl -i -H "Content-Type: application/json" -H "User-UUID: 793f1bb4-6e25-4242-8cdc-2f662b25484f" -H "Token: a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" -X PUT  http://BASE_URL/users/logout
 ```
 * PUT User change password
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"user_uuid":"793f1bb4-6e25-4242-8cdc-2f662b25484f", "token":"a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338", "old_password":"Password1", "new_password":"Password2"}}' http://BASE_URL/users/changepassword
+$ curl -i -H "Content-Type: application/json" -H "User-UUID: 793f1bb4-6e25-4242-8cdc-2f662b25484f" -H "Token: a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" -X PUT -d '{"data":{"old_password":"Password1", "new_password":"Password2"}}' http://BASE_URL/users/changepassword
 ```
 * PUT User reset any user's password called by administrator
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"johnson","password":"NewPassword1"}}' --cookie "user_uuid=793f1bb4-6e25-4242-8cdc-2f662b25484f;token=a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" http://BASE_URL/users/resetpassword
+$ curl -i -H "Content-Type: application/json" -H "User-UUID: 793f1bb4-6e25-4242-8cdc-2f662b25484f" -H "Token: a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" -X PUT -d '{"data":{"name":"johnson","password":"NewPassword1"}}' --cookie "user_uuid=793f1bb4-6e25-4242-8cdc-2f662b25484f;token=a6e52af82e5b4168ae03b1c5fd8fa31b2ab3a338" http://BASE_URL/users/resetpassword
 ```
 
 

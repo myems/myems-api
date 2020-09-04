@@ -4948,6 +4948,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GET Space Tree",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-UUID",
+								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+								"type": "text"
+							},
+							{
+								"key": "Token",
+								"value": "e1879592cb12e4cbf0e1762ed42edde699499cd9",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/spaces/tree",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"tree"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -6450,10 +6479,21 @@
 							]
 						},
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "user_uuid",
+								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "18f212f9fe64adcf34f6e618eb9f72a0e8b4c411",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"0e14130abc9f739858be0be9aeac9d1012b25e03\"}}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{base_url}}/users/logout",
@@ -6525,10 +6565,21 @@
 					"name": "User Change Password",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "user_uuid",
+								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "b3a1b48ff5a9a3f67ec16848c5ddf9a42bf17045",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"data\":{\"user_uuid\":\"dcdb67d1-6116-4987-916f-6fc6cf2bc0e4\", \"token\":\"f6670e633d7962734f1fe2398d714e3d6858fce0\", \"old_password\":\"!MyEMS2\", \"new_password\":\"!MyEMS1\"}}",
+							"raw": "{\"data\":{\"old_password\":\"!MyEMS1\", \"new_password\":\"!MyEMS2\"}}",
 							"options": {
 								"raw": {}
 							}
