@@ -4,8 +4,8 @@ import mysql.connector
 import config
 import uuid
 from datetime import datetime
-from treelib.node import Node
-from treelib.tree import Tree
+from anytree import AnyNode
+from anytree.exporter import JsonExporter
 
 
 class SpaceCollection:
@@ -107,10 +107,9 @@ class SpaceCollection:
         """Handles POST requests"""
         try:
             raw_json = req.stream.read().decode('utf-8')
+            new_values = json.loads(raw_json, encoding='utf-8')
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
-
-        new_values = json.loads(raw_json, encoding='utf-8')
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -2566,34 +2565,34 @@ class SpaceTreeCollection:
             if row is None:
                 raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                        description='API.PRIVILEGE_NOT_FOUND')
+            try:
+                data = json.loads(row[0])
+            except Exception as ex:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
-            data = json.dumps(row[0])
             if 'spaces' not in data or len(data['spaces']) == 0:
                 raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                        description='API.SPACE_NOT_FOUND_IN_PRIVILEGE')
 
             space_id = data['spaces'][0]
-
+            if space_id is None:
+                raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
+                                       description='API.PRIVILEGE_NOT_FOUND')
         # get all spaces
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
-
-        tree = Tree()
 
         query = (" SELECT id, name, parent_space_id "
                  " FROM tbl_spaces "
                  " ORDER BY id ")
         cursor.execute(query)
         rows_spaces = cursor.fetchall()
-
+        node_dict = dict()
         if rows_spaces is not None and len(rows_spaces) > 0:
             for row in rows_spaces:
-                tree.create_node(tag=row['name'], identifier=row['id'], parent=row['parent_space_id'])
+                parent_node = node_dict[row['parent_space_id']] if row['parent_space_id'] is not None else None
+                node_dict[row['id']] = AnyNode(id=row['id'], parent=parent_node, name=row['name'])
 
         cursor.close()
         cnx.disconnect()
-        if space_id is None:
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
-                                   description='API.PRIVILEGE_NOT_FOUND')
-        else:
-            resp.body = tree.to_json(nid=space_id)
+        resp.body = JsonExporter(sort_keys=True).export(node_dict[space_id], )
