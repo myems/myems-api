@@ -38,6 +38,7 @@ import webmessage
 import wechatmessage
 import version
 from reports import meterenergy
+from reports import virtualmeterenergy
 ########################################################################################################################
 # BEGIN imports for Enterprise Version
 ########################################################################################################################
@@ -428,10 +429,13 @@ api.add_route('/version',
 
 
 ########################################################################################################################
-# Routes for Reporting
+# Routes for Reports
 ########################################################################################################################
 api.add_route('/reports/meterenergy',
               meterenergy.Reporting())
+
+api.add_route('/reports/virtualmeterenergy',
+              virtualmeterenergy.Reporting())
 
 ########################################################################################################################
 # BEGIN Routes for Enterprise Version

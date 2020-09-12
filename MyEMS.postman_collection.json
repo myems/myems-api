@@ -6481,12 +6481,12 @@
 						"method": "PUT",
 						"header": [
 							{
-								"key": "user_uuid",
+								"key": "User-UUID",
 								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
 								"type": "text"
 							},
 							{
-								"key": "token",
+								"key": "Token",
 								"value": "18f212f9fe64adcf34f6e618eb9f72a0e8b4c411",
 								"type": "text"
 							}
@@ -6567,12 +6567,12 @@
 						"method": "PUT",
 						"header": [
 							{
-								"key": "user_uuid",
+								"key": "User-UUID",
 								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
 								"type": "text"
 							},
 							{
-								"key": "token",
+								"key": "Token",
 								"value": "b3a1b48ff5a9a3f67ec16848c5ddf9a42bf17045",
 								"type": "text"
 							}
@@ -6601,7 +6601,18 @@
 					"name": "PUT Reset Password",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "User-UUID",
+								"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+								"type": "text"
+							},
+							{
+								"key": "Token",
+								"value": "b3a1b48ff5a9a3f67ec16848c5ddf9a42bf17045",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\"data\":{\"name\":\"johnson\",\"password\":\"NewPassword2\"}}",
@@ -6957,6 +6968,100 @@
 							"path": [
 								"wechatmessages",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Meter Energy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/meterenergy?meterid=6&periodtype=daily &baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"meterenergy"
+							],
+							"query": [
+								{
+									"key": "meterid",
+									"value": "6"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily "
+								},
+								{
+									"key": "baseperiodbeginsdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodendsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodbeginsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodendsdatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Virtual Meter Energy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/virtualmeterenergy?virtualmeterid=1&periodtype=daily &baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"virtualmeterenergy"
+							],
+							"query": [
+								{
+									"key": "virtualmeterid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily "
+								},
+								{
+									"key": "baseperiodbeginsdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodendsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodbeginsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodendsdatetime",
+									"value": "2020-10-01T00:00:00"
+								}
 							]
 						}
 					},

@@ -142,6 +142,9 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Knowledge File](#Knowledge-File)
 
+[Reports](#Reports)
+
+
 ### Contact
 * GET Contact by ID
 ```bash
@@ -1939,6 +1942,16 @@ $ curl -i -X GET http://BASE_URL/wechatmessages/from/{startdate}/to/{enddate}
 * DELETE a Wechat Message by ID
 ```bash
 $ curl -i -X DELETE http://BASE_URL/wechatmessages/{id}
+```
+
+### Reports
+* GET Report of Meter Energy
+```bash
+$ curl -i -X GET http://BASE_URL/reports/meterenergy?meterid={meterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
+```
+* GET Report of Virtual Meter Energy
+```bash
+$ curl -i -X GET http://BASE_URL/reports/virtualmeterenergy?virtualmeterid={virtualmeterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
 ```
 
 
