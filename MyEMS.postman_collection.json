@@ -6985,7 +6985,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/reports/meterenergy?meterid=6&periodtype=daily &baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"raw": "{{base_url}}/reports/meterenergy?meterid=6&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
 							"host": [
 								"{{base_url}}"
 							],
@@ -7000,7 +7000,139 @@
 								},
 								{
 									"key": "periodtype",
-									"value": "daily "
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodbeginsdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodendsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodbeginsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodendsdatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Meter Cost",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/metercost?meterid=6&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"metercost"
+							],
+							"query": [
+								{
+									"key": "meterid",
+									"value": "6"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodbeginsdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodendsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodbeginsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodendsdatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Offline Meter Energy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/offlinemeterenergy?offlinemeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"offlinemeterenergy"
+							],
+							"query": [
+								{
+									"key": "offlinemeterid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodbeginsdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodendsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodbeginsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodendsdatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Offline Meter Cost",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/offlinemetercost?offlinemeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"offlinemetercost"
+							],
+							"query": [
+								{
+									"key": "offlinemeterid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
 								},
 								{
 									"key": "baseperiodbeginsdatetime",
@@ -7029,7 +7161,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/reports/virtualmeterenergy?virtualmeterid=1&periodtype=daily &baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"raw": "{{base_url}}/reports/virtualmeterenergy?virtualmeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
 							"host": [
 								"{{base_url}}"
 							],
@@ -7044,7 +7176,51 @@
 								},
 								{
 									"key": "periodtype",
-									"value": "daily "
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodbeginsdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodendsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodbeginsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodendsdatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Virtual Meter Cost",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/virtualmetercost?virtualmeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"virtualmetercost"
+							],
+							"query": [
+								{
+									"key": "virtualmeterid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
 								},
 								{
 									"key": "baseperiodbeginsdatetime",

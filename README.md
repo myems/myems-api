@@ -1949,9 +1949,25 @@ $ curl -i -X DELETE http://BASE_URL/wechatmessages/{id}
 ```bash
 $ curl -i -X GET http://BASE_URL/reports/meterenergy?meterid={meterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
 ```
+* GET Report of Meter Cost
+```bash
+$ curl -i -X GET http://BASE_URL/reports/metercost?meterid={meterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
+```
+* GET Report of Offline Meter Energy
+```bash
+$ curl -i -X GET http://BASE_URL/reports/offlinemeterenergy?offlinemeterid={virtualmeterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
+```
+* GET Report of Offline Meter Cost
+```bash
+$ curl -i -X GET http://BASE_URL/reports/offlinemetercost?virtualmeterid={offlinemeterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
+```
 * GET Report of Virtual Meter Energy
 ```bash
 $ curl -i -X GET http://BASE_URL/reports/virtualmeterenergy?virtualmeterid={virtualmeterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
+```
+* GET Report of Virtual Meter Cost
+```bash
+$ curl -i -X GET http://BASE_URL/reports/virtualmetercost?virtualmeterid={virtualmeterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
 ```
 
 
