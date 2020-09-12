@@ -141,7 +141,7 @@ class Reporting:
         meter['cost_center_id'] = row_meter[2]
         meter['energy_category_id'] = row_meter[3]
         meter['energy_category_name'] = row_meter[4]
-        meter['unit_of_measure'] = row_meter[5]
+        meter['unit_of_measure'] = config.currency_unit
         meter['kgce'] = row_meter[6]
         meter['kgco2e'] = row_meter[7]
 

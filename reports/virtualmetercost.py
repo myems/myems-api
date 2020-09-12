@@ -141,7 +141,7 @@ class Reporting:
         virtual_meter['cost_center_id'] = row_virtual_meter[2]
         virtual_meter['energy_category_id'] = row_virtual_meter[3]
         virtual_meter['energy_category_name'] = row_virtual_meter[4]
-        virtual_meter['unit_of_measure'] = row_virtual_meter[5]
+        virtual_meter['unit_of_measure'] = config.currency_unit
         virtual_meter['kgce'] = row_virtual_meter[6]
         virtual_meter['kgco2e'] = row_virtual_meter[7]
 
