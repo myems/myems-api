@@ -141,7 +141,7 @@ class Reporting:
         offline_meter['cost_center_id'] = row_offline_meter[2]
         offline_meter['energy_category_id'] = row_offline_meter[3]
         offline_meter['energy_category_name'] = row_offline_meter[4]
-        offline_meter['unit_of_measure'] = row_offline_meter[5]
+        offline_meter['unit_of_measure'] = config.currency_unit
         offline_meter['kgce'] = row_offline_meter[6]
         offline_meter['kgco2e'] = row_offline_meter[7]
 

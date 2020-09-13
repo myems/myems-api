@@ -7068,6 +7068,38 @@
 					"response": []
 				},
 				{
+					"name": "Meter Trend",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/metertrend?meterid=6&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"metertrend"
+							],
+							"query": [
+								{
+									"key": "meterid",
+									"value": "6"
+								},
+								{
+									"key": "reportingperiodbeginsdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodendsdatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Offline Meter Energy",
 					"request": {
 						"method": "GET",

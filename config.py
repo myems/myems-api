@@ -64,3 +64,6 @@ working_day_start_time_local = '00:00:00'
 # indicates where user uploaded files will be saved to
 # must use the root folder of myems-admin web application
 upload_path = '/usr/share/nginx/html/upload/'
+
+# main currency unit
+currency_unit = 'CNY'

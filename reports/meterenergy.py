@@ -188,10 +188,10 @@ class Reporting:
             base['total_in_kgce'] += actual_value * meter['kgce']
             base['values_in_kgco2e'].append(actual_value * meter['kgco2e'])
             base['total_in_kgco2e'] += actual_value * meter['kgco2e']
-        ################################################################################################################
-        # Step 3: query reporting period energy consumption
-        ################################################################################################################
 
+        ################################################################################################################
+        # Step 4: query reporting period energy consumption
+        ################################################################################################################
         query = (" SELECT start_datetime_utc, actual_value "
                  " FROM tbl_meter_hourly "
                  " WHERE meter_id = %s "
