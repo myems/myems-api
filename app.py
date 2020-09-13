@@ -39,6 +39,7 @@ import wechatmessage
 import version
 from reports import meterenergy
 from reports import metercost
+from reports import metertrend
 from reports import offlinemeterenergy
 from reports import offlinemetercost
 from reports import virtualmeterenergy
@@ -439,6 +440,8 @@ api.add_route('/reports/meterenergy',
               meterenergy.Reporting())
 api.add_route('/reports/metercost',
               metercost.Reporting())
+api.add_route('/reports/metertrend',
+              metertrend.Reporting())
 
 api.add_route('/reports/offlinemeterenergy',
               offlinemeterenergy.Reporting())
