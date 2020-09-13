@@ -1957,6 +1957,10 @@ $ curl -i -X GET http://BASE_URL/reports/metercost?meterid={meterid}&periodtype=
 ```bash
 $ curl -i -X GET http://BASE_URL/reports/metertrend?meterid={meterid}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
 ```
+* GET Report of Meter Tracking
+```bash
+$ curl -i -X GET http://BASE_URL/reports/metertracking?spaceid={spaceid}
+```
 * GET Report of Offline Meter Energy
 ```bash
 $ curl -i -X GET http://BASE_URL/reports/offlinemeterenergy?offlinemeterid={virtualmeterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
