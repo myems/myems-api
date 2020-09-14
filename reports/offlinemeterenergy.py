@@ -143,8 +143,10 @@ class Reporting:
         offline_meter['kgce'] = row_offline_meter[6]
         offline_meter['kgco2e'] = row_offline_meter[7]
 
-        cursor.close()
-        cnx.disconnect()
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.disconnect()
 
         ################################################################################################################
         # Step 3: query base period energy consumption
@@ -160,9 +162,9 @@ class Reporting:
         cursor.execute(query, (offline_meter['id'], base_start_datetime_utc, base_end_datetime_utc))
         rows_offline_meter_hourly = cursor.fetchall()
 
-        rows_offline_meter_periodically = utilities.aggregate_meter_hourly_by_period(rows_offline_meter_hourly,
-                                                                                     base_start_datetime_utc,
-                                                                                     period_type)
+        rows_offline_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_offline_meter_hourly,
+                                                                                    base_start_datetime_utc,
+                                                                                    period_type)
         base = dict()
         base['timestamps'] = list()
         base['values_in_category'] = list()
@@ -206,9 +208,9 @@ class Reporting:
         cursor.execute(query, (offline_meter['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
         rows_offline_meter_hourly = cursor.fetchall()
 
-        rows_offline_meter_periodically = utilities.aggregate_meter_hourly_by_period(rows_offline_meter_hourly,
-                                                                                     reporting_start_datetime_utc,
-                                                                                     period_type)
+        rows_offline_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_offline_meter_hourly,
+                                                                                    reporting_start_datetime_utc,
+                                                                                    period_type)
         reporting = dict()
         reporting['timestamps'] = list()
         reporting['values_in_category'] = list()
@@ -241,8 +243,10 @@ class Reporting:
             reporting['values_in_kgco2e'].append(actual_value * offline_meter['kgco2e'])
             reporting['total_in_kgco2e'] += actual_value * offline_meter['kgco2e']
 
-        cursor.close()
-        cnx.disconnect()
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.disconnect()
 
         ################################################################################################################
         # Step 5: query parameters data
@@ -277,7 +281,9 @@ class Reporting:
                 "total_in_category": reporting['total_in_category'],
                 "total_in_kgce": reporting['total_in_kgce'],
                 "total_in_kgco2e": reporting['total_in_kgco2e'],
-                "timestamps": reporting['timestamps'],
+                "timestamps": [reporting['timestamps'],
+                               reporting['timestamps'],
+                               reporting['timestamps']],
                 "values": [reporting['values_in_category'],
                            reporting['values_in_kgce'],
                            reporting['values_in_kgco2e']],
@@ -286,14 +292,16 @@ class Reporting:
                 "total_in_category": base['total_in_category'],
                 "total_in_kgce": base['total_in_kgce'],
                 "total_in_kgco2e": base['total_in_kgco2e'],
-                "timestamps": base['timestamps'],
+                "timestamps": [base['timestamps'],
+                               base['timestamps'],
+                               base['timestamps']],
                 "values": [base['values_in_category'],
                            base['values_in_kgce'],
                            base['values_in_kgco2e']],
             },
             "parameters": {
                 "names": ['TARIFF'],
-                "timestamps": tariff_timestamp_list,
+                "timestamps": [tariff_timestamp_list],
                 "values": [tariff_value_list]
             },
         }
