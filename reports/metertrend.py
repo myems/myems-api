@@ -142,6 +142,7 @@ class Reporting:
             reporting['names'].append(point['name'])
 
             point_values = []
+            point_timestamps = []
             if point['object_type'] == 'ANALOG_VALUE':
                 query = (" SELECT utc_date_time, actual_value "
                          " FROM tbl_analog_value "
@@ -153,6 +154,10 @@ class Reporting:
 
                 if rows is not None and len(rows) > 0:
                     for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
                         point_values.append(row[1])
 
             elif point['object_type'] == 'ENERGY_VALUE':
@@ -169,9 +174,7 @@ class Reporting:
                         current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
                                                  timedelta(minutes=timezone_offset)
                         current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
-
-                        reporting['timestamps'].append(current_datetime)
-
+                        point_timestamps.append(current_datetime)
                         point_values.append(row[1])
             elif point['object_type'] == 'DIGITAL_VALUE':
                 query = (" SELECT utc_date_time, actual_value "
@@ -183,10 +186,14 @@ class Reporting:
 
                 if rows is not None and len(rows) > 0:
                     for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
                         point_values.append(row[1])
 
+            reporting['timestamps'].append(point_timestamps)
             reporting['values'].append(point_values)
-
         if cursor:
             cursor.close()
         if cnx:
@@ -225,7 +232,7 @@ class Reporting:
             },
             "parameters": {
                 "names": ['TARIFF'],
-                "timestamps": tariff_timestamp_list,
+                "timestamps": [tariff_timestamp_list],
                 "values": [tariff_value_list]
             },
         }

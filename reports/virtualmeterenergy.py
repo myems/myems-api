@@ -129,8 +129,10 @@ class Reporting:
                        " WHERE m.id = %s AND m.energy_category_id = ec.id ", (virtual_meter_id,))
         row_virtual_meter = cursor.fetchone()
         if row_virtual_meter is None:
-            cursor.close()
-            cnx.disconnect()
+            if cursor:
+                cursor.close()
+            if cnx:
+                cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.VIRTUAL_METER_NOT_FOUND')
 
         virtual_meter = dict()
@@ -143,8 +145,10 @@ class Reporting:
         virtual_meter['kgce'] = row_virtual_meter[6]
         virtual_meter['kgco2e'] = row_virtual_meter[7]
 
-        cursor.close()
-        cnx.disconnect()
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.disconnect()
 
         ################################################################################################################
         # Step 3: query base period energy consumption
@@ -161,9 +165,9 @@ class Reporting:
         rows_virtual_meter_hourly = cursor.fetchall()
 
         rows_virtual_meter_periodically = \
-            utilities.aggregate_meter_hourly_by_period(rows_virtual_meter_hourly,
-                                                       base_start_datetime_utc,
-                                                       period_type)
+            utilities.aggregate_hourly_data_by_period(rows_virtual_meter_hourly,
+                                                      base_start_datetime_utc,
+                                                      period_type)
         base = dict()
         base['timestamps'] = list()
         base['values_in_category'] = list()
@@ -208,9 +212,9 @@ class Reporting:
         cursor.execute(query, (virtual_meter['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
         rows_virtual_meter_hourly = cursor.fetchall()
 
-        rows_virtual_meter_periodically = utilities.aggregate_meter_hourly_by_period(rows_virtual_meter_hourly,
-                                                                             reporting_start_datetime_utc,
-                                                                             period_type)
+        rows_virtual_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_virtual_meter_hourly,
+                                                                                    reporting_start_datetime_utc,
+                                                                                    period_type)
         reporting = dict()
         reporting['timestamps'] = list()
         reporting['values_in_category'] = list()
@@ -243,8 +247,10 @@ class Reporting:
             reporting['values_in_kgco2e'].append(actual_value * virtual_meter['kgco2e'])
             reporting['total_in_kgco2e'] += actual_value * virtual_meter['kgco2e']
 
-        cursor.close()
-        cnx.disconnect()
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.disconnect()
 
         ################################################################################################################
         # Step 5: query parameters data
@@ -279,7 +285,9 @@ class Reporting:
                 "total_in_category": reporting['total_in_category'],
                 "total_in_kgce": reporting['total_in_kgce'],
                 "total_in_kgco2e": reporting['total_in_kgco2e'],
-                "timestamps": reporting['timestamps'],
+                "timestamps": [reporting['timestamps'],
+                               reporting['timestamps'],
+                               reporting['timestamps']],
                 "values": [reporting['values_in_category'],
                            reporting['values_in_kgce'],
                            reporting['values_in_kgco2e']],
@@ -288,14 +296,16 @@ class Reporting:
                 "total_in_category": base['total_in_category'],
                 "total_in_kgce": base['total_in_kgce'],
                 "total_in_kgco2e": base['total_in_kgco2e'],
-                "timestamps": base['timestamps'],
+                "timestamps": [base['timestamps'],
+                               base['timestamps'],
+                               base['timestamps']],
                 "values": [base['values_in_category'],
                            base['values_in_kgce'],
                            base['values_in_kgco2e']],
             },
             "parameters": {
                 "names": ['TARIFF'],
-                "timestamps": tariff_timestamp_list,
+                "timestamps": [tariff_timestamp_list],
                 "values": [tariff_value_list]
             },
         }

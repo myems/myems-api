@@ -5,59 +5,59 @@ from decimal import *
 import config
 
 
-def aggregate_meter_hourly_by_period(rows_meter_hourly, start_datetime_utc, period_type):
+def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, period_type):
     if period_type == "hourly":
-        return rows_meter_hourly
+        return rows_hourly
 
     elif period_type == "daily":
         start_datetime_utc_daily = start_datetime_utc
 
-        rows_meter_daily = list()
+        rows_daily = list()
         temp_actual_value = Decimal(0.0)
-        for row_meter_hourly in rows_meter_hourly:
-            datetime_meter = row_meter_hourly[0]
-            actual_value = row_meter_hourly[1]
+        for row_hourly in rows_hourly:
+            datetime_utc = row_hourly[0]
+            actual_value = row_hourly[1]
 
-            datetime_local_str = (datetime_meter +
+            datetime_local_str = (datetime_utc +
                                   timedelta(hours=int(config.utc_offset[1:3]))).strftime('%Y-%m-%d %H:%M:%S')
 
             start_datetime_utc_day_str = (start_datetime_utc_daily +
                                           timedelta(hours=int(config.utc_offset[1:3]))).strftime('%Y-%m-%d')
 
-            if row_meter_hourly == rows_meter_hourly[-1]:
+            if row_hourly == rows_hourly[-1]:
                 temp_actual_value += actual_value
-                rows_meter_daily.append((start_datetime_utc_daily, temp_actual_value))
+                rows_daily.append((start_datetime_utc_daily, temp_actual_value))
                 break
 
             if start_datetime_utc_day_str in datetime_local_str:
                 temp_actual_value = temp_actual_value + actual_value
 
             else:
-                rows_meter_daily.append((start_datetime_utc_daily, temp_actual_value))
+                rows_daily.append((start_datetime_utc_daily, temp_actual_value))
                 temp_actual_value = Decimal(0.0)
                 temp_actual_value += actual_value
                 start_datetime_utc_daily = start_datetime_utc_daily + timedelta(days=1)
-        return rows_meter_daily
+        return rows_daily
 
     elif period_type == "monthly":
         start_datetime_utc_monthly = start_datetime_utc
 
-        rows_meter_monthly = list()
+        rows_monthly = list()
         temp_actual_value = Decimal(0.0)
         temp = 0
-        for row_meter_hourly in rows_meter_hourly:
-            datetime_meter = row_meter_hourly[0]
-            actual_value = row_meter_hourly[1]
+        for row_hourly in rows_hourly:
+            datetime_utc = row_hourly[0]
+            actual_value = row_hourly[1]
 
-            datetime_local_str = (datetime_meter +
+            datetime_local_str = (datetime_utc +
                                   timedelta(hours=int(config.utc_offset[1:3]))).strftime('%Y-%m-%d %H:%M:%S')
 
             start_datetime_utc_month_str = (start_datetime_utc_monthly +
                                             timedelta(hours=int(config.utc_offset[1:3]))).strftime('%Y-%m')
 
-            if row_meter_hourly == rows_meter_hourly[-1]:
+            if row_hourly == rows_hourly[-1]:
                 temp_actual_value += actual_value
-                rows_meter_monthly.append((start_datetime_utc_monthly, temp_actual_value))
+                rows_monthly.append((start_datetime_utc_monthly, temp_actual_value))
                 break
 
             if start_datetime_utc_month_str in datetime_local_str:
@@ -65,7 +65,7 @@ def aggregate_meter_hourly_by_period(rows_meter_hourly, start_datetime_utc, peri
 
             else:
                 temp = temp + 1
-                rows_meter_monthly.append((start_datetime_utc_monthly, temp_actual_value))
+                rows_monthly.append((start_datetime_utc_monthly, temp_actual_value))
                 temp_actual_value = Decimal(0.0)
                 temp_actual_value += actual_value
 
@@ -129,27 +129,27 @@ def aggregate_meter_hourly_by_period(rows_meter_hourly, start_datetime_utc, peri
                                                           microsecond=0,
                                                           tzinfo=start_datetime_utc_monthly.tzinfo)
 
-        return rows_meter_monthly
+        return rows_monthly
 
     elif period_type == "yearly":
         start_datetime_utc_yearly = start_datetime_utc
 
-        rows_meter_yearly = list()
+        rows_yearly = list()
         temp_actual_value = Decimal(0.0)
         temp = 0
-        for row_meter_hourly in rows_meter_hourly:
-            datetime_meter = row_meter_hourly[0]
-            actual_value = row_meter_hourly[1]
+        for row_hourly in rows_hourly:
+            datetime_utc = row_hourly[0]
+            actual_value = row_hourly[1]
 
-            datetime_local_str = (datetime_meter +
+            datetime_local_str = (datetime_utc +
                                   timedelta(hours=int(config.utc_offset[1:3]))).strftime('%Y-%m-%d %H:%M:%S')
 
             start_datetime_utc_year_str = (start_datetime_utc_yearly +
                                            timedelta(hours=int(config.utc_offset[1:3]))).strftime('%Y')
 
-            if row_meter_hourly == rows_meter_hourly[-1]:
+            if row_hourly == rows_hourly[-1]:
                 temp_actual_value += actual_value
-                rows_meter_yearly.append((start_datetime_utc_yearly, temp_actual_value))
+                rows_yearly.append((start_datetime_utc_yearly, temp_actual_value))
                 break
 
             if start_datetime_utc_year_str in datetime_local_str:
@@ -157,7 +157,7 @@ def aggregate_meter_hourly_by_period(rows_meter_hourly, start_datetime_utc, peri
 
             else:
                 temp = temp + 1
-                rows_meter_yearly.append((start_datetime_utc_yearly, temp_actual_value))
+                rows_yearly.append((start_datetime_utc_yearly, temp_actual_value))
                 temp_actual_value = Decimal(0.0)
                 temp_actual_value += actual_value
                 start_datetime_utc_yearly = datetime(year=start_datetime_utc_yearly.year + 1,
@@ -169,7 +169,7 @@ def aggregate_meter_hourly_by_period(rows_meter_hourly, start_datetime_utc, peri
                                                      microsecond=0,
                                                      tzinfo=start_datetime_utc_yearly.tzinfo)
 
-        return rows_meter_yearly
+        return rows_yearly
 
 
 ########################################################################################################################
