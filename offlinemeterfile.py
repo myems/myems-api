@@ -68,7 +68,7 @@ class OfflineMeterFileCollection:
             os.rename(temp_file_path, file_path)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR',
-                                   description='API.FAILED_TO_UPLOAD_HELP_FILE')
+                                   description='API.FAILED_TO_UPLOAD_OFFLINE_METER_FILE')
 
         # Verify User Session
         cookies = req.headers['SET-COOKIE'].split('=')
