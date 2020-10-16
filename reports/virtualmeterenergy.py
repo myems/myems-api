@@ -263,7 +263,7 @@ class Reporting:
         tariff_timestamp_list = list()
         tariff_value_list = list()
         for k, v in tariff_dict.items():
-            tariff_timestamp_list.append(k.isoformat())
+            tariff_timestamp_list.append(k.isoformat()[0:19])
             tariff_value_list.append(v)
 
         ################################################################################################################
