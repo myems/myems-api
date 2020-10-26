@@ -58,6 +58,14 @@ from reports import equipmentoutput
 from reports import equipmentsaving
 from reports import equipmentstatistics
 from reports import equipmenttracking
+from reports import fddcombinedequipmentfault
+from reports import fddenergyloss
+from reports import fddequipmentfault
+from reports import fddfaultstatistics
+from reports import fddshopfloorfault
+from reports import fddspacefault
+from reports import fddstorefault
+from reports import fddtenantfault
 from reports import meterenergy
 from reports import metercost
 from reports import metertrend
@@ -529,6 +537,22 @@ api.add_route('/reports/equipmentstatistics',
               equipmentstatistics.Reporting())
 api.add_route('/reports/equipmenttracking',
               equipmenttracking.Reporting())
+api.add_route('/reports/fddcombinedequipmentfault',
+              fddcombinedequipmentfault.Reporting())
+api.add_route('/reports/fddenergyloss',
+              fddenergyloss.Reporting())
+api.add_route('/reports/fddequipmentfault',
+              fddequipmentfault.Reporting())
+api.add_route('/reports/fddfaultstatistics',
+              fddfaultstatistics.Reporting())
+api.add_route('/reports/fddshopfloorfault',
+              fddshopfloorfault.Reporting())
+api.add_route('/reports/fddspacefault',
+              fddspacefault.Reporting())
+api.add_route('/reports/fddstorefault',
+              fddstorefault.Reporting())
+api.add_route('/reports/fddtenantfault',
+              fddtenantfault.Reporting())
 api.add_route('/reports/metercost',
               metercost.Reporting())
 api.add_route('/reports/meterenergy',
