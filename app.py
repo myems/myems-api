@@ -53,6 +53,12 @@ from reports import metertrend
 from reports import metertracking
 from reports import offlinemeterenergy
 from reports import offlinemetercost
+from reports import shopfloorcost
+from reports import shopfloorenergycategory
+from reports import shopfloorenergyitem
+from reports import shopfloorload
+from reports import shopfloorsaving
+from reports import shopfloorstatistics
 from reports import virtualmeterenergy
 from reports import virtualmetercost
 from reports import spaceefficiency
@@ -502,6 +508,18 @@ api.add_route('/reports/offlinemeterenergy',
               offlinemeterenergy.Reporting())
 api.add_route('/reports/offlinemetercost',
               offlinemetercost.Reporting())
+api.add_route('/reports/shopfloorcost',
+              shopfloorcost.Reporting())
+api.add_route('/reports/shopfloorenergycategory',
+              shopfloorenergycategory.Reporting())
+api.add_route('/reports/shopfloorenergyitem',
+              shopfloorenergyitem.Reporting())
+api.add_route('/reports/shopfloorload',
+              shopfloorload.Reporting())
+api.add_route('/reports/shopfloorsaving',
+              shopfloorsaving.Reporting())
+api.add_route('/reports/shopfloorstatistics',
+              shopfloorstatistics.Reporting())
 api.add_route('/reports/spacecost',
               spacecost.Reporting())
 api.add_route('/reports/spaceefficiency',
