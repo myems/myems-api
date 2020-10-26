@@ -64,6 +64,13 @@ from reports import spaceload
 from reports import spaceoutput
 from reports import spacesaving
 from reports import spacestatistics
+from reports import tenantbill
+from reports import tenantcost
+from reports import tenantenergycategory
+from reports import tenantenergyitem
+from reports import tenantload
+from reports import tenantsaving
+from reports import tenantstatistics
 
 ########################################################################################################################
 # BEGIN imports for Enterprise Version
@@ -507,6 +514,20 @@ api.add_route('/reports/spacesaving',
               spacesaving.Reporting())
 api.add_route('/reports/spacestatistics',
               spacestatistics.Reporting())
+api.add_route('/reports/tenantbill',
+              tenantbill.Reporting())
+api.add_route('/reports/tenantcost',
+              tenantcost.Reporting())
+api.add_route('/reports/tenantenergycategory',
+              tenantenergycategory.Reporting())
+api.add_route('/reports/tenantenergyitem',
+              tenantenergyitem.Reporting())
+api.add_route('/reports/tenantload',
+              tenantload.Reporting())
+api.add_route('/reports/tenantsaving',
+              tenantsaving.Reporting())
+api.add_route('/reports/tenantstatistics',
+              tenantstatistics.Reporting())
 api.add_route('/reports/virtualmeterenergy',
               virtualmeterenergy.Reporting())
 api.add_route('/reports/virtualmetercost',
