@@ -45,6 +45,16 @@ from reports import offlinemeterenergy
 from reports import offlinemetercost
 from reports import virtualmeterenergy
 from reports import virtualmetercost
+from reports import spaceefficiency
+from reports import spacecost
+from reports import spaceenergycategory
+from reports import spaceenergyitem
+from reports import spaceincome
+from reports import spaceload
+from reports import spaceoutput
+from reports import spacesaving
+from reports import spacestatistics
+
 ########################################################################################################################
 # BEGIN imports for Enterprise Version
 ########################################################################################################################
@@ -453,9 +463,27 @@ api.add_route('/reports/offlinemetercost',
 
 api.add_route('/reports/virtualmeterenergy',
               virtualmeterenergy.Reporting())
-
 api.add_route('/reports/virtualmetercost',
               virtualmetercost.Reporting())
+
+api.add_route('/reports/spacecost',
+              spacecost.Reporting())
+api.add_route('/reports/spaceefficiency',
+              spaceefficiency.Reporting())
+api.add_route('/reports/spaceenergycategory',
+              spaceenergycategory.Reporting())
+api.add_route('/reports/spaceenergyitem',
+              spaceenergyitem.Reporting())
+api.add_route('/reports/spaceincome',
+              spaceincome.Reporting())
+api.add_route('/reports/spaceload',
+              spaceload.Reporting())
+api.add_route('/reports/spaceoutput',
+              spaceoutput.Reporting())
+api.add_route('/reports/spacesaving',
+              spacesaving.Reporting())
+api.add_route('/reports/spacestatistics',
+              spacestatistics.Reporting())
 
 ########################################################################################################################
 # BEGIN Routes for Enterprise Version
