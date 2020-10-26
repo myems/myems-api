@@ -37,6 +37,15 @@ import virtualmeter
 import webmessage
 import wechatmessage
 import version
+from reports import combinedequipmentcost
+from reports import combinedequipmentefficiency
+from reports import combinedequipmentenergycategory
+from reports import combinedequipmentenergyitem
+from reports import combinedequipmentincome
+from reports import combinedequipmentload
+from reports import combinedequipmentoutput
+from reports import combinedequipmentsaving
+from reports import combinedequipmentstatistics
 from reports import equipmentcost
 from reports import equipmentefficiency
 from reports import equipmentenergycategory
@@ -476,6 +485,24 @@ api.add_route('/version',
 ########################################################################################################################
 # Routes for Reports
 ########################################################################################################################
+api.add_route('/reports/combinedequipmentcost',
+              combinedequipmentcost.Reporting())
+api.add_route('/reports/combinedequipmentefficiency',
+              combinedequipmentefficiency.Reporting())
+api.add_route('/reports/combinedequipmentenergycategory',
+              combinedequipmentenergycategory.Reporting())
+api.add_route('/reports/combinedequipmentenergyitem',
+              combinedequipmentenergyitem.Reporting())
+api.add_route('/reports/combinedequipmentincome',
+              combinedequipmentincome.Reporting())
+api.add_route('/reports/combinedequipmentload',
+              combinedequipmentload.Reporting())
+api.add_route('/reports/combinedequipmentoutput',
+              combinedequipmentoutput.Reporting())
+api.add_route('/reports/combinedequipmentsaving',
+              combinedequipmentsaving.Reporting())
+api.add_route('/reports/combinedequipmentstatistics',
+              combinedequipmentstatistics.Reporting())
 api.add_route('/reports/equipmentcost',
               equipmentcost.Reporting())
 api.add_route('/reports/equipmentefficiency',
