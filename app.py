@@ -37,6 +37,16 @@ import virtualmeter
 import webmessage
 import wechatmessage
 import version
+from reports import equipmentcost
+from reports import equipmentefficiency
+from reports import equipmentenergycategory
+from reports import equipmentenergyitem
+from reports import equipmentincome
+from reports import equipmentload
+from reports import equipmentoutput
+from reports import equipmentsaving
+from reports import equipmentstatistics
+from reports import equipmenttracking
 from reports import meterenergy
 from reports import metercost
 from reports import metertrend
@@ -447,25 +457,38 @@ api.add_route('/version',
 ########################################################################################################################
 # Routes for Reports
 ########################################################################################################################
-api.add_route('/reports/meterenergy',
-              meterenergy.Reporting())
+api.add_route('/reports/equipmentcost',
+              equipmentcost.Reporting())
+api.add_route('/reports/equipmentefficiency',
+              equipmentefficiency.Reporting())
+api.add_route('/reports/equipmentenergycategory',
+              equipmentenergycategory.Reporting())
+api.add_route('/reports/equipmentenergyitem',
+              equipmentenergyitem.Reporting())
+api.add_route('/reports/equipmentincome',
+              equipmentincome.Reporting())
+api.add_route('/reports/equipmentload',
+              equipmentload.Reporting())
+api.add_route('/reports/equipmentoutput',
+              equipmentoutput.Reporting())
+api.add_route('/reports/equipmentsaving',
+              equipmentsaving.Reporting())
+api.add_route('/reports/equipmentstatistics',
+              equipmentstatistics.Reporting())
+api.add_route('/reports/equipmenttracking',
+              equipmenttracking.Reporting())
 api.add_route('/reports/metercost',
               metercost.Reporting())
+api.add_route('/reports/meterenergy',
+              meterenergy.Reporting())
 api.add_route('/reports/metertrend',
               metertrend.Reporting())
 api.add_route('/reports/metertracking',
               metertracking.Reporting())
-
 api.add_route('/reports/offlinemeterenergy',
               offlinemeterenergy.Reporting())
 api.add_route('/reports/offlinemetercost',
               offlinemetercost.Reporting())
-
-api.add_route('/reports/virtualmeterenergy',
-              virtualmeterenergy.Reporting())
-api.add_route('/reports/virtualmetercost',
-              virtualmetercost.Reporting())
-
 api.add_route('/reports/spacecost',
               spacecost.Reporting())
 api.add_route('/reports/spaceefficiency',
@@ -484,6 +507,10 @@ api.add_route('/reports/spacesaving',
               spacesaving.Reporting())
 api.add_route('/reports/spacestatistics',
               spacestatistics.Reporting())
+api.add_route('/reports/virtualmeterenergy',
+              virtualmeterenergy.Reporting())
+api.add_route('/reports/virtualmetercost',
+              virtualmetercost.Reporting())
 
 ########################################################################################################################
 # BEGIN Routes for Enterprise Version
