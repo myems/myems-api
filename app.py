@@ -37,6 +37,8 @@ import virtualmeter
 import webmessage
 import wechatmessage
 import version
+from reports import auxiliarysystemdistributionsystem
+from reports import auxiliarysystemenergyflowdiagram
 from reports import combinedequipmentcost
 from reports import combinedequipmentefficiency
 from reports import combinedequipmentenergycategory
@@ -485,6 +487,10 @@ api.add_route('/version',
 ########################################################################################################################
 # Routes for Reports
 ########################################################################################################################
+api.add_route('/reports/auxiliarysystemdistributionsystem',
+              auxiliarysystemdistributionsystem.Reporting())
+api.add_route('/reports/auxiliarysystemenergyflowdiagram',
+              auxiliarysystemenergyflowdiagram.Reporting())
 api.add_route('/reports/combinedequipmentcost',
               combinedequipmentcost.Reporting())
 api.add_route('/reports/combinedequipmentefficiency',
