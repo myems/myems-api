@@ -37,14 +37,72 @@ import virtualmeter
 import webmessage
 import wechatmessage
 import version
+from reports import auxiliarysystemdistributionsystem
+from reports import auxiliarysystemenergyflowdiagram
+from reports import combinedequipmentcost
+from reports import combinedequipmentefficiency
+from reports import combinedequipmentenergycategory
+from reports import combinedequipmentenergyitem
+from reports import combinedequipmentincome
+from reports import combinedequipmentload
+from reports import combinedequipmentoutput
+from reports import combinedequipmentsaving
+from reports import combinedequipmentstatistics
+from reports import equipmentcost
+from reports import equipmentefficiency
+from reports import equipmentenergycategory
+from reports import equipmentenergyitem
+from reports import equipmentincome
+from reports import equipmentload
+from reports import equipmentoutput
+from reports import equipmentsaving
+from reports import equipmentstatistics
+from reports import equipmenttracking
+from reports import fddcombinedequipmentfault
+from reports import fddenergyloss
+from reports import fddequipmentfault
+from reports import fddfaultstatistics
+from reports import fddshopfloorfault
+from reports import fddspacefault
+from reports import fddstorefault
+from reports import fddtenantfault
 from reports import meterenergy
 from reports import metercost
 from reports import metertrend
 from reports import metertracking
 from reports import offlinemeterenergy
 from reports import offlinemetercost
+from reports import shopfloorcost
+from reports import shopfloorenergycategory
+from reports import shopfloorenergyitem
+from reports import shopfloorload
+from reports import shopfloorsaving
+from reports import shopfloorstatistics
 from reports import virtualmeterenergy
 from reports import virtualmetercost
+from reports import spaceefficiency
+from reports import spacecost
+from reports import spaceenergycategory
+from reports import spaceenergyitem
+from reports import spaceincome
+from reports import spaceload
+from reports import spaceoutput
+from reports import spacesaving
+from reports import spacestatistics
+from reports import storecost
+from reports import storeenergycategory
+from reports import storeenergyitem
+from reports import storeload
+from reports import storesaving
+from reports import storestatistics
+from reports import tenantbill
+from reports import tenantcost
+from reports import tenantenergycategory
+from reports import tenantenergyitem
+from reports import tenantload
+from reports import tenantsaving
+from reports import tenantstatistics
+
 ########################################################################################################################
 # BEGIN imports for Enterprise Version
 ########################################################################################################################
@@ -437,23 +495,134 @@ api.add_route('/version',
 ########################################################################################################################
 # Routes for Reports
 ########################################################################################################################
-api.add_route('/reports/meterenergy',
-              meterenergy.Reporting())
+api.add_route('/reports/auxiliarysystemdistributionsystem',
+              auxiliarysystemdistributionsystem.Reporting())
+api.add_route('/reports/auxiliarysystemenergyflowdiagram',
+              auxiliarysystemenergyflowdiagram.Reporting())
+api.add_route('/reports/combinedequipmentcost',
+              combinedequipmentcost.Reporting())
+api.add_route('/reports/combinedequipmentefficiency',
+              combinedequipmentefficiency.Reporting())
+api.add_route('/reports/combinedequipmentenergycategory',
+              combinedequipmentenergycategory.Reporting())
+api.add_route('/reports/combinedequipmentenergyitem',
+              combinedequipmentenergyitem.Reporting())
+api.add_route('/reports/combinedequipmentincome',
+              combinedequipmentincome.Reporting())
+api.add_route('/reports/combinedequipmentload',
+              combinedequipmentload.Reporting())
+api.add_route('/reports/combinedequipmentoutput',
+              combinedequipmentoutput.Reporting())
+api.add_route('/reports/combinedequipmentsaving',
+              combinedequipmentsaving.Reporting())
+api.add_route('/reports/combinedequipmentstatistics',
+              combinedequipmentstatistics.Reporting())
+api.add_route('/reports/equipmentcost',
+              equipmentcost.Reporting())
+api.add_route('/reports/equipmentefficiency',
+              equipmentefficiency.Reporting())
+api.add_route('/reports/equipmentenergycategory',
+              equipmentenergycategory.Reporting())
+api.add_route('/reports/equipmentenergyitem',
+              equipmentenergyitem.Reporting())
+api.add_route('/reports/equipmentincome',
+              equipmentincome.Reporting())
+api.add_route('/reports/equipmentload',
+              equipmentload.Reporting())
+api.add_route('/reports/equipmentoutput',
+              equipmentoutput.Reporting())
+api.add_route('/reports/equipmentsaving',
+              equipmentsaving.Reporting())
+api.add_route('/reports/equipmentstatistics',
+              equipmentstatistics.Reporting())
+api.add_route('/reports/equipmenttracking',
+              equipmenttracking.Reporting())
+api.add_route('/reports/fddcombinedequipmentfault',
+              fddcombinedequipmentfault.Reporting())
+api.add_route('/reports/fddenergyloss',
+              fddenergyloss.Reporting())
+api.add_route('/reports/fddequipmentfault',
+              fddequipmentfault.Reporting())
+api.add_route('/reports/fddfaultstatistics',
+              fddfaultstatistics.Reporting())
+api.add_route('/reports/fddshopfloorfault',
+              fddshopfloorfault.Reporting())
+api.add_route('/reports/fddspacefault',
+              fddspacefault.Reporting())
+api.add_route('/reports/fddstorefault',
+              fddstorefault.Reporting())
+api.add_route('/reports/fddtenantfault',
+              fddtenantfault.Reporting())
 api.add_route('/reports/metercost',
               metercost.Reporting())
+api.add_route('/reports/meterenergy',
+              meterenergy.Reporting())
 api.add_route('/reports/metertrend',
               metertrend.Reporting())
 api.add_route('/reports/metertracking',
               metertracking.Reporting())
-
 api.add_route('/reports/offlinemeterenergy',
               offlinemeterenergy.Reporting())
 api.add_route('/reports/offlinemetercost',
               offlinemetercost.Reporting())
-
+api.add_route('/reports/shopfloorcost',
+              shopfloorcost.Reporting())
+api.add_route('/reports/shopfloorenergycategory',
+              shopfloorenergycategory.Reporting())
+api.add_route('/reports/shopfloorenergyitem',
+              shopfloorenergyitem.Reporting())
+api.add_route('/reports/shopfloorload',
+              shopfloorload.Reporting())
+api.add_route('/reports/shopfloorsaving',
+              shopfloorsaving.Reporting())
+api.add_route('/reports/shopfloorstatistics',
+              shopfloorstatistics.Reporting())
+api.add_route('/reports/spacecost',
+              spacecost.Reporting())
+api.add_route('/reports/spaceefficiency',
+              spaceefficiency.Reporting())
+api.add_route('/reports/spaceenergycategory',
+              spaceenergycategory.Reporting())
+api.add_route('/reports/spaceenergyitem',
+              spaceenergyitem.Reporting())
+api.add_route('/reports/spaceincome',
+              spaceincome.Reporting())
+api.add_route('/reports/spaceload',
+              spaceload.Reporting())
+api.add_route('/reports/spaceoutput',
+              spaceoutput.Reporting())
+api.add_route('/reports/spacesaving',
+              spacesaving.Reporting())
+api.add_route('/reports/spacestatistics',
+              spacestatistics.Reporting())
+api.add_route('/reports/storecost',
+              storecost.Reporting())
+api.add_route('/reports/storeenergycategory',
+              storeenergycategory.Reporting())
+api.add_route('/reports/storeenergyitem',
+              storeenergyitem.Reporting())
+api.add_route('/reports/storeload',
+              storeload.Reporting())
+api.add_route('/reports/storesaving',
+              storesaving.Reporting())
+api.add_route('/reports/storestatistics',
+              storestatistics.Reporting())
+api.add_route('/reports/tenantbill',
+              tenantbill.Reporting())
+api.add_route('/reports/tenantcost',
+              tenantcost.Reporting())
+api.add_route('/reports/tenantenergycategory',
+              tenantenergycategory.Reporting())
+api.add_route('/reports/tenantenergyitem',
+              tenantenergyitem.Reporting())
+api.add_route('/reports/tenantload',
+              tenantload.Reporting())
+api.add_route('/reports/tenantsaving',
+              tenantsaving.Reporting())
+api.add_route('/reports/tenantstatistics',
+              tenantstatistics.Reporting())
 api.add_route('/reports/virtualmeterenergy',
               virtualmeterenergy.Reporting())
-
 api.add_route('/reports/virtualmetercost',
               virtualmetercost.Reporting())
 

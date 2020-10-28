@@ -19,16 +19,21 @@ class Reporting:
     ####################################################################################################################
     # PROCEDURES
     # Step 1: valid parameters
-    # Step 2: query the virtual meter and energy category
-    # Step 3: query base period energy consumption
-    # Step 4: query reporting period energy consumption
-    # Step 5: query parameters data
-    # Step 6: construct the report
+    # Step 2: query the space
+    # Step 3: query energy categories
+    # Step 4: query associated sensors
+    # Step 5: query associated points
+    # Step 6: query child spaces
+    # Step 7: query base period energy input
+    # Step 8: query reporting period energy input
+    # Step 9: query associated sensors, points and tariff data
+    # Step 10: query child spaces energy input
+    # Step 11: construct the report
     ####################################################################################################################
     @staticmethod
     def on_get(req, resp):
         print(req.params)
-        virtual_meter_id = req.params.get('virtualmeterid')
+        space_id = req.params.get('spaceid')
         period_type = req.params.get('periodtype')
         base_period_begins_datetime = req.params.get('baseperiodbeginsdatetime')
         base_period_ends_datetime = req.params.get('baseperiodendsdatetime')
@@ -38,16 +43,12 @@ class Reporting:
         ################################################################################################################
         # Step 1: valid parameters
         ################################################################################################################
-        if virtual_meter_id is None:
-            raise falcon.HTTPError(falcon.HTTP_400,
-                                   title='API.BAD_REQUEST',
-                                   description='API.INVALID_VIRTUAL_METER_ID')
+        if space_id is None:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST', description='API.INVALID_SPACE_ID')
         else:
-            virtual_meter_id = str.strip(virtual_meter_id)
-            if not virtual_meter_id.isdigit() or int(virtual_meter_id) <= 0:
-                raise falcon.HTTPError(falcon.HTTP_400,
-                                       title='API.BAD_REQUEST',
-                                       description='API.INVALID_VIRTUAL_METER_ID')
+            space_id = str.strip(space_id)
+            if not space_id.isdigit() or int(space_id) <= 0:
+                raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST', description='API.INVALID_SPACE_ID')
 
         if period_type is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST', description='API.INVALID_PERIOD_TYPE')
@@ -118,56 +119,108 @@ class Reporting:
                                    description='API.INVALID_REPORTING_PERIOD_ENDS_DATETIME')
 
         ################################################################################################################
-        # Step 2: query the virtual meter and energy category
+        # Step 2: query the space
         ################################################################################################################
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor()
 
-        cursor.execute(" SELECT m.id, m.name, m.cost_center_id, m.energy_category_id, "
-                       "        ec.name, ec.unit_of_measure, ec.kgce, ec.kgco2e "
-                       " FROM tbl_virtual_meters m, tbl_energy_categories ec "
-                       " WHERE m.id = %s AND m.energy_category_id = ec.id ", (virtual_meter_id,))
-        row_virtual_meter = cursor.fetchone()
-        if row_virtual_meter is None:
+        cursor.execute(" SELECT id, name, cost_center_id, "
+                       " FROM tbl_spaces "
+                       " WHERE id = %s ", (space_id,))
+        row_space = cursor.fetchone()
+        if row_space is None:
             if cursor:
                 cursor.close()
             if cnx:
                 cnx.disconnect()
-            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.VIRTUAL_METER_NOT_FOUND')
+            raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.SPACE_NOT_FOUND')
 
-        virtual_meter = dict()
-        virtual_meter['id'] = row_virtual_meter[0]
-        virtual_meter['name'] = row_virtual_meter[1]
-        virtual_meter['cost_center_id'] = row_virtual_meter[2]
-        virtual_meter['energy_category_id'] = row_virtual_meter[3]
-        virtual_meter['energy_category_name'] = row_virtual_meter[4]
-        virtual_meter['unit_of_measure'] = row_virtual_meter[5]
-        virtual_meter['kgce'] = row_virtual_meter[6]
-        virtual_meter['kgco2e'] = row_virtual_meter[7]
+        space = dict()
+        space['id'] = row_space[0]
+        space['name'] = row_space[1]
+        space['cost_center_id'] = row_space[2]
 
+        ################################################################################################################
+        # Step 3: query energy categories
+        ################################################################################################################
+        cursor.execute(" SELECT id, name, unit_of_measure, kgce, kgco2e "
+                       " FROM tbl_energy_categories ORDER BY id ", )
+        rows_energy_categories = cursor.fetchall()
+        if rows_energy_categories is None or len(rows_energy_categories) == 0:
+            if cursor:
+                cursor.close()
+            if cnx:
+                cnx.disconnect()
+            raise falcon.HTTPError(falcon.HTTP_404,
+                                   title='API.NOT_FOUND',
+                                   description='API.ENERGY_CATEGORY_NOT_FOUND')
+
+        energy_category_dict = dict()
+        for row_energy_category in rows_energy_categories:
+            energy_category_dict[row_energy_category[0]] = {"name": row_energy_category[1],
+                                                            "unit_of_measure": row_energy_category[2],
+                                                            "kgce": row_energy_category[3],
+                                                            "kgco2e": row_energy_category[4]}
+
+        ################################################################################################################
+        # Step 4: query associated sensors
+        ################################################################################################################
+        point_list = list()
+        cursor.execute(" SELECT po.id, po.name, po.units, po.object_type  "
+                       " FROM tbl_spaces sp, tbl_sensors se, tbl_spaces_sensors spse, "
+                       "      tbl_points po, tbl_sensors_points sepo "
+                       " WHERE sp.id = %s AND sp.id = spse.space_id AND spse.sensor_id = se.id "
+                       "       AND se.id = sepo.sensor_id AND sepo.point_id = po.id "
+                       " ORDER BY po.id ", )
+        rows_points = cursor.fetchall()
+        if rows_points is not None and len(rows_points) > 0:
+            for row in rows_points:
+                point_list.append({"id": row[0], "name": row[1], "units": row[2], "object_type": row[3]})
+
+        ################################################################################################################
+        # Step 5: query associated points
+        ################################################################################################################
+        cursor.execute(" SELECT po.id, po.name, po.units, po.object_type  "
+                       " FROM tbl_spaces sp, tbl_spaces_points sppo, tbl_points po "
+                       " WHERE sp.id = %s AND sp.id = sppo.space_id AND sppo.point_id = po.id "
+                       " ORDER BY po.id ", )
+        rows_points = cursor.fetchall()
+        if rows_points is not None and len(rows_points) > 0:
+            for row in rows_points:
+                point_list.append({"id": row[0], "name": row[1], "units": row[2], "object_type": row[3]})
         if cursor:
             cursor.close()
         if cnx:
             cnx.disconnect()
-
         ################################################################################################################
-        # Step 3: query base period energy consumption
+        # Step 6: query child spaces
+        ################################################################################################################
+        child_space_list = list()
+        cursor.execute(" SELECT id, name  "
+                       " FROM tbl_spaces "
+                       " WHERE parent_space_id = %s "
+                       " ORDER BY id ", )
+        rows_child_spaces = cursor.fetchall()
+        if rows_child_spaces is not None and len(rows_child_spaces) > 0:
+            for row in rows_child_spaces:
+                child_space_list.append({"id": row[0], "name": row[1]})
+        ################################################################################################################
+        # Step 7: query base period energy input
         ################################################################################################################
         cnx = mysql.connector.connect(**config.myems_energy_db)
         cursor = cnx.cursor()
-        query = (" SELECT start_datetime_utc, actual_value "
-                 " FROM tbl_virtual_meter_hourly "
-                 " WHERE virtual_meter_id = %s "
+        query = (" SELECT start_datetime_utc, actual_value, energy_category_id "
+                 " FROM tbl_space_input_category_hourly "
+                 " WHERE space_id = %s "
                  " AND start_datetime_utc >= %s "
                  " AND start_datetime_utc < %s "
                  " ORDER BY start_datetime_utc ")
-        cursor.execute(query, (virtual_meter['id'], base_start_datetime_utc, base_end_datetime_utc))
-        rows_virtual_meter_hourly = cursor.fetchall()
+        cursor.execute(query, (space['id'], base_start_datetime_utc, base_end_datetime_utc))
+        rows_space_hourly = cursor.fetchall()
 
-        rows_virtual_meter_periodically = \
-            utilities.aggregate_hourly_data_by_period(rows_virtual_meter_hourly,
-                                                      base_start_datetime_utc,
-                                                      period_type)
+        rows_space_periodically = utilities.aggregate_hourly_data_by_period(rows_space_hourly,
+                                                                            base_start_datetime_utc,
+                                                                            period_type)
         base = dict()
         base['timestamps'] = list()
         base['values_in_category'] = list()
@@ -177,8 +230,8 @@ class Reporting:
         base['values_in_kgco2e'] = list()
         base['total_in_kgco2e'] = Decimal(0.0)
 
-        for row_virtual_meter_periodically in rows_virtual_meter_periodically:
-            current_datetime_local = row_virtual_meter_periodically[0].replace(tzinfo=timezone.utc) + \
+        for row_space_periodically in rows_space_periodically:
+            current_datetime_local = row_space_periodically[0].replace(tzinfo=timezone.utc) + \
                                      timedelta(minutes=timezone_offset)
             if period_type == 'hourly':
                 current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
@@ -189,32 +242,30 @@ class Reporting:
             elif period_type == 'yearly':
                 current_datetime = current_datetime_local.strftime('%Y')
 
-            actual_value = Decimal(0.0) if row_virtual_meter_periodically[1] is None \
-                else row_virtual_meter_periodically[1]
+            actual_value = Decimal(0.0) if row_space_periodically[1] is None else row_space_periodically[1]
             base['timestamps'].append(current_datetime)
             base['values_in_category'].append(actual_value)
             base['total_in_category'] += actual_value
-            base['values_in_kgce'].append(actual_value * virtual_meter['kgce'])
-            base['total_in_kgce'] += actual_value * virtual_meter['kgce']
-            base['values_in_kgco2e'].append(actual_value * virtual_meter['kgco2e'])
-            base['total_in_kgco2e'] += actual_value * virtual_meter['kgco2e']
+            base['values_in_kgce'].append(actual_value * space['kgce'])
+            base['total_in_kgce'] += actual_value * space['kgce']
+            base['values_in_kgco2e'].append(actual_value * space['kgco2e'])
+            base['total_in_kgco2e'] += actual_value * space['kgco2e']
 
         ################################################################################################################
-        # Step 3: query reporting period energy consumption
+        # Step 8: query reporting period energy input
         ################################################################################################################
-
-        query = (" SELECT start_datetime_utc, actual_value "
-                 " FROM tbl_virtual_meter_hourly "
-                 " WHERE virtual_meter_id = %s "
+        query = (" SELECT start_datetime_utc, actual_value, energy_category_id "
+                 " FROM tbl_space_input_category_hourly "
+                 " WHERE meter_id = %s "
                  " AND start_datetime_utc >= %s "
                  " AND start_datetime_utc < %s "
                  " ORDER BY start_datetime_utc ")
-        cursor.execute(query, (virtual_meter['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
-        rows_virtual_meter_hourly = cursor.fetchall()
+        cursor.execute(query, (space['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
+        rows_space_hourly = cursor.fetchall()
 
-        rows_virtual_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_virtual_meter_hourly,
-                                                                                    reporting_start_datetime_utc,
-                                                                                    period_type)
+        rows_space_periodically = utilities.aggregate_hourly_data_by_period(rows_space_hourly,
+                                                                            reporting_start_datetime_utc,
+                                                                            period_type)
         reporting = dict()
         reporting['timestamps'] = list()
         reporting['values_in_category'] = list()
@@ -224,8 +275,8 @@ class Reporting:
         reporting['values_in_kgco2e'] = list()
         reporting['total_in_kgco2e'] = Decimal(0.0)
 
-        for row_virtual_meter_periodically in rows_virtual_meter_periodically:
-            current_datetime_local = row_virtual_meter_periodically[0].replace(tzinfo=timezone.utc) + \
+        for row_space_periodically in rows_space_periodically:
+            current_datetime_local = row_space_periodically[0].replace(tzinfo=timezone.utc) + \
                 timedelta(minutes=timezone_offset)
             if period_type == 'hourly':
                 current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
@@ -236,16 +287,15 @@ class Reporting:
             elif period_type == 'yearly':
                 current_datetime = current_datetime_local.strftime('%Y')
 
-            actual_value = Decimal(0.0) if row_virtual_meter_periodically[1] is None \
-                else row_virtual_meter_periodically[1]
+            actual_value = Decimal(0.0) if row_space_periodically[1] is None else row_space_periodically[1]
 
             reporting['timestamps'].append(current_datetime)
             reporting['values_in_category'].append(actual_value)
             reporting['total_in_category'] += actual_value
-            reporting['values_in_kgce'].append(actual_value * virtual_meter['kgce'])
-            reporting['total_in_kgce'] += actual_value * virtual_meter['kgce']
-            reporting['values_in_kgco2e'].append(actual_value * virtual_meter['kgco2e'])
-            reporting['total_in_kgco2e'] += actual_value * virtual_meter['kgco2e']
+            reporting['values_in_kgce'].append(actual_value * space['kgce'])
+            reporting['total_in_kgce'] += actual_value * space['kgce']
+            reporting['values_in_kgco2e'].append(actual_value * space['kgco2e'])
+            reporting['total_in_kgco2e'] += actual_value * space['kgco2e']
 
         if cursor:
             cursor.close()
@@ -253,32 +303,37 @@ class Reporting:
             cnx.disconnect()
 
         ################################################################################################################
-        # Step 5: query parameters data
+        # Step 9: query associated sensors, points and tariff data
         ################################################################################################################
-        tariff_dict = utilities.get_energy_category_tariffs(virtual_meter['cost_center_id'],
-                                                            virtual_meter['energy_category_id'],
+        tariff_dict = utilities.get_energy_category_tariffs(space['cost_center_id'],
+                                                            space['energy_category_id'],
                                                             reporting_start_datetime_utc,
                                                             reporting_end_datetime_utc)
         print(tariff_dict)
         tariff_timestamp_list = list()
         tariff_value_list = list()
         for k, v in tariff_dict.items():
-            # convert k from utc to local
-            k = k + timedelta(minutes=timezone_offset)
-            tariff_timestamp_list.append(k.isoformat()[0:19])
+            tariff_timestamp_list.append(k.isoformat()[0:19][0:19])
             tariff_value_list.append(v)
 
         ################################################################################################################
-        # Step 6: construct the report
+        # Step 10: query child spaces data
+        ################################################################################################################
+
+        ################################################################################################################
+        # Step 11: construct the report
         ################################################################################################################
         result = {
-            "virtual_meter": {
-                "cost_center_id": virtual_meter['cost_center_id'],
-                "energy_category_id": virtual_meter['energy_category_id'],
-                "energy_category_name": virtual_meter['energy_category_name'],
-                "unit_of_measure": virtual_meter['unit_of_measure'],
-                "kgce": virtual_meter['kgce'],
-                "kgco2e": virtual_meter['kgco2e'],
+            "space": {
+                "cost_center_id": space['cost_center_id'],
+                "energy_category_id": space['energy_category_id'],
+                "energy_category_name": space['energy_category_name'],
+                "unit_of_measure": space['unit_of_measure'],
+                "kgce": space['kgce'],
+                "kgco2e": space['kgco2e'],
+            },
+            "energy_categories": {
+
             },
             "reporting_period": {
                 "increment_rate":
@@ -309,6 +364,17 @@ class Reporting:
                 "names": ['TARIFF'],
                 "timestamps": [tariff_timestamp_list],
                 "values": [tariff_value_list]
+            },
+            "child_spaces": {
+                "total_in_category": base['total_in_category'],
+                "total_in_kgce": base['total_in_kgce'],
+                "total_in_kgco2e": base['total_in_kgco2e'],
+                "timestamps": [base['timestamps'],
+                               base['timestamps'],
+                               base['timestamps']],
+                "values": [base['values_in_category'],
+                           base['values_in_kgce'],
+                           base['values_in_kgco2e']],
             },
         }
 

@@ -63,7 +63,7 @@ class Reporting:
             timezone_offset = -timezone_offset
 
         base_start_datetime_utc = None
-        if base_period_begins_datetime is not None:
+        if base_period_begins_datetime is not None and len(str.strip(base_period_begins_datetime)) > 0:
             base_period_begins_datetime = str.strip(base_period_begins_datetime)
             try:
                 base_start_datetime_utc = datetime.strptime(base_period_begins_datetime, '%Y-%m-%dT%H:%M:%S')
@@ -74,7 +74,7 @@ class Reporting:
                 timedelta(minutes=timezone_offset)
 
         base_end_datetime_utc = None
-        if base_period_ends_datetime is not None:
+        if base_period_ends_datetime is not None and len(str.strip(base_period_ends_datetime)) > 0:
             base_period_ends_datetime = str.strip(base_period_ends_datetime)
             try:
                 base_end_datetime_utc = datetime.strptime(base_period_ends_datetime, '%Y-%m-%dT%H:%M:%S')
@@ -327,6 +327,8 @@ class Reporting:
         tariff_timestamp_list = list()
         tariff_value_list = list()
         for k, v in tariff_dict.items():
+            # convert k from utc to local
+            k = k + timedelta(minutes=timezone_offset)
             tariff_timestamp_list.append(k.isoformat()[0:19])
             tariff_value_list.append(v)
 
