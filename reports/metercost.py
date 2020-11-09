@@ -317,6 +317,11 @@ class Reporting:
         ################################################################################################################
         # Step 7: query parameters data
         ################################################################################################################
+        parameters = dict()
+        parameters['names'] = list()
+        parameters['timestamps'] = list()
+        parameters['values'] = list()
+
         tariff_dict = utilities.get_energy_category_tariffs(meter['cost_center_id'],
                                                             meter['energy_category_id'],
                                                             reporting_start_datetime_utc,
@@ -329,6 +334,10 @@ class Reporting:
             k = k + timedelta(minutes=timezone_offset)
             tariff_timestamp_list.append(k.isoformat()[0:19])
             tariff_value_list.append(v)
+
+        parameters['names'].append('TARIFF')
+        parameters['timestamps'].append(tariff_timestamp_list)
+        parameters['values'].append(tariff_value_list)
 
         ################################################################################################################
         # Step 8: construct the report
@@ -368,9 +377,9 @@ class Reporting:
                            base['values_in_kgco2e']],
             },
             "parameters": {
-                "names": ['TARIFF'],
-                "timestamps": [tariff_timestamp_list],
-                "values": [tariff_value_list]
+                "names": parameters['names'],
+                "timestamps": parameters['timestamps'],
+                "values": parameters['values']
             },
         }
 
