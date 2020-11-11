@@ -5,6 +5,13 @@ from decimal import *
 import config
 
 
+########################################################################################################################
+# Aggregate hourly data by period
+# rows_hourly: list of (start_datetime_utc, actual_value), should belong to one energy_category_id
+# start_datetime_utc: start datetime in utc
+# period_type: one of the following period types, 'hourly', 'daily', 'monthly' and 'yearly'
+# Note: this procedure doesn't work with multiple energy categories
+########################################################################################################################
 def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, period_type):
     if period_type == "hourly":
         return rows_hourly
