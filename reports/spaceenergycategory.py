@@ -128,7 +128,7 @@ class Reporting:
         cnx_energy = mysql.connector.connect(**config.myems_energy_db)
         cursor_energy = cnx_energy.cursor()
 
-        cursor_system.execute(" SELECT id, name, cost_center_id "
+        cursor_system.execute(" SELECT id, name, area, cost_center_id "
                               " FROM tbl_spaces "
                               " WHERE id = %s ", (space_id,))
         row_space = cursor_system.fetchone()
@@ -147,7 +147,8 @@ class Reporting:
         space = dict()
         space['id'] = row_space[0]
         space['name'] = row_space[1]
-        space['cost_center_id'] = row_space[2]
+        space['area'] = row_space[2]
+        space['cost_center_id'] = row_space[3]
 
         ################################################################################################################
         # Step 3: query energy categories
@@ -396,16 +397,24 @@ class Reporting:
             cnx_energy.disconnect()
 
         result = dict()
+
+        result['space'] = dict()
+        result['space']['name'] = space['name']
+        result['space']['area'] = space['area']
+
         result['base_period'] = dict()
         result['base_period']['names'] = list()
+        result['base_period']['units'] = list()
         result['base_period']['timestamps'] = list()
         result['base_period']['values'] = list()
         result['base_period']['subtotals'] = list()
+        result['base_period']['subtotals_pre_unit_area'] = list()
         result['base_period']['total_in_kgce'] = Decimal(0.0)
         result['base_period']['total_in_kgco2e'] = Decimal(0.0)
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
                 result['base_period']['names'].append(energy_category_dict[energy_category_id]['name'])
+                result['base_period']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['base_period']['timestamps'].append(base[energy_category_id]['timestamps'])
                 result['base_period']['values'].append(base[energy_category_id]['values'])
                 result['base_period']['subtotals'].append(base[energy_category_id]['subtotal'])
@@ -414,9 +423,11 @@ class Reporting:
 
         result['reporting_period'] = dict()
         result['reporting_period']['names'] = list()
+        result['reporting_period']['units'] = list()
         result['reporting_period']['timestamps'] = list()
         result['reporting_period']['values'] = list()
         result['reporting_period']['subtotals'] = list()
+        result['reporting_period']['subtotals_pre_unit_area'] = list()
         result['reporting_period']['increment_rates'] = list()
         result['reporting_period']['total_in_kgce'] = Decimal(0.0)
         result['reporting_period']['total_in_kgco2e'] = Decimal(0.0)
@@ -426,9 +437,12 @@ class Reporting:
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
                 result['reporting_period']['names'].append(energy_category_dict[energy_category_id]['name'])
+                result['reporting_period']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['reporting_period']['timestamps'].append(reporting[energy_category_id]['timestamps'])
                 result['reporting_period']['values'].append(reporting[energy_category_id]['values'])
                 result['reporting_period']['subtotals'].append(reporting[energy_category_id]['subtotal'])
+                result['reporting_period']['subtotals_pre_unit_area'].append(
+                    reporting[energy_category_id]['subtotal'] / space['area'] if space['area'] > 0.0 else None )
                 result['reporting_period']['increment_rates'].append(
                     (reporting[energy_category_id]['subtotal'] - base[energy_category_id]['subtotal']) /
                     base[energy_category_id]['subtotal']
@@ -436,10 +450,17 @@ class Reporting:
                 result['reporting_period']['total_in_kgce'] += reporting[energy_category_id]['subtotal_in_kgce']
                 result['reporting_period']['total_in_kgco2e'] += reporting[energy_category_id]['subtotal_in_kgco2e']
 
+        result['reporting_period']['total_in_kgco2e_per_unit_area'] = \
+            result['reporting_period']['total_in_kgce'] / space['area'] if space['area'] > 0.0 else None
+
         result['reporting_period']['increment_rate_in_kgce'] = \
             (result['reporting_period']['total_in_kgce'] - result['base_period']['total_in_kgce']) / \
             result['base_period']['total_in_kgce'] \
             if result['base_period']['total_in_kgce'] > Decimal(0.0) else None
+
+        result['reporting_period']['total_in_kgce_per_unit_area'] = \
+            result['reporting_period']['total_in_kgco2e'] / space['area'] if space['area'] > 0.0 else None
+
         result['reporting_period']['increment_rate_in_kgco2e'] = \
             (result['reporting_period']['total_in_kgco2e'] - result['base_period']['total_in_kgco2e']) / \
             result['base_period']['total_in_kgco2e'] \
@@ -452,14 +473,6 @@ class Reporting:
         }
 
         # result = {
-        #     "space": {
-        #         "cost_center_id": space['cost_center_id'],
-        #         "energy_category_id": space['energy_category_id'],
-        #         "energy_category_name": space['energy_category_name'],
-        #         "unit_of_measure": space['unit_of_measure'],
-        #         "kgce": space['kgce'],
-        #         "kgco2e": space['kgco2e'],
-        #     },
         #     "energy_categories": {
         #
         #     },
