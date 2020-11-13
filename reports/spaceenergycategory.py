@@ -408,6 +408,8 @@ class Reporting:
         result['base_period']['timestamps'] = list()
         result['base_period']['values'] = list()
         result['base_period']['subtotals'] = list()
+        result['base_period']['subtotals_in_kgce'] = list()
+        result['base_period']['subtotals_in_kgco2e'] = list()
         result['base_period']['subtotals_per_unit_area'] = list()
         result['base_period']['total_in_kgce'] = Decimal(0.0)
         result['base_period']['total_in_kgco2e'] = Decimal(0.0)
@@ -418,6 +420,8 @@ class Reporting:
                 result['base_period']['timestamps'].append(base[energy_category_id]['timestamps'])
                 result['base_period']['values'].append(base[energy_category_id]['values'])
                 result['base_period']['subtotals'].append(base[energy_category_id]['subtotal'])
+                result['base_period']['subtotals_in_kgce'].append(base[energy_category_id]['subtotal_in_kgce'])
+                result['base_period']['subtotals_in_kgco2e'].append(base[energy_category_id]['subtotal_in_kgco2e'])
                 result['base_period']['total_in_kgce'] += base[energy_category_id]['subtotal_in_kgce']
                 result['base_period']['total_in_kgco2e'] += base[energy_category_id]['subtotal_in_kgco2e']
 
@@ -427,6 +431,8 @@ class Reporting:
         result['reporting_period']['timestamps'] = list()
         result['reporting_period']['values'] = list()
         result['reporting_period']['subtotals'] = list()
+        result['reporting_period']['subtotals_in_kgce'] = list()
+        result['reporting_period']['subtotals_in_kgco2e'] = list()
         result['reporting_period']['subtotals_per_unit_area'] = list()
         result['reporting_period']['increment_rates'] = list()
         result['reporting_period']['total_in_kgce'] = Decimal(0.0)
@@ -441,6 +447,10 @@ class Reporting:
                 result['reporting_period']['timestamps'].append(reporting[energy_category_id]['timestamps'])
                 result['reporting_period']['values'].append(reporting[energy_category_id]['values'])
                 result['reporting_period']['subtotals'].append(reporting[energy_category_id]['subtotal'])
+                result['reporting_period']['subtotals_in_kgce'].append(
+                    reporting[energy_category_id]['subtotal_in_kgce'])
+                result['reporting_period']['subtotals_in_kgco2e'].append(
+                    reporting[energy_category_id]['subtotal_in_kgco2e'])
                 result['reporting_period']['subtotals_per_unit_area'].append(
                     reporting[energy_category_id]['subtotal'] / space['area'] if space['area'] > 0.0 else None )
                 result['reporting_period']['increment_rates'].append(
