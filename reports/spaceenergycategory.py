@@ -36,10 +36,10 @@ class Reporting:
         print(req.params)
         space_id = req.params.get('spaceid')
         period_type = req.params.get('periodtype')
-        base_period_begins_datetime = req.params.get('baseperiodbeginsdatetime')
-        base_period_ends_datetime = req.params.get('baseperiodendsdatetime')
-        reporting_period_begins_datetime = req.params.get('reportingperiodbeginsdatetime')
-        reporting_period_ends_datetime = req.params.get('reportingperiodendsdatetime')
+        base_start_datetime_local = req.params.get('baseperiodstartdatetime')
+        base_end_datetime_local = req.params.get('baseperiodenddatetime')
+        reporting_start_datetime_local = req.params.get('reportingperiodstartdatetime')
+        reporting_end_datetime_local = req.params.get('reportingperiodenddatetime')
 
         ################################################################################################################
         # Step 1: valid parameters
@@ -63,57 +63,57 @@ class Reporting:
             timezone_offset = -timezone_offset
 
         base_start_datetime_utc = None
-        if base_period_begins_datetime is not None and len(str.strip(base_period_begins_datetime)) > 0:
-            base_period_begins_datetime = str.strip(base_period_begins_datetime)
+        if base_start_datetime_local is not None and len(str.strip(base_start_datetime_local)) > 0:
+            base_start_datetime_local = str.strip(base_start_datetime_local)
             try:
-                base_start_datetime_utc = datetime.strptime(base_period_begins_datetime, '%Y-%m-%dT%H:%M:%S')
+                base_start_datetime_utc = datetime.strptime(base_start_datetime_local,
+                                                            '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
+                    timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_BEGINS_DATETIME")
-            base_start_datetime_utc = base_start_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
 
         base_end_datetime_utc = None
-        if base_period_ends_datetime is not None and len(str.strip(base_period_ends_datetime)) > 0:
-            base_period_ends_datetime = str.strip(base_period_ends_datetime)
+        if base_end_datetime_local is not None and len(str.strip(base_end_datetime_local)) > 0:
+            base_end_datetime_local = str.strip(base_end_datetime_local)
             try:
-                base_end_datetime_utc = datetime.strptime(base_period_ends_datetime, '%Y-%m-%dT%H:%M:%S')
+                base_end_datetime_utc = datetime.strptime(base_end_datetime_local,
+                                                          '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
+                    timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_ENDS_DATETIME")
-            base_end_datetime_utc = base_end_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
 
         if base_start_datetime_utc is not None and base_end_datetime_utc is not None and \
                 base_start_datetime_utc >= base_end_datetime_utc:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_BASE_PERIOD_ENDS_DATETIME')
 
-        if reporting_period_begins_datetime is None:
+        if reporting_start_datetime_local is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description="API.INVALID_REPORTING_PERIOD_BEGINS_DATETIME")
         else:
-            reporting_period_begins_datetime = str.strip(reporting_period_begins_datetime)
+            reporting_start_datetime_local = str.strip(reporting_start_datetime_local)
             try:
-                reporting_start_datetime_utc = datetime.strptime(reporting_period_begins_datetime, '%Y-%m-%dT%H:%M:%S')
+                reporting_start_datetime_utc = datetime.strptime(reporting_start_datetime_local,
+                                                                 '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
+                    timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_BEGINS_DATETIME")
-            reporting_start_datetime_utc = reporting_start_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
 
-        if reporting_period_ends_datetime is None:
+        if reporting_end_datetime_local is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description="API.INVALID_REPORTING_PERIOD_ENDS_DATETIME")
         else:
-            reporting_period_ends_datetime = str.strip(reporting_period_ends_datetime)
+            reporting_end_datetime_local = str.strip(reporting_end_datetime_local)
             try:
-                reporting_end_datetime_utc = datetime.strptime(reporting_period_ends_datetime, '%Y-%m-%dT%H:%M:%S')
+                reporting_end_datetime_utc = datetime.strptime(reporting_end_datetime_local,
+                                                               '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
+                    timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_ENDS_DATETIME")
-            reporting_end_datetime_utc = reporting_end_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
 
         if reporting_start_datetime_utc >= reporting_end_datetime_utc:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -127,6 +127,9 @@ class Reporting:
 
         cnx_energy = mysql.connector.connect(**config.myems_energy_db)
         cursor_energy = cnx_energy.cursor()
+
+        cnx_historical = mysql.connector.connect(**config.myems_historical_db)
+        cursor_historical = cnx_historical.cursor()
 
         cursor_system.execute(" SELECT id, name, area, cost_center_id "
                               " FROM tbl_spaces "
@@ -142,6 +145,11 @@ class Reporting:
                 cursor_energy.close()
             if cnx_energy:
                 cnx_energy.disconnect()
+
+            if cnx_historical:
+                cnx_historical.close()
+            if cursor_historical:
+                cursor_historical.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.SPACE_NOT_FOUND')
 
         space = dict()
@@ -193,6 +201,11 @@ class Reporting:
                 cursor_energy.close()
             if cnx_energy:
                 cnx_energy.disconnect()
+
+            if cnx_historical:
+                cnx_historical.close()
+            if cursor_historical:
+                cursor_historical.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404,
                                    title='API.NOT_FOUND',
                                    description='API.ENERGY_CATEGORY_NOT_FOUND')
@@ -275,6 +288,7 @@ class Reporting:
 
                 rows_space_periodically = utilities.aggregate_hourly_data_by_period(rows_space_hourly,
                                                                                     base_start_datetime_utc,
+                                                                                    base_end_datetime_utc,
                                                                                     period_type)
                 for row_space_periodically in rows_space_periodically:
                     current_datetime_local = row_space_periodically[0].replace(tzinfo=timezone.utc) + \
@@ -326,6 +340,7 @@ class Reporting:
 
                 rows_space_periodically = utilities.aggregate_hourly_data_by_period(rows_space_hourly,
                                                                                     reporting_start_datetime_utc,
+                                                                                    reporting_end_datetime_utc,
                                                                                     period_type)
                 for row_space_periodically in rows_space_periodically:
                     current_datetime_local = row_space_periodically[0].replace(tzinfo=timezone.utc) + \
@@ -374,6 +389,67 @@ class Reporting:
         ################################################################################################################
         # Step 10: query associated sensors and points data
         ################################################################################################################
+        for point in point_list:
+            point_values = []
+            point_timestamps = []
+            if point['object_type'] == 'ANALOG_VALUE':
+                query = (" SELECT utc_date_time, actual_value "
+                         " FROM tbl_analog_value "
+                         " WHERE point_id = %s "
+                         "       AND utc_date_time BETWEEN %s AND %s "
+                         " ORDER BY utc_date_time ")
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
+
+                if rows is not None and len(rows) > 0:
+                    for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
+                        point_values.append(row[1])
+
+            elif point['object_type'] == 'ENERGY_VALUE':
+                query = (" SELECT utc_date_time, actual_value "
+                         " FROM tbl_energy_value "
+                         " WHERE point_id = %s "
+                         "       AND utc_date_time BETWEEN %s AND %s "
+                         " ORDER BY utc_date_time ")
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
+
+                if rows is not None and len(rows) > 0:
+                    for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
+                        point_values.append(row[1])
+            elif point['object_type'] == 'DIGITAL_VALUE':
+                query = (" SELECT utc_date_time, actual_value "
+                         " FROM tbl_digital_value "
+                         " WHERE point_id = %s "
+                         "       AND utc_date_time BETWEEN %s AND %s ")
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
+
+                if rows is not None and len(rows) > 0:
+                    for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
+                        point_values.append(row[1])
+
+            parameters_data['names'].append(point['name'] + ' (' + point['units'] + ')')
+            parameters_data['timestamps'].append(point_timestamps)
+            parameters_data['values'].append(point_values)
 
         ################################################################################################################
         # Step 11: query child spaces data
