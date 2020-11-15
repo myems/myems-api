@@ -454,10 +454,37 @@ class Reporting:
         ################################################################################################################
         # Step 11: query child spaces data
         ################################################################################################################
-        child_spaces_data = dict()
+        child_space_data = dict()
+
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
-                pass
+                child_space_data[energy_category_id] = dict()
+                child_space_data[energy_category_id]['child_space_names'] = list()
+                child_space_data[energy_category_id]['subtotal'] = Decimal(0.0)
+                child_space_data[energy_category_id]['subtotal_in_kgce'] = Decimal(0.0)
+                child_space_data[energy_category_id]['subtotal_in_kgco2e'] = Decimal(0.0)
+                kgce = energy_category_dict[energy_category_id]['kgce']
+                kgco2e = energy_category_dict[energy_category_id]['kgco2e']
+                for child_space in child_space_list:
+                    child_space_data[energy_category_id]['child_space_names'].append(child_space['name'])
+
+                    cursor_energy.execute(" SELECT SUM(actual_value) "
+                                          " FROM tbl_space_input_category_hourly "
+                                          " WHERE space_id = %s "
+                                          "     AND energy_category_id = %s "
+                                          "     AND start_datetime_utc >= %s "
+                                          "     AND start_datetime_utc < %s "
+                                          " ORDER BY start_datetime_utc ",
+                                          (child_space['id'],
+                                           energy_category_id,
+                                           reporting_start_datetime_utc,
+                                           reporting_end_datetime_utc))
+                    row_subtotal = cursor_energy.fetchone()
+
+                    subtotal = Decimal(0.0) if row_subtotal[0] is None else row_subtotal[0]
+                    child_space_data[energy_category_id]['subtotal'] = subtotal
+                    child_space_data[energy_category_id]['subtotal_in_kgce'] = subtotal * kgce
+                    child_space_data[energy_category_id]['subtotal_in_kgco2e'] = subtotal * kgco2e
 
         ################################################################################################################
         # Step 12: construct the report
@@ -558,46 +585,24 @@ class Reporting:
             "values": parameters_data['values']
         }
 
-        # result = {
-        #     "energy_categories": {
-        #
-        #     },
-        #     "reporting_period": {
-        #         "increment_rate":
-        #             (reporting['total_in_category'] - base['total_in_category'])/base['total_in_category']
-        #             if base['total_in_category'] > 0 else None,
-        #         "total_in_category": reporting['total_in_category'],
-        #         "total_in_kgce": reporting['total_in_kgce'],
-        #         "total_in_kgco2e": reporting['total_in_kgco2e'],
-        #         "timestamps": [reporting['timestamps'],
-        #                        reporting['timestamps'],
-        #                        reporting['timestamps']],
-        #         "values": [reporting['values_in_category'],
-        #                    reporting['values_in_kgce'],
-        #                    reporting['values_in_kgco2e']],
-        #     },
-        #     "base_period": {
-        #         "total_in_category": base['total_in_category'],
-        #         "total_in_kgce": base['total_in_kgce'],
-        #         "total_in_kgco2e": base['total_in_kgco2e'],
-        #         "timestamps": [base['timestamps'],
-        #                        base['timestamps'],
-        #                        base['timestamps']],
-        #         "values": [base['values_in_category'],
-        #                    base['values_in_kgce'],
-        #                    base['values_in_kgco2e']],
-        #     },
-        #     "child_spaces": {
-        #         "total_in_category": reporting['total_in_category'],
-        #         "total_in_kgce": reporting['total_in_kgce'],
-        #         "total_in_kgco2e": reporting['total_in_kgco2e'],
-        #         "timestamps": [reporting['timestamps'],
-        #                        reporting['timestamps'],
-        #                        reporting['timestamps']],
-        #         "values": [reporting['values_in_category'],
-        #                    reporting['values_in_kgce'],
-        #                    reporting['values_in_kgco2e']],
-        #     },
-        # }
+        result['child_space'] = dict()
+        result['child_space']['energy_category_names'] = list()
+        result['child_space']['units'] = list()
+        result['child_space']['child_space_names_array'] = list()
+        result['child_space']['subtotals'] = list()
+        result['child_space']['subtotals_in_kgce'] = list()
+        result['child_space']['subtotals_in_kgco2e'] = list()
+        if energy_category_set is not None and len(energy_category_set) > 0:
+            for energy_category_id in energy_category_set:
+                result['child_space']['energy_category_names'].append(energy_category_dict[energy_category_id]['name'])
+                result['child_space']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
+                result['child_space']['child_space_names_array'].append(
+                    child_space_data[energy_category_id]['child_space_names'])
+                result['child_space']['subtotals'].append(
+                    child_space_data[energy_category_id]['subtotal'])
+                result['child_space']['subtotals_in_kgce'].append(
+                    child_space_data[energy_category_id]['subtotal_in_kgce'])
+                result['child_space']['subtotals_in_kgco2e'].append(
+                    child_space_data[energy_category_id]['subtotal_in_kgco2e'])
 
         resp.body = json.dumps(result)

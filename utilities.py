@@ -14,6 +14,7 @@ import config
 # Note: this procedure doesn't work with multiple energy categories
 ########################################################################################################################
 def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetime_utc, period_type):
+    # todo: validate parameters
     start_datetime_utc = start_datetime_utc.replace(tzinfo=None)
     end_datetime_utc = end_datetime_utc.replace(tzinfo=None)
 
@@ -139,10 +140,10 @@ def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetim
         start_datetime_local = start_datetime_utc + timedelta(hours=int(config.utc_offset[1:3]))
         current_datetime_utc = start_datetime_local.replace(month=1, day=1, hour=0) - timedelta(
             hours=int(config.utc_offset[1:3]))
-        print(current_datetime_utc)
+
         while current_datetime_utc <= end_datetime_utc:
             # calculate the next datetime in utc
-            # 2018-12-31 16:00:00
+            # todo: timedelta of year
             next_datetime_utc = datetime(year=current_datetime_utc.year + 2,
                                          month=1,
                                          day=1,
@@ -151,7 +152,6 @@ def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetim
                                          second=current_datetime_utc.second,
                                          microsecond=current_datetime_utc.microsecond,
                                          tzinfo=current_datetime_utc.tzinfo) - timedelta(days=1)
-            print(next_datetime_utc)
             subtotal = Decimal(0.0)
             for row in rows_hourly:
                 if current_datetime_utc <= row[0] < next_datetime_utc:
@@ -159,7 +159,6 @@ def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetim
 
             result_rows_yearly.append((current_datetime_utc, subtotal))
             current_datetime_utc = next_datetime_utc
-        print(result_rows_yearly)
         return result_rows_yearly
 
 
@@ -167,8 +166,7 @@ def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetim
 # Get tariffs by energy category
 ########################################################################################################################
 def get_energy_category_tariffs(cost_center_id, energy_category_id, start_datetime_utc, end_datetime_utc):
-
-    # todo: verify parameters
+    # todo: validate parameters
     if cost_center_id is None:
         return dict()
 
