@@ -26,8 +26,8 @@ class Reporting:
     # Step 6: query child spaces
     # Step 7: query base period energy input
     # Step 8: query reporting period energy input
-    # Step 9: query associated sensors and points data
-    # Step 10: query tariff data
+    # Step 9: query tariff data
+    # Step 10: query associated sensors and points data
     # Step 11: query child spaces energy input
     # Step 12: construct the report
     ####################################################################################################################
@@ -324,6 +324,10 @@ class Reporting:
                 reporting[energy_category_id]['subtotal'] = Decimal(0.0)
                 reporting[energy_category_id]['subtotal_in_kgce'] = Decimal(0.0)
                 reporting[energy_category_id]['subtotal_in_kgco2e'] = Decimal(0.0)
+                reporting[energy_category_id]['toppeak'] = Decimal(0.0)
+                reporting[energy_category_id]['onpeak'] = Decimal(0.0)
+                reporting[energy_category_id]['midpeak'] = Decimal(0.0)
+                reporting[energy_category_id]['offpeak'] = Decimal(0.0)
 
                 cursor_energy.execute(" SELECT start_datetime_utc, actual_value "
                                       " FROM tbl_space_input_category_hourly "
@@ -360,6 +364,23 @@ class Reporting:
                     reporting[energy_category_id]['subtotal'] += actual_value
                     reporting[energy_category_id]['subtotal_in_kgce'] += actual_value * kgce
                     reporting[energy_category_id]['subtotal_in_kgco2e'] += actual_value * kgco2e
+
+                energy_category_tariff_dict = utilities.get_energy_category_peak_types(space['cost_center_id'],
+                                                                                       energy_category_id,
+                                                                                       reporting_start_datetime_utc,
+                                                                                       reporting_end_datetime_utc)
+                print(energy_category_tariff_dict)
+                for row in rows_space_hourly:
+                    peak_type = energy_category_tariff_dict.get(row[0], None)
+                    print(peak_type)
+                    if peak_type == 'toppeak':
+                        reporting[energy_category_id]['toppeak'] += row[1]
+                    elif peak_type == 'onpeak':
+                        reporting[energy_category_id]['onpeak'] += row[1]
+                    elif peak_type == 'midpeak':
+                        reporting[energy_category_id]['midpeak'] += row[1]
+                    elif peak_type == 'offpeak':
+                        reporting[energy_category_id]['offpeak'] += row[1]
 
         ################################################################################################################
         # Step 9: query tariff data
@@ -452,7 +473,7 @@ class Reporting:
             parameters_data['values'].append(point_values)
 
         ################################################################################################################
-        # Step 11: query child spaces data
+        # Step 11: query child spaces energy input
         ################################################################################################################
         child_space_data = dict()
 
@@ -530,6 +551,7 @@ class Reporting:
 
         result['reporting_period'] = dict()
         result['reporting_period']['names'] = list()
+        result['reporting_period']['energy_category_ids'] = list()
         result['reporting_period']['units'] = list()
         result['reporting_period']['timestamps'] = list()
         result['reporting_period']['values'] = list()
@@ -537,6 +559,10 @@ class Reporting:
         result['reporting_period']['subtotals_in_kgce'] = list()
         result['reporting_period']['subtotals_in_kgco2e'] = list()
         result['reporting_period']['subtotals_per_unit_area'] = list()
+        result['reporting_period']['toppeaks'] = list()
+        result['reporting_period']['onpeaks'] = list()
+        result['reporting_period']['midpeaks'] = list()
+        result['reporting_period']['offpeaks'] = list()
         result['reporting_period']['increment_rates'] = list()
         result['reporting_period']['total_in_kgce'] = Decimal(0.0)
         result['reporting_period']['total_in_kgco2e'] = Decimal(0.0)
@@ -546,6 +572,7 @@ class Reporting:
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
                 result['reporting_period']['names'].append(energy_category_dict[energy_category_id]['name'])
+                result['reporting_period']['energy_category_ids'].append(energy_category_id)
                 result['reporting_period']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['reporting_period']['timestamps'].append(reporting[energy_category_id]['timestamps'])
                 result['reporting_period']['values'].append(reporting[energy_category_id]['values'])
@@ -555,7 +582,11 @@ class Reporting:
                 result['reporting_period']['subtotals_in_kgco2e'].append(
                     reporting[energy_category_id]['subtotal_in_kgco2e'])
                 result['reporting_period']['subtotals_per_unit_area'].append(
-                    reporting[energy_category_id]['subtotal'] / space['area'] if space['area'] > 0.0 else None )
+                    reporting[energy_category_id]['subtotal'] / space['area'] if space['area'] > 0.0 else None)
+                result['reporting_period']['toppeaks'].append(reporting[energy_category_id]['toppeak'])
+                result['reporting_period']['onpeaks'].append(reporting[energy_category_id]['onpeak'])
+                result['reporting_period']['midpeaks'].append(reporting[energy_category_id]['midpeak'])
+                result['reporting_period']['offpeaks'].append(reporting[energy_category_id]['offpeak'])
                 result['reporting_period']['increment_rates'].append(
                     (reporting[energy_category_id]['subtotal'] - base[energy_category_id]['subtotal']) /
                     base[energy_category_id]['subtotal']
