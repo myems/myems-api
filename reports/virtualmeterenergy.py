@@ -214,6 +214,7 @@ class Reporting:
 
         rows_virtual_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_virtual_meter_hourly,
                                                                                     reporting_start_datetime_utc,
+                                                                                    reporting_end_datetime_utc,
                                                                                     period_type)
         reporting = dict()
         reporting['timestamps'] = list()
