@@ -369,10 +369,8 @@ class Reporting:
                                                                                        energy_category_id,
                                                                                        reporting_start_datetime_utc,
                                                                                        reporting_end_datetime_utc)
-                print(energy_category_tariff_dict)
                 for row in rows_space_hourly:
                     peak_type = energy_category_tariff_dict.get(row[0], None)
-                    print(peak_type)
                     if peak_type == 'toppeak':
                         reporting[energy_category_id]['toppeak'] += row[1]
                     elif peak_type == 'onpeak':
