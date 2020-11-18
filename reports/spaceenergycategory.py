@@ -532,7 +532,6 @@ class Reporting:
         result['base_period']['subtotals'] = list()
         result['base_period']['subtotals_in_kgce'] = list()
         result['base_period']['subtotals_in_kgco2e'] = list()
-        result['base_period']['subtotals_per_unit_area'] = list()
         result['base_period']['total_in_kgce'] = Decimal(0.0)
         result['base_period']['total_in_kgco2e'] = Decimal(0.0)
         if energy_category_set is not None and len(energy_category_set) > 0:
