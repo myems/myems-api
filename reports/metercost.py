@@ -32,10 +32,10 @@ class Reporting:
         print(req.params)
         meter_id = req.params.get('meterid')
         period_type = req.params.get('periodtype')
-        base_period_begins_datetime = req.params.get('baseperiodbeginsdatetime')
-        base_period_ends_datetime = req.params.get('baseperiodendsdatetime')
-        reporting_period_begins_datetime = req.params.get('reportingperiodbeginsdatetime')
-        reporting_period_ends_datetime = req.params.get('reportingperiodendsdatetime')
+        base_period_start_datetime = req.params.get('baseperiodstartdatetime')
+        base_period_end_datetime = req.params.get('baseperiodenddatetime')
+        reporting_period_start_datetime = req.params.get('reportingperiodstartdatetime')
+        reporting_period_end_datetime = req.params.get('reportingperiodenddatetime')
 
         ################################################################################################################
         # Step 1: valid parameters
@@ -63,10 +63,10 @@ class Reporting:
             timezone_offset = -timezone_offset
 
         base_start_datetime_utc = None
-        if base_period_begins_datetime is not None and len(str.strip(base_period_begins_datetime)) > 0:
-            base_period_begins_datetime = str.strip(base_period_begins_datetime)
+        if base_period_start_datetime is not None and len(str.strip(base_period_start_datetime)) > 0:
+            base_period_start_datetime = str.strip(base_period_start_datetime)
             try:
-                base_start_datetime_utc = datetime.strptime(base_period_begins_datetime, '%Y-%m-%dT%H:%M:%S')
+                base_start_datetime_utc = datetime.strptime(base_period_start_datetime, '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_BEGINS_DATETIME")
@@ -74,10 +74,10 @@ class Reporting:
                 timedelta(minutes=timezone_offset)
 
         base_end_datetime_utc = None
-        if base_period_ends_datetime is not None and len(str.strip(base_period_ends_datetime)) > 0:
-            base_period_ends_datetime = str.strip(base_period_ends_datetime)
+        if base_period_end_datetime is not None and len(str.strip(base_period_end_datetime)) > 0:
+            base_period_end_datetime = str.strip(base_period_end_datetime)
             try:
-                base_end_datetime_utc = datetime.strptime(base_period_ends_datetime, '%Y-%m-%dT%H:%M:%S')
+                base_end_datetime_utc = datetime.strptime(base_period_end_datetime, '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_ENDS_DATETIME")
@@ -89,26 +89,26 @@ class Reporting:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_BASE_PERIOD_ENDS_DATETIME')
 
-        if reporting_period_begins_datetime is None:
+        if reporting_period_start_datetime is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description="API.INVALID_REPORTING_PERIOD_BEGINS_DATETIME")
         else:
-            reporting_period_begins_datetime = str.strip(reporting_period_begins_datetime)
+            reporting_period_start_datetime = str.strip(reporting_period_start_datetime)
             try:
-                reporting_start_datetime_utc = datetime.strptime(reporting_period_begins_datetime, '%Y-%m-%dT%H:%M:%S')
+                reporting_start_datetime_utc = datetime.strptime(reporting_period_start_datetime, '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_BEGINS_DATETIME")
             reporting_start_datetime_utc = reporting_start_datetime_utc.replace(tzinfo=timezone.utc) - \
                 timedelta(minutes=timezone_offset)
 
-        if reporting_period_ends_datetime is None:
+        if reporting_period_end_datetime is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description="API.INVALID_REPORTING_PERIOD_ENDS_DATETIME")
         else:
-            reporting_period_ends_datetime = str.strip(reporting_period_ends_datetime)
+            reporting_period_end_datetime = str.strip(reporting_period_end_datetime)
             try:
-                reporting_end_datetime_utc = datetime.strptime(reporting_period_ends_datetime, '%Y-%m-%dT%H:%M:%S')
+                reporting_end_datetime_utc = datetime.strptime(reporting_period_end_datetime, '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_ENDS_DATETIME")
