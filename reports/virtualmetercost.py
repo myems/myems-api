@@ -32,10 +32,10 @@ class Reporting:
         print(req.params)
         virtual_meter_id = req.params.get('virtualmeterid')
         period_type = req.params.get('periodtype')
-        base_period_begins_datetime = req.params.get('baseperiodbeginsdatetime')
-        base_period_ends_datetime = req.params.get('baseperiodendsdatetime')
-        reporting_period_begins_datetime = req.params.get('reportingperiodbeginsdatetime')
-        reporting_period_ends_datetime = req.params.get('reportingperiodendsdatetime')
+        base_period_begins_datetime = req.params.get('baseperiodstartdatetime')
+        base_period_ends_datetime = req.params.get('baseperiodenddatetime')
+        reporting_period_begins_datetime = req.params.get('reportingperiodstartdatetime')
+        reporting_period_ends_datetime = req.params.get('reportingperiodenddatetime')
 
         ################################################################################################################
         # Step 1: valid parameters
