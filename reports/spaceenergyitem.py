@@ -529,6 +529,7 @@ class Reporting:
         result['reporting_period']['names'] = list()
         result['reporting_period']['energy_item_ids'] = list()
         result['reporting_period']['energy_category_names'] = list()
+        result['reporting_period']['energy_category_ids'] = list()
         result['reporting_period']['units'] = list()
         result['reporting_period']['timestamps'] = list()
         result['reporting_period']['values'] = list()
@@ -546,6 +547,8 @@ class Reporting:
                 result['reporting_period']['energy_item_ids'].append(energy_item_id)
                 result['reporting_period']['energy_category_names'].append(
                     energy_item_dict[energy_item_id]['energy_category_name'])
+                result['reporting_period']['energy_category_ids'].append(
+                    energy_item_dict[energy_item_id]['energy_category_id'])
                 result['reporting_period']['units'].append(energy_item_dict[energy_item_id]['unit_of_measure'])
                 result['reporting_period']['timestamps'].append(reporting[energy_item_id]['timestamps'])
                 result['reporting_period']['values'].append(reporting[energy_item_id]['values'])
