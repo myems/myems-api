@@ -367,3 +367,249 @@ def get_energy_category_peak_types(cost_center_id, energy_category_id, start_dat
             current_datetime_utc += timedelta(minutes=config.minutes_to_count)
 
     return {k: v for k, v in result.items() if start_datetime_utc <= k <= end_datetime_utc}
+
+
+########################################################################################################################
+# Averaging calculator of hourly data by period
+#   rows_hourly: list of (start_datetime_utc, actual_value), should belong to one energy_category_id
+#   start_datetime_utc: start datetime in utc
+#   end_datetime_utc: end datetime in utc
+#   period_type: one of the following period types, 'hourly', 'daily', 'monthly' and 'yearly'
+# Returns: periodically data of average and maximum
+# Note: this procedure doesn't work with multiple energy categories
+########################################################################################################################
+def averaging_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetime_utc, period_type):
+    # todo: validate parameters
+    start_datetime_utc = start_datetime_utc.replace(tzinfo=None)
+    end_datetime_utc = end_datetime_utc.replace(tzinfo=None)
+
+    if period_type == "hourly":
+        result_rows_hourly = list()
+        # todo: add config.working_day_start_time_local
+        # todo: add config.minutes_to_count
+        total = Decimal(0.0)
+        maximum = None
+        counter = 0
+        current_datetime_utc = start_datetime_utc.replace(minute=0, second=0, microsecond=0, tzinfo=None)
+        while current_datetime_utc <= end_datetime_utc:
+            sub_total = Decimal(0.0)
+            sub_maximum = None
+            sub_counter = 0
+            for row in rows_hourly:
+                if current_datetime_utc <= row[0] < current_datetime_utc + \
+                        timedelta(minutes=config.minutes_to_count):
+                    sub_total += row[1]
+                    if sub_maximum is None:
+                        sub_maximum = row[1]
+                    elif sub_maximum < row[1]:
+                        sub_maximum = row[1]
+                    sub_counter += 1
+
+            sub_average = (sub_total / sub_counter) if sub_counter > 0 else None
+            result_rows_hourly.append((current_datetime_utc, sub_average, sub_maximum))
+
+            total += sub_total
+            counter += sub_counter
+            if sub_maximum is None:
+                pass
+            elif maximum is None:
+                maximum = sub_maximum
+            elif maximum < sub_maximum:
+                maximum = sub_maximum
+
+            current_datetime_utc += timedelta(minutes=config.minutes_to_count)
+
+        average = total / counter if counter > 0 else None
+        return result_rows_hourly, average, maximum
+
+    elif period_type == "daily":
+        result_rows_daily = list()
+        # todo: add config.working_day_start_time_local
+        # todo: add config.minutes_to_count
+        total = Decimal(0.0)
+        maximum = None
+        counter = 0
+        # calculate the start datetime in utc of the first day in local
+        start_datetime_local = start_datetime_utc + timedelta(hours=int(config.utc_offset[1:3]))
+        current_datetime_utc = start_datetime_local.replace(hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
+        while current_datetime_utc <= end_datetime_utc:
+            sub_total = Decimal(0.0)
+            sub_maximum = None
+            sub_counter = 0
+            for row in rows_hourly:
+                if current_datetime_utc <= row[0] < current_datetime_utc + timedelta(days=1):
+                    sub_total += row[1]
+                    if sub_maximum is None:
+                        sub_maximum = row[1]
+                    elif sub_maximum < row[1]:
+                        sub_maximum = row[1]
+                    sub_counter += 1
+
+            sub_average = (sub_total / sub_counter) if sub_counter > 0 else None
+            result_rows_daily.append((current_datetime_utc, sub_average, sub_maximum))
+            total += sub_total
+            counter += sub_counter
+            if sub_maximum is None:
+                pass
+            elif maximum is None:
+                maximum = sub_maximum
+            elif maximum < sub_maximum:
+                maximum = sub_maximum
+            current_datetime_utc += timedelta(days=1)
+
+        average = total / counter if counter > 0 else None
+        print(average)
+        print(maximum)
+        print(result_rows_daily)
+        return result_rows_daily, average, maximum
+
+    elif period_type == "monthly":
+        result_rows_monthly = list()
+        # todo: add config.working_day_start_time_local
+        # todo: add config.minutes_to_count
+        total = Decimal(0.0)
+        maximum = None
+        counter = 0
+        # calculate the start datetime in utc of the first day in the first month in local
+        start_datetime_local = start_datetime_utc + timedelta(hours=int(config.utc_offset[1:3]))
+        current_datetime_utc = start_datetime_local.replace(day=1, hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
+
+        while current_datetime_utc <= end_datetime_utc:
+            # calculate the next datetime in utc
+            if current_datetime_utc.month == 1:
+                temp_day = 28
+                ny = current_datetime_utc.year
+                if (ny % 100 != 0 and ny % 4 == 0) or (ny % 100 == 0 and ny % 400 == 0):
+                    temp_day = 29
+
+                next_datetime_utc = datetime(year=current_datetime_utc.year,
+                                             month=current_datetime_utc.month + 1,
+                                             day=temp_day,
+                                             hour=current_datetime_utc.hour,
+                                             minute=current_datetime_utc.minute,
+                                             second=0,
+                                             microsecond=0,
+                                             tzinfo=None)
+            elif current_datetime_utc.month == 2:
+                next_datetime_utc = datetime(year=current_datetime_utc.year,
+                                             month=current_datetime_utc.month + 1,
+                                             day=31,
+                                             hour=current_datetime_utc.hour,
+                                             minute=current_datetime_utc.minute,
+                                             second=0,
+                                             microsecond=0,
+                                             tzinfo=None)
+            elif current_datetime_utc.month in [3, 5, 8, 10]:
+                next_datetime_utc = datetime(year=current_datetime_utc.year,
+                                             month=current_datetime_utc.month + 1,
+                                             day=30,
+                                             hour=current_datetime_utc.hour,
+                                             minute=current_datetime_utc.minute,
+                                             second=0,
+                                             microsecond=0,
+                                             tzinfo=None)
+            elif current_datetime_utc.month == 7:
+                next_datetime_utc = datetime(year=current_datetime_utc.year,
+                                             month=current_datetime_utc.month + 1,
+                                             day=31,
+                                             hour=current_datetime_utc.hour,
+                                             minute=current_datetime_utc.minute,
+                                             second=0,
+                                             microsecond=0,
+                                             tzinfo=None)
+            elif current_datetime_utc.month in [4, 6, 9, 11]:
+                next_datetime_utc = datetime(year=current_datetime_utc.year,
+                                             month=current_datetime_utc.month + 1,
+                                             day=31,
+                                             hour=current_datetime_utc.hour,
+                                             minute=current_datetime_utc.minute,
+                                             second=0,
+                                             microsecond=0,
+                                             tzinfo=None)
+            elif current_datetime_utc.month == 12:
+                next_datetime_utc = datetime(year=current_datetime_utc.year + 1,
+                                             month=1,
+                                             day=31,
+                                             hour=current_datetime_utc.hour,
+                                             minute=current_datetime_utc.minute,
+                                             second=0,
+                                             microsecond=0,
+                                             tzinfo=None)
+
+            sub_total = Decimal(0.0)
+            sub_maximum = None
+            sub_counter = 0
+            for row in rows_hourly:
+                if current_datetime_utc <= row[0] < next_datetime_utc:
+                    sub_total += row[1]
+                    if sub_maximum is None:
+                        sub_maximum = row[1]
+                    elif sub_maximum < row[1]:
+                        sub_maximum = row[1]
+                    sub_counter += 1
+
+            sub_average = (sub_total / sub_counter) if sub_counter > 0 else None
+            result_rows_monthly.append((current_datetime_utc, sub_average, sub_maximum))
+            total += sub_total
+            counter += sub_counter
+            if sub_maximum is None:
+                pass
+            elif maximum is None:
+                maximum = sub_maximum
+            elif maximum < sub_maximum:
+                maximum = sub_maximum
+            current_datetime_utc = next_datetime_utc
+
+        average = total / counter if counter > 0 else None
+        return result_rows_monthly, average, maximum
+
+    elif period_type == "yearly":
+        print(start_datetime_utc)
+        result_rows_yearly = list()
+        # todo: add config.working_day_start_time_local
+        # todo: add config.minutes_to_count
+        total = Decimal(0.0)
+        maximum = None
+        counter = 0
+        # calculate the start datetime in utc of the first day in the first month in local
+        start_datetime_local = start_datetime_utc + timedelta(hours=int(config.utc_offset[1:3]))
+        current_datetime_utc = start_datetime_local.replace(month=1, day=1, hour=0) - timedelta(
+            hours=int(config.utc_offset[1:3]))
+
+        while current_datetime_utc <= end_datetime_utc:
+            # calculate the next datetime in utc
+            # todo: timedelta of year
+            next_datetime_utc = datetime(year=current_datetime_utc.year + 2,
+                                         month=1,
+                                         day=1,
+                                         hour=current_datetime_utc.hour,
+                                         minute=current_datetime_utc.minute,
+                                         second=current_datetime_utc.second,
+                                         microsecond=current_datetime_utc.microsecond,
+                                         tzinfo=current_datetime_utc.tzinfo) - timedelta(days=1)
+            sub_total = Decimal(0.0)
+            sub_maximum = None
+            sub_counter = 0
+            for row in rows_hourly:
+                if current_datetime_utc <= row[0] < next_datetime_utc:
+                    sub_total += row[1]
+                    if sub_maximum is None:
+                        sub_maximum = row[1]
+                    elif sub_maximum < row[1]:
+                        sub_maximum = row[1]
+                    sub_counter += 1
+
+            sub_average = (sub_total / sub_counter) if sub_counter > 0 else None
+            result_rows_yearly.append((current_datetime_utc, sub_average, sub_maximum))
+            total += sub_total
+            counter += sub_counter
+            if sub_maximum is None:
+                pass
+            elif maximum is None:
+                maximum = sub_maximum
+            elif maximum < sub_maximum:
+                maximum = sub_maximum
+            current_datetime_utc = next_datetime_utc
+
+        average = total / counter if counter > 0 else None
+        return result_rows_yearly, average, maximum
