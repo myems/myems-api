@@ -12,11 +12,25 @@ myems_energy_db = {
     'database': 'myems_energy_db',
 }
 
+myems_energy_baseline_db = {
+    'user': 'root',
+    'password': '!MyEMS1',
+    'host': '127.0.0.1',
+    'database': 'myems_energy_baseline_db',
+}
+
 myems_billing_db = {
     'user': 'root',
     'password': '!MyEMS1',
     'host': '127.0.0.1',
     'database': 'myems_billing_db',
+}
+
+myems_billing_baseline_db = {
+    'user': 'root',
+    'password': '!MyEMS1',
+    'host': '127.0.0.1',
+    'database': 'myems_billing_baseline_db',
 }
 
 myems_historical_db = {

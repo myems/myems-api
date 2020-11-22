@@ -500,7 +500,7 @@ class Reporting:
                                            reporting_end_datetime_utc))
                     row_subtotal = cursor_energy.fetchone()
 
-                    subtotal = Decimal(0.0) if row_subtotal[0] is None else row_subtotal[0]
+                    subtotal = Decimal(0.0) if (row_subtotal is None or row_subtotal[0] is None) else row_subtotal[0]
                     child_space_data[energy_category_id]['subtotal'] = subtotal
                     child_space_data[energy_category_id]['subtotal_in_kgce'] = subtotal * kgce
                     child_space_data[energy_category_id]['subtotal_in_kgco2e'] = subtotal * kgco2e
