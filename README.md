@@ -3,6 +3,7 @@
 ## Introduction
 Providing REST API service for MyEMS Web APP, Android APP and iOS APP and/or third parties
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/myems/myems-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/myems/myems-api/?branch=master)
 
 ## Prerequisites
 
