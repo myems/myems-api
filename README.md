@@ -3,6 +3,7 @@
 ## Introduction
 Providing REST API service for MyEMS Web APP, Android APP and iOS APP and/or third parties
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dc671ff43f374b4a8c72f14a4462660c)](https://app.codacy.com/gh/myems/myems-api?utm_source=github.com&utm_medium=referral&utm_content=myems/myems-api&utm_campaign=Badge_Grade)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/myems/myems-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/myems/myems-api/?branch=master)
 
 ## Prerequisites
