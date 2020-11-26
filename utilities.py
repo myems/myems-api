@@ -457,6 +457,7 @@ def averaging_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetim
                 maximum = sub_maximum
             current_datetime_utc += timedelta(days=1)
 
+        average = total / counter if counter > 0 else None
         return result_rows_daily, average, maximum
 
     elif period_type == "monthly":
