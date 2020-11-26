@@ -219,12 +219,12 @@ class Reporting:
         # Step 4: query associated sensors
         ################################################################################################################
         point_list = list()
-        cursor_system.execute(" SELECT po.id, po.name, po.units, po.object_type  "
-                              " FROM tbl_tenants tn, tbl_sensors se, tbl_tenants_sensors tnse, "
-                              "      tbl_points po, tbl_sensors_points sepo "
-                              " WHERE tn.id = %s AND tn.id = tnse.tenant_id AND tnse.sensor_id = se.id "
-                              "       AND se.id = sepo.sensor_id AND sepo.point_id = po.id "
-                              " ORDER BY po.id ", (tenant['id'], ))
+        cursor_system.execute(" SELECT p.id, p.name, p.units, p.object_type  "
+                              " FROM tbl_tenants t, tbl_sensors s, tbl_tenants_sensors ts, "
+                              "      tbl_points p, tbl_sensors_points sp "
+                              " WHERE t.id = %s AND t.id = ts.tenant_id AND ts.sensor_id = s.id "
+                              "       AND s.id = sp.sensor_id AND sp.point_id = p.id "
+                              " ORDER BY p.id ", (tenant['id'], ))
         rows_points = cursor_system.fetchall()
         if rows_points is not None and len(rows_points) > 0:
             for row in rows_points:
@@ -233,10 +233,10 @@ class Reporting:
         ################################################################################################################
         # Step 5: query associated points
         ################################################################################################################
-        cursor_system.execute(" SELECT po.id, po.name, po.units, po.object_type  "
-                              " FROM tbl_tenants tn, tbl_tenants_points tnpo, tbl_points po "
-                              " WHERE tn.id = %s AND tn.id = tnpo.tenant_id AND tnpo.point_id = po.id "
-                              " ORDER BY po.id ", (tenant['id'], ))
+        cursor_system.execute(" SELECT p.id, p.name, p.units, p.object_type  "
+                              " FROM tbl_tenants t, tbl_tenants_points tp, tbl_points p "
+                              " WHERE t.id = %s AND t.id = tp.tenant_id AND tp.point_id = p.id "
+                              " ORDER BY p.id ", (tenant['id'], ))
         rows_points = cursor_system.fetchall()
         if rows_points is not None and len(rows_points) > 0:
             for row in rows_points:
