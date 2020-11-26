@@ -6980,6 +6980,50 @@
 			"name": "Reports",
 			"item": [
 				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/dashboard?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"dashboard"
+							],
+							"query": [
+								{
+									"key": "spaceid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodstartdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodenddatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Meter Energy",
 					"request": {
 						"method": "GET",
@@ -7212,6 +7256,94 @@
 					"response": []
 				},
 				{
+					"name": "Space Cost",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/spacecost?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"spacecost"
+							],
+							"query": [
+								{
+									"key": "spaceid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodstartdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodenddatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Space Efficiency",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/spaceefficiency?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"spaceefficiency"
+							],
+							"query": [
+								{
+									"key": "spaceid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodstartdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodenddatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Space Energy Category",
 					"request": {
 						"method": "GET",
@@ -7224,94 +7356,6 @@
 							"path": [
 								"reports",
 								"spaceenergycategory"
-							],
-							"query": [
-								{
-									"key": "spaceid",
-									"value": "1"
-								},
-								{
-									"key": "periodtype",
-									"value": "daily"
-								},
-								{
-									"key": "baseperiodstartdatetime",
-									"value": "2020-08-01T00:00:00"
-								},
-								{
-									"key": "baseperiodenddatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodstartdatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodenddatetime",
-									"value": "2020-10-01T00:00:00"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Space Load",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/reports/spaceload?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"reports",
-								"spaceload"
-							],
-							"query": [
-								{
-									"key": "spaceid",
-									"value": "1"
-								},
-								{
-									"key": "periodtype",
-									"value": "daily"
-								},
-								{
-									"key": "baseperiodstartdatetime",
-									"value": "2020-08-01T00:00:00"
-								},
-								{
-									"key": "baseperiodenddatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodstartdatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodenddatetime",
-									"value": "2020-10-01T00:00:00"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Space Statistics",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/reports/spacestatistics?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"reports",
-								"spacestatistics"
 							],
 							"query": [
 								{
@@ -7388,50 +7432,6 @@
 					"response": []
 				},
 				{
-					"name": "Space Cost",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/reports/spacecost?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"reports",
-								"spacecost"
-							],
-							"query": [
-								{
-									"key": "spaceid",
-									"value": "1"
-								},
-								{
-									"key": "periodtype",
-									"value": "daily"
-								},
-								{
-									"key": "baseperiodstartdatetime",
-									"value": "2020-08-01T00:00:00"
-								},
-								{
-									"key": "baseperiodenddatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodstartdatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodenddatetime",
-									"value": "2020-10-01T00:00:00"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Space Income",
 					"request": {
 						"method": "GET",
@@ -7476,6 +7476,50 @@
 					"response": []
 				},
 				{
+					"name": "Space Load",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/spaceload?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"spaceload"
+							],
+							"query": [
+								{
+									"key": "spaceid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodstartdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodenddatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Space Output",
 					"request": {
 						"method": "GET",
@@ -7488,6 +7532,50 @@
 							"path": [
 								"reports",
 								"spaceoutput"
+							],
+							"query": [
+								{
+									"key": "spaceid",
+									"value": "1"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodstartdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodenddatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Space Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/spacestatistics?spaceid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"spacestatistics"
 							],
 							"query": [
 								{

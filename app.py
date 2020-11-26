@@ -48,6 +48,7 @@ from reports import combinedequipmentload
 from reports import combinedequipmentoutput
 from reports import combinedequipmentsaving
 from reports import combinedequipmentstatistics
+from reports import dashboard
 from reports import equipmentcost
 from reports import equipmentefficiency
 from reports import equipmentenergycategory
@@ -517,6 +518,8 @@ api.add_route('/reports/combinedequipmentsaving',
               combinedequipmentsaving.Reporting())
 api.add_route('/reports/combinedequipmentstatistics',
               combinedequipmentstatistics.Reporting())
+api.add_route('/reports/dashboard',
+              dashboard.Reporting())
 api.add_route('/reports/equipmentcost',
               equipmentcost.Reporting())
 api.add_route('/reports/equipmentefficiency',
