@@ -256,7 +256,7 @@ class Reporting:
                 point_list.append({"id": row[0], "name": row[1], "units": row[2], "object_type": row[3]})
 
         ################################################################################################################
-        # Step 7: query base period energy saving
+        # Step 6: query base period energy saving
         ################################################################################################################
         base = dict()
         if energy_category_set is not None and len(energy_category_set) > 0:
@@ -367,7 +367,7 @@ class Reporting:
                     base[energy_category_id]['subtotal_in_kgco2e_baseline'] - \
                     base[energy_category_id]['subtotal_in_kgco2e_actual']
         ################################################################################################################
-        # Step 8: query reporting period energy saving
+        # Step 7: query reporting period energy saving
         ################################################################################################################
         reporting = dict()
         if energy_category_set is not None and len(energy_category_set) > 0:
@@ -478,7 +478,7 @@ class Reporting:
                     reporting[energy_category_id]['subtotal_in_kgco2e_baseline'] - \
                     reporting[energy_category_id]['subtotal_in_kgco2e_actual']
         ################################################################################################################
-        # Step 9: query tariff data
+        # Step 8: query tariff data
         ################################################################################################################
         parameters_data = dict()
         parameters_data['names'] = list()
@@ -503,7 +503,7 @@ class Reporting:
                 parameters_data['values'].append(tariff_value_list)
 
         ################################################################################################################
-        # Step 10: query associated sensors and points data
+        # Step 9: query associated sensors and points data
         ################################################################################################################
         for point in point_list:
             point_values = []
@@ -568,7 +568,7 @@ class Reporting:
             parameters_data['values'].append(point_values)
 
         ################################################################################################################
-        # Step 12: construct the report
+        # Step 10: construct the report
         ################################################################################################################
         if cursor_system:
             cursor_system.close()
