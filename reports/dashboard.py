@@ -25,11 +25,14 @@ class Reporting:
     # Step 5: query associated points
     # Step 6: query child spaces
     # Step 7: query base period energy input
-    # Step 8: query reporting period energy input
-    # Step 9: query tariff data
-    # Step 10: query associated sensors and points data
-    # Step 11: query child spaces energy input
-    # Step 12: construct the report
+    # Step 8: query base period energy cost
+    # Step 9: query reporting period energy input
+    # Step 10: query reporting period energy cost
+    # Step 11: query tariff data
+    # Step 12: query associated sensors and points data
+    # Step 13: query child spaces energy input
+    # Step 14: query child spaces energy cost
+    # Step 15: construct the report
     ####################################################################################################################
     @staticmethod
     def on_get(req, resp):
@@ -533,7 +536,7 @@ class Reporting:
                     elif peak_type == 'offpeak':
                         reporting_cost[energy_category_id]['offpeak'] += row[1]
         ################################################################################################################
-        # Step 9: query tariff data
+        # Step 11: query tariff data
         ################################################################################################################
         parameters_data = dict()
         parameters_data['names'] = list()
@@ -558,7 +561,7 @@ class Reporting:
                 parameters_data['values'].append(tariff_value_list)
 
         ################################################################################################################
-        # Step 10: query associated sensors and points data
+        # Step 12: query associated sensors and points data
         ################################################################################################################
 
         cnx_historical = mysql.connector.connect(**config.myems_historical_db)
@@ -627,7 +630,7 @@ class Reporting:
             parameters_data['values'].append(point_values)
 
         ################################################################################################################
-        # Step 11: query child spaces energy input
+        # Step 13: query child spaces energy input
         ################################################################################################################
         child_space_input = dict()
 
@@ -662,7 +665,7 @@ class Reporting:
                     child_space_input[energy_category_id]['subtotal_in_kgco2e'] = subtotal * kgco2e
 
         ################################################################################################################
-        # Step 12: query child spaces energy cost
+        # Step 14: query child spaces energy cost
         ################################################################################################################
         child_space_cost = dict()
 
@@ -691,7 +694,7 @@ class Reporting:
                     child_space_cost[energy_category_id]['subtotal'] = subtotal
 
         ################################################################################################################
-        # Step 12: construct the report
+        # Step 15: construct the report
         ################################################################################################################
         if cursor_system:
             cursor_system.close()
