@@ -5,7 +5,6 @@ import config
 from datetime import datetime, timedelta, timezone
 import utilities
 from decimal import *
-import statistics
 
 
 class Reporting:
