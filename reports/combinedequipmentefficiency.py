@@ -20,15 +20,16 @@ class Reporting:
     # PROCEDURES
     # Step 1: valid parameters
     # Step 2: query the combined equipment
-    # Step 3: query energy categories
-    # Step 4: query associated points
-    # Step 5: query base period energy input
-    # Step 6: query base period energy output
-    # Step 7: query reporting period energy input
-    # Step 8: query reporting period energy output
-    # Step 9: query tariff data
-    # Step 10: query associated sensors and points data
-    # Step 11: construct the report
+    # Step 3: query associated equipments
+    # Step 4: query energy categories
+    # Step 5: query associated points
+    # Step 6: query base period energy input
+    # Step 7: query base period energy output
+    # Step 8: query reporting period energy input
+    # Step 9: query reporting period energy output
+    # Step 10: query tariff data
+    # Step 11: query associated points data
+    # Step 12: construct the report
     ####################################################################################################################
     @staticmethod
     def on_get(req, resp):
@@ -161,9 +162,13 @@ class Reporting:
         combined_equipment['id'] = row_combined_equipment[0]
         combined_equipment['name'] = row_combined_equipment[1]
         combined_equipment['cost_center_id'] = row_combined_equipment[2]
+        ################################################################################################################
+        # Step 3: query associated equipments
+        ################################################################################################################
+        # todo
 
         ################################################################################################################
-        # Step 3: query input energy categories and output energy categories
+        # Step 4: query input energy categories and output energy categories
         ################################################################################################################
         energy_category_set_input = set()
         energy_category_set_output = set()
@@ -248,7 +253,7 @@ class Reporting:
                                                                 "kgco2e": row_energy_category[4]}
 
         ################################################################################################################
-        # Step 4: query associated points
+        # Step 5: query associated points
         ################################################################################################################
         point_list = list()
         cursor_system.execute(" SELECT p.id, p.name, p.units, p.object_type  "
@@ -262,7 +267,7 @@ class Reporting:
                 point_list.append({"id": row[0], "name": row[1], "units": row[2], "object_type": row[3]})
 
         ################################################################################################################
-        # Step 5: query base period energy input
+        # Step 6: query base period energy input
         ################################################################################################################
         base_input = dict()
         if energy_category_set_input is not None and len(energy_category_set_input) > 0:
@@ -309,7 +314,7 @@ class Reporting:
                     base_input[energy_category_id]['subtotal'] += actual_value
 
         ################################################################################################################
-        # Step 6: query base period energy output
+        # Step 7: query base period energy output
         ################################################################################################################
         base_output = dict()
         if energy_category_set_output is not None and len(energy_category_set_output) > 0:
@@ -355,7 +360,7 @@ class Reporting:
                     base_output[energy_category_id]['values'].append(actual_value)
                     base_output[energy_category_id]['subtotal'] += actual_value
         ################################################################################################################
-        # Step 7: query reporting period energy input
+        # Step 8: query reporting period energy input
         ################################################################################################################
         reporting_input = dict()
         if energy_category_set_input is not None and len(energy_category_set_input) > 0:
@@ -403,7 +408,7 @@ class Reporting:
                     reporting_input[energy_category_id]['subtotal'] += actual_value
 
         ################################################################################################################
-        # Step 8: query reporting period energy output
+        # Step 9: query reporting period energy output
         ################################################################################################################
         reporting_output = dict()
         if energy_category_set_output is not None and len(energy_category_set_output) > 0:
@@ -451,7 +456,7 @@ class Reporting:
                     reporting_output[energy_category_id]['subtotal'] += actual_value
 
         ################################################################################################################
-        # Step 9: query tariff data
+        # Step 10: query tariff data
         ################################################################################################################
         parameters_data = dict()
         parameters_data['names'] = list()
@@ -476,7 +481,7 @@ class Reporting:
                 parameters_data['values'].append(tariff_value_list)
 
         ################################################################################################################
-        # Step 10: query associated sensors and points data
+        # Step 11: query associated points data
         ################################################################################################################
         for point in point_list:
             point_values = []
@@ -541,7 +546,7 @@ class Reporting:
             parameters_data['values'].append(point_values)
 
         ################################################################################################################
-        # Step 11: construct the report
+        # Step 12: construct the report
         ################################################################################################################
         if cursor_system:
             cursor_system.close()
