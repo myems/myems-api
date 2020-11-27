@@ -916,8 +916,10 @@ class Reporting:
         result['child_space_input']['subtotals_in_kgco2e'] = list()
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
-                result['child_space_input']['energy_category_names'].append(energy_category_dict[energy_category_id]['name'])
-                result['child_space_input']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
+                result['child_space_input']['energy_category_names'].append(
+                    energy_category_dict[energy_category_id]['name'])
+                result['child_space_input']['units'].append(
+                    energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['child_space_input']['child_space_names_array'].append(
                     child_space_input[energy_category_id]['child_space_names'])
                 result['child_space_input']['subtotals'].append(
