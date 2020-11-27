@@ -77,7 +77,9 @@ working_day_start_time_local = '00:00:00'
 
 # indicates where user uploaded files will be saved to
 # must use the root folder of myems-admin web application
-upload_path = '/var/www/html/upload/'
+# for example if you serve myems-admin at /var/www/html/admin
+# you should set the upload_path as below
+upload_path = '/var/www/html/admin/upload/'
 
 # main currency unit
 currency_unit = 'CNY'
