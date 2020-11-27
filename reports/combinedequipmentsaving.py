@@ -126,7 +126,7 @@ class Reporting:
         cnx_system = mysql.connector.connect(**config.myems_system_db)
         cursor_system = cnx_system.cursor()
 
-        cnx_energy = mysql.connector.connect(**config.myems_billing_db)
+        cnx_energy = mysql.connector.connect(**config.myems_energy_db)
         cursor_energy = cnx_energy.cursor()
 
         cnx_energy_baseline = mysql.connector.connect(**config.myems_energy_baseline_db)

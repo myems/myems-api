@@ -126,8 +126,8 @@ class Reporting:
         cnx_system = mysql.connector.connect(**config.myems_system_db)
         cursor_system = cnx_system.cursor()
 
-        cnx_energy = mysql.connector.connect(**config.myems_billing_db)
-        cursor_energy = cnx_energy.cursor()
+        cnx_billing = mysql.connector.connect(**config.myems_billing_db)
+        cursor_billing = cnx_billing.cursor()
 
         cnx_historical = mysql.connector.connect(**config.myems_historical_db)
         cursor_historical = cnx_historical.cursor()
@@ -142,10 +142,10 @@ class Reporting:
             if cnx_system:
                 cnx_system.disconnect()
 
-            if cursor_energy:
-                cursor_energy.close()
-            if cnx_energy:
-                cnx_energy.disconnect()
+            if cursor_billing:
+                cursor_billing.close()
+            if cnx_billing:
+                cnx_billing.disconnect()
 
             if cnx_historical:
                 cnx_historical.close()
@@ -165,25 +165,25 @@ class Reporting:
         ################################################################################################################
         energy_category_set = set()
         # query energy categories in base period
-        cursor_energy.execute(" SELECT DISTINCT(energy_category_id) "
-                              " FROM tbl_combined_equipment_input_category_hourly "
-                              " WHERE combined_equipment_id = %s "
-                              "     AND start_datetime_utc >= %s "
-                              "     AND start_datetime_utc < %s ",
-                              (combined_equipment['id'], base_start_datetime_utc, base_end_datetime_utc))
-        rows_energy_categories = cursor_energy.fetchall()
+        cursor_billing.execute(" SELECT DISTINCT(energy_category_id) "
+                               " FROM tbl_combined_equipment_input_category_hourly "
+                               " WHERE combined_equipment_id = %s "
+                               "     AND start_datetime_utc >= %s "
+                               "     AND start_datetime_utc < %s ",
+                               (combined_equipment['id'], base_start_datetime_utc, base_end_datetime_utc))
+        rows_energy_categories = cursor_billing.fetchall()
         if rows_energy_categories is not None or len(rows_energy_categories) > 0:
             for row_energy_category in rows_energy_categories:
                 energy_category_set.add(row_energy_category[0])
 
         # query energy categories in reporting period
-        cursor_energy.execute(" SELECT DISTINCT(energy_category_id) "
-                              " FROM tbl_combined_equipment_input_category_hourly "
-                              " WHERE combined_equipment_id = %s "
-                              "     AND start_datetime_utc >= %s "
-                              "     AND start_datetime_utc < %s ",
-                              (combined_equipment['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
-        rows_energy_categories = cursor_energy.fetchall()
+        cursor_billing.execute(" SELECT DISTINCT(energy_category_id) "
+                               " FROM tbl_combined_equipment_input_category_hourly "
+                               " WHERE combined_equipment_id = %s "
+                               "     AND start_datetime_utc >= %s "
+                               "     AND start_datetime_utc < %s ",
+                               (combined_equipment['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
+        rows_energy_categories = cursor_billing.fetchall()
         if rows_energy_categories is not None or len(rows_energy_categories) > 0:
             for row_energy_category in rows_energy_categories:
                 energy_category_set.add(row_energy_category[0])
@@ -199,10 +199,10 @@ class Reporting:
             if cnx_system:
                 cnx_system.disconnect()
 
-            if cursor_energy:
-                cursor_energy.close()
-            if cnx_energy:
-                cnx_energy.disconnect()
+            if cursor_billing:
+                cursor_billing.close()
+            if cnx_billing:
+                cnx_billing.disconnect()
 
             if cnx_historical:
                 cnx_historical.close()
@@ -244,18 +244,18 @@ class Reporting:
                 base[energy_category_id]['values'] = list()
                 base[energy_category_id]['subtotal'] = Decimal(0.0)
 
-                cursor_energy.execute(" SELECT start_datetime_utc, actual_value "
-                                      " FROM tbl_combined_equipment_input_category_hourly "
-                                      " WHERE combined_equipment_id = %s "
-                                      "     AND energy_category_id = %s "
-                                      "     AND start_datetime_utc >= %s "
-                                      "     AND start_datetime_utc < %s "
-                                      " ORDER BY start_datetime_utc ",
-                                      (combined_equipment['id'],
-                                       energy_category_id,
-                                       base_start_datetime_utc,
-                                       base_end_datetime_utc))
-                rows_combined_equipment_hourly = cursor_energy.fetchall()
+                cursor_billing.execute(" SELECT start_datetime_utc, actual_value "
+                                       " FROM tbl_combined_equipment_input_category_hourly "
+                                       " WHERE combined_equipment_id = %s "
+                                       "     AND energy_category_id = %s "
+                                       "     AND start_datetime_utc >= %s "
+                                       "     AND start_datetime_utc < %s "
+                                       " ORDER BY start_datetime_utc ",
+                                       (combined_equipment['id'],
+                                        energy_category_id,
+                                        base_start_datetime_utc,
+                                        base_end_datetime_utc))
+                rows_combined_equipment_hourly = cursor_billing.fetchall()
 
                 rows_combined_equipment_periodically = \
                     utilities.aggregate_hourly_data_by_period(rows_combined_equipment_hourly,
@@ -295,18 +295,18 @@ class Reporting:
                 reporting[energy_category_id]['midpeak'] = Decimal(0.0)
                 reporting[energy_category_id]['offpeak'] = Decimal(0.0)
 
-                cursor_energy.execute(" SELECT start_datetime_utc, actual_value "
-                                      " FROM tbl_combined_equipment_input_category_hourly "
-                                      " WHERE combined_equipment_id = %s "
-                                      "     AND energy_category_id = %s "
-                                      "     AND start_datetime_utc >= %s "
-                                      "     AND start_datetime_utc < %s "
-                                      " ORDER BY start_datetime_utc ",
-                                      (combined_equipment['id'],
-                                       energy_category_id,
-                                       reporting_start_datetime_utc,
-                                       reporting_end_datetime_utc))
-                rows_combined_equipment_hourly = cursor_energy.fetchall()
+                cursor_billing.execute(" SELECT start_datetime_utc, actual_value "
+                                       " FROM tbl_combined_equipment_input_category_hourly "
+                                       " WHERE combined_equipment_id = %s "
+                                       "     AND energy_category_id = %s "
+                                       "     AND start_datetime_utc >= %s "
+                                       "     AND start_datetime_utc < %s "
+                                       " ORDER BY start_datetime_utc ",
+                                       (combined_equipment['id'],
+                                        energy_category_id,
+                                        reporting_start_datetime_utc,
+                                        reporting_end_datetime_utc))
+                rows_combined_equipment_hourly = cursor_billing.fetchall()
 
                 rows_combined_equipment_periodically = \
                     utilities.aggregate_hourly_data_by_period(rows_combined_equipment_hourly,
@@ -446,10 +446,10 @@ class Reporting:
         if cnx_system:
             cnx_system.disconnect()
 
-        if cursor_energy:
-            cursor_energy.close()
-        if cnx_energy:
-            cnx_energy.disconnect()
+        if cursor_billing:
+            cursor_billing.close()
+        if cnx_billing:
+            cnx_billing.disconnect()
 
         result = dict()
 
