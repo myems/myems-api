@@ -27,7 +27,7 @@ class Reporting:
     # Step 7: query reporting period energy input
     # Step 8: query reporting period energy output
     # Step 9: query tariff data
-    # Step 10: query associated sensors and points data
+    # Step 10: query associated points data
     # Step 11: construct the report
     ####################################################################################################################
     @staticmethod

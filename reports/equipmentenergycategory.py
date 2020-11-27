@@ -25,7 +25,7 @@ class Reporting:
     # Step 5: query base period energy input
     # Step 6: query reporting period energy input
     # Step 7: query tariff data
-    # Step 8: query associated sensors and points data
+    # Step 8: query associated points data
     # Step 9: construct the report
     ####################################################################################################################
     @staticmethod
@@ -378,7 +378,7 @@ class Reporting:
                 parameters_data['values'].append(tariff_value_list)
 
         ################################################################################################################
-        # Step 7: query associated sensors and points data
+        # Step 7: query associated points data
         ################################################################################################################
         for point in point_list:
             point_values = []
