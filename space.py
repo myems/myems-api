@@ -697,14 +697,19 @@ class SpaceChildrenCollection:
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
 
-        cursor.execute(" SELECT name "
-                       " FROM tbl_spaces "
-                       " WHERE id = %s ", (id_,))
-        if cursor.fetchone() is None:
+        query = (" SELECT id, name, uuid, "
+                 "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
+                 "        contact_id, cost_center_id, description "
+                 " FROM tbl_spaces "
+                 " WHERE id = %s ")
+        cursor.execute(query, (id_,))
+        row_current_space = cursor.fetchone()
+        if row_current_space is None:
             cursor.close()
             cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.SPACE_NOT_FOUND')
+        # note: row_current_space will be used at the end
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_spaces ")
@@ -753,6 +758,21 @@ class SpaceChildrenCollection:
                 cost_center_dict[row['id']] = {"id": row['id'],
                                                "name": row['name'],
                                                "uuid": row['uuid']}
+        result = dict()
+        result['current'] = dict()
+        result['current']['id'] = row_current_space['id']
+        result['current']['name'] = row_current_space['name']
+        result['current']['uuid'] = row_current_space['uuid']
+        result['current']['parent_space'] = space_dict.get(row_current_space['parent_space_id'], None)
+        result['current']['area'] = row_current_space['area']
+        result['current']['timezone'] = timezone_dict.get(row_current_space['timezone_id'], None)
+        result['current']['is_input_counted'] = bool(row_current_space['is_input_counted'])
+        result['current']['is_output_counted'] = bool(row_current_space['is_output_counted'])
+        result['current']['contact'] = contact_dict.get(row_current_space['contact_id'], None)
+        result['current']['cost_center'] = cost_center_dict.get(row_current_space['cost_center_id'], None)
+        result['current']['description'] = row_current_space['description']
+
+        result['children'] = list()
 
         query = (" SELECT id, name, uuid, "
                  "        parent_space_id, area, timezone_id, is_input_counted, is_output_counted, "
@@ -763,7 +783,6 @@ class SpaceChildrenCollection:
         cursor.execute(query, (id_, ))
         rows_spaces = cursor.fetchall()
 
-        result = list()
         if rows_spaces is not None and len(rows_spaces) > 0:
             for row in rows_spaces:
                 timezone = timezone_dict.get(row['timezone_id'], None)
@@ -781,7 +800,7 @@ class SpaceChildrenCollection:
                                "contact": contact,
                                "cost_center": cost_center,
                                "description": row['description']}
-                result.append(meta_result)
+                result['children'].append(meta_result)
 
         cursor.close()
         cnx.disconnect()
