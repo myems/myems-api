@@ -19,9 +19,10 @@ class Reporting:
     ####################################################################################################################
     # PROCEDURES
     # Step 1: valid parameters
-    # Step 2: query the meter and it's points
+    # Step 2: query the meter and energy category
+    # Step 3: query associated points
     # Step 4: query reporting period points trends
-    # Step 5: query parameters data
+    # Step 5: query tariff data
     # Step 6: construct the report
     ####################################################################################################################
     @staticmethod
@@ -76,19 +77,29 @@ class Reporting:
                                    description='API.INVALID_REPORTING_PERIOD_ENDS_DATETIME')
 
         ################################################################################################################
-        # Step 2: query the meter and it's points
+        # Step 2: query the meter and energy category
         ################################################################################################################
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cnx_system = mysql.connector.connect(**config.myems_system_db)
+        cursor_system = cnx_system.cursor()
 
-        cursor.execute(" SELECT m.id, m.name, m.cost_center_id, m.energy_category_id, "
-                       "        ec.name, ec.unit_of_measure, ec.kgce, ec.kgco2e "
-                       " FROM tbl_meters m, tbl_energy_categories ec "
-                       " WHERE m.id = %s AND m.energy_category_id = ec.id ", (meter_id,))
-        row_meter = cursor.fetchone()
+        cnx_historical = mysql.connector.connect(**config.myems_historical_db)
+        cursor_historical = cnx_historical.cursor()
+
+        cursor_system.execute(" SELECT m.id, m.name, m.cost_center_id, m.energy_category_id, "
+                              "        ec.name, ec.unit_of_measure, ec.kgce, ec.kgco2e "
+                              " FROM tbl_meters m, tbl_energy_categories ec "
+                              " WHERE m.id = %s AND m.energy_category_id = ec.id ", (meter_id,))
+        row_meter = cursor_system.fetchone()
         if row_meter is None:
-            cursor.close()
-            cnx.disconnect()
+            if cursor_system:
+                cursor_system.close()
+            if cnx_system:
+                cnx_system.disconnect()
+
+            if cursor_historical:
+                cursor_historical.close()
+            if cnx_historical:
+                cnx_historical.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.METER_NOT_FOUND')
 
         meter = dict()
@@ -101,46 +112,28 @@ class Reporting:
         meter['kgce'] = row_meter[6]
         meter['kgco2e'] = row_meter[7]
 
+        ################################################################################################################
+        # Step 3: query associated points
+        ################################################################################################################
         point_list = list()
-        query = (" SELECT p.id, p.name, p.units, p.object_type "
-                 " FROM tbl_points p, tbl_meters_points mp, tbl_meters m "
-                 " WHERE  m.id = %s "
-                 "        AND m.id = mp.meter_id "
-                 "        AND p.id = mp.point_id "
-                 "        AND p.is_trend = True "
-                 " ORDER BY p.name  ")
-        cursor.execute(query, (meter_id,))
-        rows = cursor.fetchall()
-
-        if rows is not None and len(rows) > 0:
-            for row in rows:
+        cursor_system.execute(" SELECT p.id, p.name, p.units, p.object_type  "
+                              " FROM tbl_meters m, tbl_meters_points mp, tbl_points p "
+                              " WHERE m.id = %s AND m.id = mp.meter_id AND mp.point_id = p.id "
+                              " ORDER BY p.id ", (meter['id'],))
+        rows_points = cursor_system.fetchall()
+        if rows_points is not None and len(rows_points) > 0:
+            for row in rows_points:
                 point_list.append({"id": row[0], "name": row[1], "units": row[2], "object_type": row[3]})
 
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.disconnect()
-
-        if len(point_list) == 0:
-            raise falcon.HTTPError(falcon.HTTP_404,
-                                   title='API.NOT_FOUND',
-                                   description='API.THERE_IS_NOT_ASSOCIATED_POINTS')
-
         ################################################################################################################
-        # Step 3: query reporting period points trends
+        # Step 4: query reporting period points trends
         ################################################################################################################
-
-        cnx = mysql.connector.connect(**config.myems_historical_db)
-        cursor = cnx.cursor()
-
         reporting = dict()
         reporting['names'] = list()
         reporting['timestamps'] = list()
         reporting['values'] = list()
 
         for point in point_list:
-            reporting['names'].append(point['name'])
-
             point_values = []
             point_timestamps = []
             if point['object_type'] == 'ANALOG_VALUE':
@@ -149,8 +142,10 @@ class Reporting:
                          " WHERE point_id = %s "
                          "       AND utc_date_time BETWEEN %s AND %s "
                          " ORDER BY utc_date_time ")
-                cursor.execute(query, (point['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
-                rows = cursor.fetchall()
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
 
                 if rows is not None and len(rows) > 0:
                     for row in rows:
@@ -166,8 +161,10 @@ class Reporting:
                          " WHERE point_id = %s "
                          "       AND utc_date_time BETWEEN %s AND %s "
                          " ORDER BY utc_date_time ")
-                cursor.execute(query, (point['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
-                rows = cursor.fetchall()
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
 
                 if rows is not None and len(rows) > 0:
                     for row in rows:
@@ -181,8 +178,10 @@ class Reporting:
                          " FROM tbl_digital_value "
                          " WHERE point_id = %s "
                          "       AND utc_date_time BETWEEN %s AND %s ")
-                cursor.execute(query, (point['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
-                rows = cursor.fetchall()
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
 
                 if rows is not None and len(rows) > 0:
                     for row in rows:
@@ -192,20 +191,17 @@ class Reporting:
                         point_timestamps.append(current_datetime)
                         point_values.append(row[1])
 
+            reporting['names'].append(point['name'] + ' (' + point['units'] + ')')
             reporting['timestamps'].append(point_timestamps)
             reporting['values'].append(point_values)
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.disconnect()
 
         ################################################################################################################
-        # Step 4: query parameters data
+        # Step 5: query tariff data
         ################################################################################################################
-        parameters = dict()
-        parameters['names'] = list()
-        parameters['timestamps'] = list()
-        parameters['values'] = list()
+        parameters_data = dict()
+        parameters_data['names'] = list()
+        parameters_data['timestamps'] = list()
+        parameters_data['values'] = list()
 
         tariff_dict = utilities.get_energy_category_tariffs(meter['cost_center_id'],
                                                             meter['energy_category_id'],
@@ -220,13 +216,23 @@ class Reporting:
             tariff_timestamp_list.append(k.isoformat()[0:19])
             tariff_value_list.append(v)
 
-        parameters['names'].append('TARIFF')
-        parameters['timestamps'].append(tariff_timestamp_list)
-        parameters['values'].append(tariff_value_list)
+        parameters_data['names'].append('TARIFF-' + meter['energy_category_name'])
+        parameters_data['timestamps'].append(tariff_timestamp_list)
+        parameters_data['values'].append(tariff_value_list)
 
         ################################################################################################################
-        # Step 5: construct the report
+        # Step 6: construct the report
         ################################################################################################################
+        if cursor_system:
+            cursor_system.close()
+        if cnx_system:
+            cnx_system.disconnect()
+
+        if cursor_historical:
+            cursor_historical.close()
+        if cnx_historical:
+            cnx_historical.disconnect()
+
         result = {
             "meter": {
                 "cost_center_id": meter['cost_center_id'],
@@ -242,9 +248,9 @@ class Reporting:
                 "values": reporting['values'],
             },
             "parameters": {
-                "names": parameters['names'],
-                "timestamps": parameters['timestamps'],
-                "values": parameters['values']
+                "names": parameters_data['names'],
+                "timestamps": parameters_data['timestamps'],
+                "values": parameters_data['values']
             },
         }
 
