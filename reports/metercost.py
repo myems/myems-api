@@ -19,13 +19,15 @@ class Reporting:
     ####################################################################################################################
     # PROCEDURES
     # Step 1: valid parameters
-    # Step 2: query the  meter and energy category
-    # Step 3: query base period energy consumption
-    # Step 4: query base period energy cost
-    # Step 5: query reporting period energy consumption
-    # Step 6: query reporting period energy cost
-    # Step 7: query parameters data
-    # Step 8: construct the report
+    # Step 2: query the meter and energy category
+    # Step 3: query associated points
+    # Step 4: query base period energy consumption
+    # Step 5: query base period energy cost
+    # Step 6: query reporting period energy consumption
+    # Step 7: query reporting period energy cost
+    # Step 8: query tariff data
+    # Step 9: query associated points data
+    # Step 10: construct the report
     ####################################################################################################################
     @staticmethod
     def on_get(req, resp):
@@ -122,17 +124,43 @@ class Reporting:
         ################################################################################################################
         # Step 2: query the meter and energy category
         ################################################################################################################
-        cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cnx_system = mysql.connector.connect(**config.myems_system_db)
+        cursor_system = cnx_system.cursor()
 
-        cursor.execute(" SELECT m.id, m.name, m.cost_center_id, m.energy_category_id, "
-                       "        ec.name, ec.unit_of_measure, ec.kgce, ec.kgco2e "
-                       " FROM tbl_meters m, tbl_energy_categories ec "
-                       " WHERE m.id = %s AND m.energy_category_id = ec.id ", (meter_id,))
-        row_meter = cursor.fetchone()
+        cnx_energy = mysql.connector.connect(**config.myems_energy_db)
+        cursor_energy = cnx_energy.cursor()
+
+        cnx_billing = mysql.connector.connect(**config.myems_billing_db)
+        cursor_billing = cnx_billing.cursor()
+
+        cnx_historical = mysql.connector.connect(**config.myems_historical_db)
+        cursor_historical = cnx_historical.cursor()
+
+        cursor_system.execute(" SELECT m.id, m.name, m.cost_center_id, m.energy_category_id, "
+                              "        ec.name, ec.unit_of_measure, ec.kgce, ec.kgco2e "
+                              " FROM tbl_meters m, tbl_energy_categories ec "
+                              " WHERE m.id = %s AND m.energy_category_id = ec.id ", (meter_id,))
+        row_meter = cursor_system.fetchone()
         if row_meter is None:
-            cursor.close()
-            cnx.disconnect()
+            if cursor_system:
+                cursor_system.close()
+            if cnx_system:
+                cnx_system.disconnect()
+
+            if cursor_energy:
+                cursor_energy.close()
+            if cnx_energy:
+                cnx_energy.disconnect()
+
+            if cursor_billing:
+                cursor_billing.close()
+            if cnx_billing:
+                cnx_billing.disconnect()
+
+            if cursor_historical:
+                cursor_historical.close()
+            if cnx_historical:
+                cnx_historical.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND', description='API.METER_NOT_FOUND')
 
         meter = dict()
@@ -145,24 +173,30 @@ class Reporting:
         meter['kgce'] = row_meter[6]
         meter['kgco2e'] = row_meter[7]
 
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.disconnect()
+        ################################################################################################################
+        # Step 3: query associated points
+        ################################################################################################################
+        point_list = list()
+        cursor_system.execute(" SELECT p.id, p.name, p.units, p.object_type  "
+                              " FROM tbl_meters m, tbl_meters_points mp, tbl_points p "
+                              " WHERE m.id = %s AND m.id = mp.meter_id AND mp.point_id = p.id "
+                              " ORDER BY p.id ", (meter['id'],))
+        rows_points = cursor_system.fetchall()
+        if rows_points is not None and len(rows_points) > 0:
+            for row in rows_points:
+                point_list.append({"id": row[0], "name": row[1], "units": row[2], "object_type": row[3]})
 
         ################################################################################################################
-        # Step 3: query base period energy consumption
+        # Step 4: query base period energy consumption
         ################################################################################################################
-        cnx = mysql.connector.connect(**config.myems_energy_db)
-        cursor = cnx.cursor()
         query = (" SELECT start_datetime_utc, actual_value "
                  " FROM tbl_meter_hourly "
                  " WHERE meter_id = %s "
                  " AND start_datetime_utc >= %s "
                  " AND start_datetime_utc < %s "
                  " ORDER BY start_datetime_utc ")
-        cursor.execute(query, (meter['id'], base_start_datetime_utc, base_end_datetime_utc))
-        rows_meter_hourly = cursor.fetchall()
+        cursor_energy.execute(query, (meter['id'], base_start_datetime_utc, base_end_datetime_utc))
+        rows_meter_hourly = cursor_energy.fetchall()
 
         rows_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_meter_hourly,
                                                                             base_start_datetime_utc,
@@ -197,24 +231,17 @@ class Reporting:
             base['values_in_kgco2e'].append(actual_value * meter['kgco2e'])
             base['total_in_kgco2e'] += actual_value * meter['kgco2e']
 
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.disconnect()
-
         ################################################################################################################
-        # Step 4: query base period energy cost
+        # Step 5: query base period energy cost
         ################################################################################################################
-        cnx = mysql.connector.connect(**config.myems_billing_db)
-        cursor = cnx.cursor()
         query = (" SELECT start_datetime_utc, actual_value "
                  " FROM tbl_meter_hourly "
                  " WHERE meter_id = %s "
                  " AND start_datetime_utc >= %s "
                  " AND start_datetime_utc < %s "
                  " ORDER BY start_datetime_utc ")
-        cursor.execute(query, (meter['id'], base_start_datetime_utc, base_end_datetime_utc))
-        rows_meter_hourly = cursor.fetchall()
+        cursor_billing.execute(query, (meter['id'], base_start_datetime_utc, base_end_datetime_utc))
+        rows_meter_hourly = cursor_billing.fetchall()
 
         rows_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_meter_hourly,
                                                                             base_start_datetime_utc,
@@ -230,24 +257,17 @@ class Reporting:
             base['values_in_category'].append(actual_value)
             base['total_in_category'] += actual_value
 
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.disconnect()
-
         ################################################################################################################
-        # Step 5: query reporting period energy consumption
+        # Step 6: query reporting period energy consumption
         ################################################################################################################
-        cnx = mysql.connector.connect(**config.myems_energy_db)
-        cursor = cnx.cursor()
         query = (" SELECT start_datetime_utc, actual_value "
                  " FROM tbl_meter_hourly "
                  " WHERE meter_id = %s "
                  " AND start_datetime_utc >= %s "
                  " AND start_datetime_utc < %s "
                  " ORDER BY start_datetime_utc ")
-        cursor.execute(query, (meter['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
-        rows_meter_hourly = cursor.fetchall()
+        cursor_energy.execute(query, (meter['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
+        rows_meter_hourly = cursor_energy.fetchall()
 
         rows_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_meter_hourly,
                                                                             reporting_start_datetime_utc,
@@ -283,24 +303,17 @@ class Reporting:
             reporting['values_in_kgco2e'].append(actual_value * meter['kgco2e'])
             reporting['total_in_kgco2e'] += actual_value * meter['kgco2e']
 
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.disconnect()
-
         ################################################################################################################
-        # Step 6: query reporting period energy cost
+        # Step 7: query reporting period energy cost
         ################################################################################################################
-        cnx = mysql.connector.connect(**config.myems_billing_db)
-        cursor = cnx.cursor()
         query = (" SELECT start_datetime_utc, actual_value "
                  " FROM tbl_meter_hourly "
                  " WHERE meter_id = %s "
                  " AND start_datetime_utc >= %s "
                  " AND start_datetime_utc < %s "
                  " ORDER BY start_datetime_utc ")
-        cursor.execute(query, (meter['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
-        rows_meter_hourly = cursor.fetchall()
+        cursor_billing.execute(query, (meter['id'], reporting_start_datetime_utc, reporting_end_datetime_utc))
+        rows_meter_hourly = cursor_billing.fetchall()
 
         rows_meter_periodically = utilities.aggregate_hourly_data_by_period(rows_meter_hourly,
                                                                             reporting_start_datetime_utc,
@@ -314,23 +327,18 @@ class Reporting:
             reporting['values_in_category'].append(actual_value)
             reporting['total_in_category'] += actual_value
 
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.disconnect()
         ################################################################################################################
-        # Step 7: query parameters data
+        # Step 8: query tariff data
         ################################################################################################################
-        parameters = dict()
-        parameters['names'] = list()
-        parameters['timestamps'] = list()
-        parameters['values'] = list()
+        parameters_data = dict()
+        parameters_data['names'] = list()
+        parameters_data['timestamps'] = list()
+        parameters_data['values'] = list()
 
         tariff_dict = utilities.get_energy_category_tariffs(meter['cost_center_id'],
                                                             meter['energy_category_id'],
                                                             reporting_start_datetime_utc,
                                                             reporting_end_datetime_utc)
-        print(tariff_dict)
         tariff_timestamp_list = list()
         tariff_value_list = list()
         for k, v in tariff_dict.items():
@@ -339,13 +347,97 @@ class Reporting:
             tariff_timestamp_list.append(k.isoformat()[0:19])
             tariff_value_list.append(v)
 
-        parameters['names'].append('TARIFF')
-        parameters['timestamps'].append(tariff_timestamp_list)
-        parameters['values'].append(tariff_value_list)
+        parameters_data['names'].append('TARIFF-' + meter['energy_category_name'])
+        parameters_data['timestamps'].append(tariff_timestamp_list)
+        parameters_data['values'].append(tariff_value_list)
 
         ################################################################################################################
-        # Step 8: construct the report
+        # Step 9: query associated points data
         ################################################################################################################
+        for point in point_list:
+            point_values = []
+            point_timestamps = []
+            if point['object_type'] == 'ANALOG_VALUE':
+                query = (" SELECT utc_date_time, actual_value "
+                         " FROM tbl_analog_value "
+                         " WHERE point_id = %s "
+                         "       AND utc_date_time BETWEEN %s AND %s "
+                         " ORDER BY utc_date_time ")
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
+
+                if rows is not None and len(rows) > 0:
+                    for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
+                        point_values.append(row[1])
+
+            elif point['object_type'] == 'ENERGY_VALUE':
+                query = (" SELECT utc_date_time, actual_value "
+                         " FROM tbl_energy_value "
+                         " WHERE point_id = %s "
+                         "       AND utc_date_time BETWEEN %s AND %s "
+                         " ORDER BY utc_date_time ")
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
+
+                if rows is not None and len(rows) > 0:
+                    for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
+                        point_values.append(row[1])
+            elif point['object_type'] == 'DIGITAL_VALUE':
+                query = (" SELECT utc_date_time, actual_value "
+                         " FROM tbl_digital_value "
+                         " WHERE point_id = %s "
+                         "       AND utc_date_time BETWEEN %s AND %s ")
+                cursor_historical.execute(query, (point['id'],
+                                                  reporting_start_datetime_utc,
+                                                  reporting_end_datetime_utc))
+                rows = cursor_historical.fetchall()
+
+                if rows is not None and len(rows) > 0:
+                    for row in rows:
+                        current_datetime_local = row[0].replace(tzinfo=timezone.utc) + \
+                                                 timedelta(minutes=timezone_offset)
+                        current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                        point_timestamps.append(current_datetime)
+                        point_values.append(row[1])
+
+            parameters_data['names'].append(point['name'] + ' (' + point['units'] + ')')
+            parameters_data['timestamps'].append(point_timestamps)
+            parameters_data['values'].append(point_values)
+
+        ################################################################################################################
+        # Step 10: construct the report
+        ################################################################################################################
+        if cursor_system:
+            cursor_system.close()
+        if cnx_system:
+            cnx_system.disconnect()
+
+        if cursor_energy:
+            cursor_energy.close()
+        if cnx_energy:
+            cnx_energy.disconnect()
+
+        if cursor_billing:
+            cursor_billing.close()
+        if cnx_billing:
+            cnx_billing.disconnect()
+
+        if cursor_historical:
+            cursor_historical.close()
+        if cnx_historical:
+            cnx_historical.disconnect()
         result = {
             "meter": {
                 "cost_center_id": meter['cost_center_id'],
@@ -381,9 +473,9 @@ class Reporting:
                            base['values_in_kgco2e']],
             },
             "parameters": {
-                "names": parameters['names'],
-                "timestamps": parameters['timestamps'],
-                "values": parameters['values']
+                "names": parameters_data['names'],
+                "timestamps": parameters_data['timestamps'],
+                "values": parameters_data['values']
             },
         }
 
