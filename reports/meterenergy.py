@@ -192,11 +192,9 @@ class Reporting:
                                                                             period_type)
         base = dict()
         base['timestamps'] = list()
-        base['values_in_category'] = list()
+        base['values'] = list()
         base['total_in_category'] = Decimal(0.0)
-        base['values_in_kgce'] = list()
         base['total_in_kgce'] = Decimal(0.0)
-        base['values_in_kgco2e'] = list()
         base['total_in_kgco2e'] = Decimal(0.0)
 
         for row_meter_periodically in rows_meter_periodically:
@@ -213,11 +211,9 @@ class Reporting:
 
             actual_value = Decimal(0.0) if row_meter_periodically[1] is None else row_meter_periodically[1]
             base['timestamps'].append(current_datetime)
-            base['values_in_category'].append(actual_value)
+            base['values'].append(actual_value)
             base['total_in_category'] += actual_value
-            base['values_in_kgce'].append(actual_value * meter['kgce'])
             base['total_in_kgce'] += actual_value * meter['kgce']
-            base['values_in_kgco2e'].append(actual_value * meter['kgco2e'])
             base['total_in_kgco2e'] += actual_value * meter['kgco2e']
 
         ################################################################################################################
@@ -238,11 +234,9 @@ class Reporting:
                                                                             period_type)
         reporting = dict()
         reporting['timestamps'] = list()
-        reporting['values_in_category'] = list()
+        reporting['values'] = list()
         reporting['total_in_category'] = Decimal(0.0)
-        reporting['values_in_kgce'] = list()
         reporting['total_in_kgce'] = Decimal(0.0)
-        reporting['values_in_kgco2e'] = list()
         reporting['total_in_kgco2e'] = Decimal(0.0)
 
         for row_meter_periodically in rows_meter_periodically:
@@ -260,11 +254,9 @@ class Reporting:
             actual_value = Decimal(0.0) if row_meter_periodically[1] is None else row_meter_periodically[1]
 
             reporting['timestamps'].append(current_datetime)
-            reporting['values_in_category'].append(actual_value)
+            reporting['values'].append(actual_value)
             reporting['total_in_category'] += actual_value
-            reporting['values_in_kgce'].append(actual_value * meter['kgce'])
             reporting['total_in_kgce'] += actual_value * meter['kgce']
-            reporting['values_in_kgco2e'].append(actual_value * meter['kgco2e'])
             reporting['total_in_kgco2e'] += actual_value * meter['kgco2e']
 
         ################################################################################################################
@@ -383,6 +375,13 @@ class Reporting:
                 "kgce": meter['kgce'],
                 "kgco2e": meter['kgco2e'],
             },
+            "base_period": {
+                "total_in_category": base['total_in_category'],
+                "total_in_kgce": base['total_in_kgce'],
+                "total_in_kgco2e": base['total_in_kgco2e'],
+                "timestamps": base['timestamps'],
+                "values": base['values']
+            },
             "reporting_period": {
                 "increment_rate":
                     (reporting['total_in_category'] - base['total_in_category'])/base['total_in_category']
@@ -390,23 +389,8 @@ class Reporting:
                 "total_in_category": reporting['total_in_category'],
                 "total_in_kgce": reporting['total_in_kgce'],
                 "total_in_kgco2e": reporting['total_in_kgco2e'],
-                "timestamps": [reporting['timestamps'],
-                               reporting['timestamps'],
-                               reporting['timestamps']],
-                "values": [reporting['values_in_category'],
-                           reporting['values_in_kgce'],
-                           reporting['values_in_kgco2e']],
-            },
-            "base_period": {
-                "total_in_category": base['total_in_category'],
-                "total_in_kgce": base['total_in_kgce'],
-                "total_in_kgco2e": base['total_in_kgco2e'],
-                "timestamps": [base['timestamps'],
-                               base['timestamps'],
-                               base['timestamps']],
-                "values": [base['values_in_category'],
-                           base['values_in_kgce'],
-                           base['values_in_kgco2e']],
+                "timestamps": reporting['timestamps'],
+                "values": reporting['values'],
             },
             "parameters": {
                 "names": parameters_data['names'],
