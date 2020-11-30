@@ -45,8 +45,10 @@ class Reporting:
                        " FROM tbl_spaces "
                        " WHERE id = %s ", (space_id,))
         if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
+            if cursor:
+                cursor.close()
+            if cnx:
+                cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.SPACE_NOT_FOUND')
 
@@ -64,22 +66,22 @@ class Reporting:
             for row in rows_spaces:
                 parent_node = node_dict[row['parent_space_id']] if row['parent_space_id'] is not None else None
                 node_dict[row['id']] = AnyNode(id=row['id'], parent=parent_node, name=row['name'])
-        print(node_dict)
+
         ################################################################################################################
         # Step 3: query all meters in the space tree
         ################################################################################################################
         meter_list = list()
-        sub_space_dict = dict()
+        space_dict = dict()
 
         for node in LevelOrderIter(node_dict[space_id]):
-            sub_space_dict[node.id] = node.name
+            space_dict[node.id] = node.name
 
         cursor.execute(" SELECT m.id, m.name AS meter_name, s.name AS space_name, "
                        "        cc.name AS cost_center_name, ec.name AS energy_category_name, "
                        "         m.description "
                        " FROM tbl_spaces s, tbl_spaces_meters sm, tbl_meters m, tbl_cost_centers cc, "
                        "      tbl_energy_categories ec "
-                       " WHERE s.id IN ( " + ', '.join(map(str, sub_space_dict.keys())) + ") "
+                       " WHERE s.id IN ( " + ', '.join(map(str, space_dict.keys())) + ") "
                        "       AND sm.space_id = s.id AND sm.meter_id = m.id "
                        "       AND m.cost_center_id = cc.id AND m.energy_category_id = ec.id ", )
         rows_meters = cursor.fetchall()
