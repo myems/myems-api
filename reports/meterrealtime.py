@@ -110,6 +110,7 @@ class Reporting:
             point_values = []
             point_timestamps = []
             if point['object_type'] == 'ANALOG_VALUE':
+
                 query = (" SELECT utc_date_time, actual_value "
                          " FROM tbl_analog_value "
                          " WHERE point_id = %s "
@@ -128,6 +129,9 @@ class Reporting:
                         point_timestamps.append(current_datetime)
                         point_values.append(row[1])
 
+                parameters_data['names'].append(point['name'] + ' (' + point['units'] + ')')
+                parameters_data['timestamps'].append(point_timestamps)
+                parameters_data['values'].append(point_values)
             elif point['object_type'] == 'ENERGY_VALUE':
                 energy_value_data['name'] = point['name']
                 query = (" SELECT utc_date_time, actual_value "
@@ -167,9 +171,9 @@ class Reporting:
                         point_timestamps.append(current_datetime)
                         point_values.append(row[1])
 
-            parameters_data['names'].append(point['name'] + ' (' + point['units'] + ')')
-            parameters_data['timestamps'].append(point_timestamps)
-            parameters_data['values'].append(point_values)
+                parameters_data['names'].append(point['name'] + ' (' + point['units'] + ')')
+                parameters_data['timestamps'].append(point_timestamps)
+                parameters_data['values'].append(point_values)
 
         ################################################################################################################
         # Step 6: construct the report
