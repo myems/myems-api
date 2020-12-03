@@ -7508,6 +7508,30 @@
 					"response": []
 				},
 				{
+					"name": "Meter Realtime",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/meterrealtime?meterid=6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"meterrealtime"
+							],
+							"query": [
+								{
+									"key": "meterid",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Meter Trend",
 					"request": {
 						"method": "GET",
@@ -7545,7 +7569,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/reports/metertracking?spaceid=2",
+							"raw": "{{base_url}}/reports/metertracking?spaceid=1",
 							"host": [
 								"{{base_url}}"
 							],
@@ -7556,7 +7580,7 @@
 							"query": [
 								{
 									"key": "spaceid",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}

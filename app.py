@@ -69,6 +69,7 @@ from reports import fddstorefault
 from reports import fddtenantfault
 from reports import meterenergy
 from reports import metercost
+from reports import meterrealtime
 from reports import metertrend
 from reports import metertracking
 from reports import offlinemeterenergy
@@ -560,6 +561,8 @@ api.add_route('/reports/metercost',
               metercost.Reporting())
 api.add_route('/reports/meterenergy',
               meterenergy.Reporting())
+api.add_route('/reports/meterrealtime',
+              meterrealtime.Reporting())
 api.add_route('/reports/metertrend',
               metertrend.Reporting())
 api.add_route('/reports/metertracking',
