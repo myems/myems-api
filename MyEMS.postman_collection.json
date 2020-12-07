@@ -7513,7 +7513,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/reports/meterrealtime?meterid=6",
+							"raw": "{{base_url}}/reports/meterrealtime?meterid=1",
 							"host": [
 								"{{base_url}}"
 							],
@@ -7524,7 +7524,7 @@
 							"query": [
 								{
 									"key": "meterid",
-									"value": "6"
+									"value": "1"
 								}
 							]
 						}
@@ -8072,12 +8072,44 @@
 					"response": []
 				},
 				{
+					"name": "Tenant Bill",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/tenantbill?tenantid=1&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"tenantbill"
+							],
+							"query": [
+								{
+									"key": "tenantid",
+									"value": "1"
+								},
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Tenant Cost",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/reports/tenantcost?tenentid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"raw": "{{base_url}}/reports/tenantcost?tenantid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
 							"host": [
 								"{{base_url}}"
 							],
@@ -8087,7 +8119,7 @@
 							],
 							"query": [
 								{
-									"key": "tenentid",
+									"key": "tenantid",
 									"value": "1"
 								},
 								{
