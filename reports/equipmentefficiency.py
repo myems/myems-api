@@ -698,7 +698,8 @@ class Reporting:
 
                     result['reporting_period_efficiency']['cumulations'].append(reporting_cumulation)
                     result['reporting_period_efficiency']['increment_rates'].append(
-                        ((reporting_cumulation - base_cumulation) / base_cumulation if (base_cumulation > Decimal(0.0))
+                        ((reporting_cumulation - base_cumulation) / base_cumulation if (base_cumulation is not None and
+                                                                                        base_cumulation > Decimal(0.0))
                          else None)
                     )
 
