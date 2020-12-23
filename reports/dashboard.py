@@ -158,7 +158,7 @@ class Reporting:
 
                 raise falcon.HTTPError(falcon.HTTP_404, 'API.NOT_FOUND', 'API.USER_PRIVILEGE_NOT_FOUND')
 
-            privilege_data = json.loads(row_privilege[0], encoding='utf-8')
+            privilege_data = json.loads(row_privilege[0])
             if 'spaces' not in privilege_data.keys() \
                     or privilege_data['spaces'] is None \
                     or len(privilege_data['spaces']) == 0:

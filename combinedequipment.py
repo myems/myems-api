@@ -64,7 +64,7 @@ class CombinedEquipmentCollection:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -281,7 +281,7 @@ class CombinedEquipmentItem:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -377,7 +377,7 @@ class CombinedEquipmentItem:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         cnx = mysql.connector.connect(**config.myems_system_db)
         cursor = cnx.cursor(dictionary=True)
@@ -566,7 +566,7 @@ class CombinedEquipmentEquipmentCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_COMBINED_EQUIPMENT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'equipment_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['equipment_id'], int) or \
@@ -819,7 +819,7 @@ class CombinedEquipmentParameterCollection:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -1177,7 +1177,7 @@ class CombinedEquipmentParameterItem:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -1430,7 +1430,7 @@ class CombinedEquipmentMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_COMBINED_EQUIPMENT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['meter_id'], int) or \
@@ -1616,7 +1616,7 @@ class CombinedEquipmentOfflineMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_COMBINED_EQUIPMENT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'offline_meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['offline_meter_id'], int) or \
@@ -1803,7 +1803,7 @@ class CombinedEquipmentVirtualMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_COMBINED_EQUIPMENT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'virtual_meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['virtual_meter_id'], int) or \

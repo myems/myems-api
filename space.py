@@ -107,7 +107,7 @@ class SpaceCollection:
         """Handles POST requests"""
         try:
             raw_json = req.stream.read().decode('utf-8')
-            new_values = json.loads(raw_json, encoding='utf-8')
+            new_values = json.loads(raw_json)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
@@ -521,7 +521,7 @@ class SpaceItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -861,7 +861,7 @@ class SpaceCombinedEquipmentCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'combined_equipment_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['combined_equipment_id'], int) or \
@@ -1026,7 +1026,7 @@ class SpaceEquipmentCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'equipment_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['equipment_id'], int) or \
@@ -1204,7 +1204,7 @@ class SpaceMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['meter_id'], int) or \
@@ -1382,7 +1382,7 @@ class SpaceOfflineMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'offline_meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['offline_meter_id'], int) or \
@@ -1560,7 +1560,7 @@ class SpacePointCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'point_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['point_id'], int) or \
@@ -1725,7 +1725,7 @@ class SpaceSensorCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'sensor_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['sensor_id'], int) or \
@@ -1889,7 +1889,7 @@ class SpaceShopfloorCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'shopfloor_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['shopfloor_id'], int) or \
@@ -2053,7 +2053,7 @@ class SpaceStoreCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'store_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['store_id'], int) or \
@@ -2217,7 +2217,7 @@ class SpaceTenantCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'tenant_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['tenant_id'], int) or \
@@ -2395,7 +2395,7 @@ class SpaceVirtualMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_SPACE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'virtual_meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['virtual_meter_id'], int) or \

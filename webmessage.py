@@ -237,7 +237,7 @@ class WebMessageItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_WEB_MESSAGE_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'status' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['status'], str) or \

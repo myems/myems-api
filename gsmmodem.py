@@ -45,7 +45,7 @@ class GSMModemCollection:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'serial_port' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['serial_port'], str) or \
@@ -158,7 +158,7 @@ class GSMModemItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_GSM_MODEM_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'serial_port' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['serial_port'], str) or \
