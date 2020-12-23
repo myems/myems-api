@@ -57,7 +57,7 @@ class UserCollection:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -233,7 +233,7 @@ class UserItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -349,7 +349,7 @@ class UserLogin:
         """Handles PUT requests"""
         try:
             raw_json = req.stream.read().decode('utf-8')
-            new_values = json.loads(raw_json, encoding='utf-8')
+            new_values = json.loads(raw_json)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.EXCEPTION', description=ex)
 
@@ -525,7 +525,7 @@ class ChangePassword:
 
         try:
             raw_json = req.stream.read().decode('utf-8')
-            new_values = json.loads(raw_json, encoding='utf-8')
+            new_values = json.loads(raw_json)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, 'API.ERROR', ex.args)
 
@@ -639,7 +639,7 @@ class ResetPassword:
 
         try:
             raw_json = req.stream.read().decode('utf-8')
-            new_values = json.loads(raw_json, encoding='utf-8')
+            new_values = json.loads(raw_json)
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, 'API.ERROR', ex.args)
 

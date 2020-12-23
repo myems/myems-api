@@ -107,7 +107,7 @@ class TenantCollection:
         except Exception as ex:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.ERROR', description=ex)
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -495,7 +495,7 @@ class TenantItem:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'name' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['name'], str) or \
@@ -752,7 +752,7 @@ class TenantMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['meter_id'], int) or \
@@ -930,7 +930,7 @@ class TenantOfflineMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'offline_meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['offline_meter_id'], int) or \
@@ -1108,7 +1108,7 @@ class TenantPointCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'point_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['point_id'], int) or \
@@ -1273,7 +1273,7 @@ class TenantSensorCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'sensor_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['sensor_id'], int) or \
@@ -1451,7 +1451,7 @@ class TenantVirtualMeterCollection:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_TENANT_ID')
 
-        new_values = json.loads(raw_json, encoding='utf-8')
+        new_values = json.loads(raw_json)
 
         if 'virtual_meter_id' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['virtual_meter_id'], int) or \

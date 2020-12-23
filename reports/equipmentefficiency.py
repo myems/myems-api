@@ -21,7 +21,9 @@ class Reporting:
     # Step 1: valid parameters
     # Step 2: query the equipment
     # Step 3: query energy categories
+    # Step 4: query associated constants
     # Step 4: query associated points
+    # Step 5: query associated fractions
     # Step 5: query base period energy input
     # Step 6: query base period energy output
     # Step 7: query reporting period energy input
