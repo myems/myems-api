@@ -64,7 +64,7 @@ class ContactCollection:
                 len(str.strip(new_values['data']['email'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_EMAIL')
-        email = str.strip(new_values['data']['email'])
+        email = str.lower(str.strip(new_values['data']['email']))
 
         match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
         if match is None:
@@ -253,7 +253,7 @@ class ContactItem:
                 len(str.strip(new_values['data']['email'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_EMAIL')
-        email = str.strip(new_values['data']['email'])
+        email = str.lower(str.strip(new_values['data']['email']))
 
         match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
         if match is None:
