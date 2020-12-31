@@ -464,10 +464,12 @@ class Reporting:
         parameters_data['values'] = list()
         if energy_category_set_input is not None and len(energy_category_set_input) > 0:
             for energy_category_id in energy_category_set_input:
-                energy_category_tariff_dict = utilities.get_energy_category_tariffs(combined_equipment['cost_center_id'],
-                                                                                    energy_category_id,
-                                                                                    reporting_start_datetime_utc,
-                                                                                    reporting_end_datetime_utc)
+                energy_category_tariff_dict = utilities.get_energy_category_tariffs(
+                    combined_equipment['cost_center_id'],
+                    energy_category_id,
+                    reporting_start_datetime_utc,
+                    reporting_end_datetime_utc)
+
                 tariff_timestamp_list = list()
                 tariff_value_list = list()
                 for k, v in energy_category_tariff_dict.items():

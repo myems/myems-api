@@ -28,8 +28,8 @@ class StoreCollection:
         if rows_store_types is not None and len(rows_store_types) > 0:
             for row in rows_store_types:
                 store_type_dict[row['id']] = {"id": row['id'],
-                                               "name": row['name'],
-                                               "uuid": row['uuid']}
+                                              "name": row['name'],
+                                              "uuid": row['uuid']}
 
         query = (" SELECT id, name, uuid "
                  " FROM tbl_contacts ")
