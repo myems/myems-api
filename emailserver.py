@@ -100,7 +100,7 @@ class EmailServerCollection:
                                    description='API.INVALID_FROM_ADDR')
         from_addr = new_values['data']['from_addr']
 
-        match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', from_addr)
+        match = re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', from_addr)
         if match is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_FROM_ADDR')
@@ -259,7 +259,7 @@ class EmailServerItem:
                                    description='API.INVALID_FROM_ADDR')
         from_addr = new_values['data']['from_addr']
 
-        match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', from_addr)
+        match = re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', from_addr)
         if match is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_FROM_ADDR')

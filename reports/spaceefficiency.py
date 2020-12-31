@@ -584,7 +584,8 @@ class Reporting:
         if energy_category_set_output is not None and len(energy_category_set_output) > 0:
             for energy_category_id in energy_category_set_output:
                 result['base_period_output']['names'].append(energy_category_dict[energy_category_id]['name'])
-                result['base_period_output']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
+                result['base_period_output']['units'].append(
+                    energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['base_period_output']['timestamps'].append(base_output[energy_category_id]['timestamps'])
                 result['base_period_output']['values'].append(base_output[energy_category_id]['values'])
                 result['base_period_output']['subtotals'].append(base_output[energy_category_id]['subtotal'])
@@ -697,8 +698,8 @@ class Reporting:
                     for i in range(len(reporting_output[energy_category_id_output]['timestamps'])):
                         efficiency_values.append((reporting_output[energy_category_id_output]['values'][i] /
                                                  reporting_input[energy_category_id_input]['values'][i])
-                                                 if reporting_input[energy_category_id_input]['values'][i] > Decimal(0.0)
-                                                 else None)
+                                                 if reporting_input[energy_category_id_input]['values'][i] >
+                                                 Decimal(0.0) else None)
                     result['reporting_period_efficiency']['values'].append(efficiency_values)
 
                     base_cumulation = (base_output[energy_category_id_output]['subtotal'] /

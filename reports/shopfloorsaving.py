@@ -668,7 +668,8 @@ class Reporting:
             if result['base_period']['total_in_kgce_saving'] > Decimal(0.0) else None
 
         result['reporting_period']['total_in_kgce_per_unit_area_saving'] = \
-            result['reporting_period']['total_in_kgco2e_saving'] / shopfloor['area'] if shopfloor['area'] > 0.0 else None
+            result['reporting_period']['total_in_kgco2e_saving'] / shopfloor['area'] \
+            if shopfloor['area'] > 0.0 else None
 
         result['reporting_period']['increment_rate_in_kgco2e_saving'] = \
             (result['reporting_period']['total_in_kgco2e_saving'] - result['base_period']['total_in_kgco2e_saving']) / \

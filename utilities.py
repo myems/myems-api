@@ -58,7 +58,8 @@ def aggregate_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetim
         # todo: add config.minutes_to_count
         # calculate the start datetime in utc of the first day in the first month in local
         start_datetime_local = start_datetime_utc + timedelta(hours=int(config.utc_offset[1:3]))
-        current_datetime_utc = start_datetime_local.replace(day=1, hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
+        current_datetime_utc = \
+            start_datetime_local.replace(day=1, hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
 
         while current_datetime_utc <= end_datetime_utc:
             # calculate the next datetime in utc
@@ -469,7 +470,8 @@ def averaging_hourly_data_by_period(rows_hourly, start_datetime_utc, end_datetim
         counter = 0
         # calculate the start datetime in utc of the first day in the first month in local
         start_datetime_local = start_datetime_utc + timedelta(hours=int(config.utc_offset[1:3]))
-        current_datetime_utc = start_datetime_local.replace(day=1, hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
+        current_datetime_utc = \
+            start_datetime_local.replace(day=1, hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
 
         while current_datetime_utc <= end_datetime_utc:
             # calculate the next datetime in utc
@@ -727,7 +729,8 @@ def statistics_hourly_data_by_period(rows_hourly, start_datetime_utc, end_dateti
         variance = None
         # calculate the start datetime in utc of the first day in the first month in local
         start_datetime_local = start_datetime_utc + timedelta(hours=int(config.utc_offset[1:3]))
-        current_datetime_utc = start_datetime_local.replace(day=1, hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
+        current_datetime_utc = \
+            start_datetime_local.replace(day=1, hour=0) - timedelta(hours=int(config.utc_offset[1:3]))
 
         while current_datetime_utc <= end_datetime_utc:
             # calculate the next datetime in utc

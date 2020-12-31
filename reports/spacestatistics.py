@@ -558,8 +558,7 @@ class Reporting:
                 result['reporting_period']['minimums_per_unit_area'].append(
                     reporting[energy_category_id]['minimum'] / space['area']
                     if reporting[energy_category_id]['minimum'] is not None and
-                       space['area'] is not None and
-                       space['area'] > Decimal(0.0)
+                    space['area'] is not None and space['area'] > Decimal(0.0)
                     else None)
                 result['reporting_period']['minimums_increment_rate'].append(
                     (reporting[energy_category_id]['minimum'] - base[energy_category_id]['minimum']) /
@@ -575,8 +574,9 @@ class Reporting:
                     else None)
                 result['reporting_period']['maximums_increment_rate'].append(
                     (reporting[energy_category_id]['maximum'] - base[energy_category_id]['maximum']) /
-                    base[energy_category_id]['maximum'] if (base[energy_category_id]['maximum'] is not None and
-                                                         base[energy_category_id]['maximum'] > Decimal(0.0))
+                    base[energy_category_id]['maximum']
+                    if (base[energy_category_id]['maximum'] is not None and
+                        base[energy_category_id]['maximum'] > Decimal(0.0))
                     else None)
                 result['reporting_period']['stdevs'].append(reporting[energy_category_id]['stdev'])
                 result['reporting_period']['stdevs_per_unit_area'].append(
