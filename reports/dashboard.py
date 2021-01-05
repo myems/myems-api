@@ -638,9 +638,9 @@ class Reporting:
             for energy_category_id in energy_category_set:
                 child_space_input[energy_category_id] = dict()
                 child_space_input[energy_category_id]['child_space_names'] = list()
-                child_space_input[energy_category_id]['subtotal'] = Decimal(0.0)
-                child_space_input[energy_category_id]['subtotal_in_kgce'] = Decimal(0.0)
-                child_space_input[energy_category_id]['subtotal_in_kgco2e'] = Decimal(0.0)
+                child_space_input[energy_category_id]['subtotals'] = list()
+                child_space_input[energy_category_id]['subtotals_in_kgce'] = list()
+                child_space_input[energy_category_id]['subtotals_in_kgco2e'] = list()
                 kgce = energy_category_dict[energy_category_id]['kgce']
                 kgco2e = energy_category_dict[energy_category_id]['kgco2e']
                 for child_space in child_space_list:
@@ -660,9 +660,9 @@ class Reporting:
                     row_subtotal = cursor_energy.fetchone()
 
                     subtotal = Decimal(0.0) if (row_subtotal is None or row_subtotal[0] is None) else row_subtotal[0]
-                    child_space_input[energy_category_id]['subtotal'] = subtotal
-                    child_space_input[energy_category_id]['subtotal_in_kgce'] = subtotal * kgce
-                    child_space_input[energy_category_id]['subtotal_in_kgco2e'] = subtotal * kgco2e
+                    child_space_input[energy_category_id]['subtotals'].append(subtotal)
+                    child_space_input[energy_category_id]['subtotals_in_kgce'].append(subtotal * kgce)
+                    child_space_input[energy_category_id]['subtotals_in_kgco2e'].append(subtotal * kgco2e)
 
         ################################################################################################################
         # Step 14: query child spaces energy cost
@@ -673,7 +673,7 @@ class Reporting:
             for energy_category_id in energy_category_set:
                 child_space_cost[energy_category_id] = dict()
                 child_space_cost[energy_category_id]['child_space_names'] = list()
-                child_space_cost[energy_category_id]['subtotal'] = Decimal(0.0)
+                child_space_cost[energy_category_id]['subtotals'] = list()
                 for child_space in child_space_list:
                     child_space_cost[energy_category_id]['child_space_names'].append(child_space['name'])
 
@@ -691,7 +691,7 @@ class Reporting:
                     row_subtotal = cursor_billing.fetchone()
 
                     subtotal = Decimal(0.0) if (row_subtotal is None or row_subtotal[0] is None) else row_subtotal[0]
-                    child_space_cost[energy_category_id]['subtotal'] = subtotal
+                    child_space_cost[energy_category_id]['subtotals'].append(subtotal)
 
         ################################################################################################################
         # Step 15: construct the report
@@ -908,12 +908,12 @@ class Reporting:
         }
 
         result['child_space_input'] = dict()
-        result['child_space_input']['energy_category_names'] = list()
-        result['child_space_input']['units'] = list()
-        result['child_space_input']['child_space_names_array'] = list()
-        result['child_space_input']['subtotals'] = list()
-        result['child_space_input']['subtotals_in_kgce'] = list()
-        result['child_space_input']['subtotals_in_kgco2e'] = list()
+        result['child_space_input']['energy_category_names'] = list()  # 1D array [energy category]
+        result['child_space_input']['units'] = list()  # 1D array [energy category]
+        result['child_space_input']['child_space_names_array'] = list()  # 2D array [energy category][child space]
+        result['child_space_input']['subtotals_array'] = list()  # 2D array [energy category][child space]
+        result['child_space_input']['subtotals_in_kgce_array'] = list()  # 2D array [energy category][child space]
+        result['child_space_input']['subtotals_in_kgco2e_array'] = list()  # 2D array [energy category][child space]
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
                 result['child_space_input']['energy_category_names'].append(
@@ -922,18 +922,18 @@ class Reporting:
                     energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['child_space_input']['child_space_names_array'].append(
                     child_space_input[energy_category_id]['child_space_names'])
-                result['child_space_input']['subtotals'].append(
-                    child_space_input[energy_category_id]['subtotal'])
-                result['child_space_input']['subtotals_in_kgce'].append(
-                    child_space_input[energy_category_id]['subtotal_in_kgce'])
-                result['child_space_input']['subtotals_in_kgco2e'].append(
-                    child_space_input[energy_category_id]['subtotal_in_kgco2e'])
+                result['child_space_input']['subtotals_array'].append(
+                    child_space_input[energy_category_id]['subtotals'])
+                result['child_space_input']['subtotals_in_kgce_array'].append(
+                    child_space_input[energy_category_id]['subtotals_in_kgce'])
+                result['child_space_input']['subtotals_in_kgco2e_array'].append(
+                    child_space_input[energy_category_id]['subtotals_in_kgco2e'])
 
         result['child_space_cost'] = dict()
-        result['child_space_cost']['energy_category_names'] = list()
-        result['child_space_cost']['units'] = list()
-        result['child_space_cost']['child_space_names_array'] = list()
-        result['child_space_cost']['subtotals'] = list()
+        result['child_space_cost']['energy_category_names'] = list()  # 1D array [energy category]
+        result['child_space_cost']['units'] = list()  # 1D array [energy category]
+        result['child_space_cost']['child_space_names_array'] = list()  # 2D array [energy category][child space]
+        result['child_space_cost']['subtotals_array'] = list()  # 2D array [energy category][child space]
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
                 result['child_space_cost']['energy_category_names'].append(
@@ -941,7 +941,7 @@ class Reporting:
                 result['child_space_cost']['units'].append(config.currency_unit)
                 result['child_space_cost']['child_space_names_array'].append(
                     child_space_cost[energy_category_id]['child_space_names'])
-                result['child_space_cost']['subtotals'].append(
-                    child_space_cost[energy_category_id]['subtotal'])
+                result['child_space_cost']['subtotals_array'].append(
+                    child_space_cost[energy_category_id]['subtotals'])
 
         resp.body = json.dumps(result)
