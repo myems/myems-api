@@ -446,7 +446,7 @@ class Reporting:
             for energy_category_id in energy_category_set:
                 child_space_data[energy_category_id] = dict()
                 child_space_data[energy_category_id]['child_space_names'] = list()
-                child_space_data[energy_category_id]['subtotal'] = Decimal(0.0)
+                child_space_data[energy_category_id]['subtotals'] = list()
                 for child_space in child_space_list:
                     child_space_data[energy_category_id]['child_space_names'].append(child_space['name'])
 
@@ -464,7 +464,7 @@ class Reporting:
                     row_subtotal = cursor_energy.fetchone()
 
                     subtotal = Decimal(0.0) if (row_subtotal is None or row_subtotal[0] is None) else row_subtotal[0]
-                    child_space_data[energy_category_id]['subtotal'] = subtotal
+                    child_space_data[energy_category_id]['subtotals'].append(subtotal)
 
         ################################################################################################################
         # Step 12: construct the report
@@ -532,17 +532,17 @@ class Reporting:
         }
 
         result['child_space'] = dict()
-        result['child_space']['energy_category_names'] = list()
-        result['child_space']['units'] = list()
-        result['child_space']['child_space_names_array'] = list()
-        result['child_space']['subtotals'] = list()
+        result['child_space']['energy_category_names'] = list()  # 1D array [energy category]
+        result['child_space']['units'] = list()  # 1D array [energy category]
+        result['child_space']['child_space_names_array'] = list()  # 2D array [energy category][child space]
+        result['child_space']['subtotals_array'] = list()  # 2D array [energy category][child space]
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
                 result['child_space']['energy_category_names'].append(energy_category_dict[energy_category_id]['name'])
                 result['child_space']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['child_space']['child_space_names_array'].append(
                     child_space_data[energy_category_id]['child_space_names'])
-                result['child_space']['subtotals'].append(
-                    child_space_data[energy_category_id]['subtotal'])
+                result['child_space']['subtotals_array'].append(
+                    child_space_data[energy_category_id]['subtotals'])
 
         resp.body = json.dumps(result)
