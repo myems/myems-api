@@ -5,6 +5,7 @@ import config
 from datetime import datetime, timedelta, timezone
 import utilities
 from decimal import *
+import excelexporters.spaceenergycategory
 
 
 class Reporting:
@@ -632,5 +633,6 @@ class Reporting:
                     child_space_data[energy_category_id]['subtotals_in_kgce'])
                 result['child_space']['subtotals_in_kgco2e_array'].append(
                     child_space_data[energy_category_id]['subtotals_in_kgco2e'])
-
+        # export result to Excel file and then encode the file to base64 string
+        result['excel_base64'] = excelexporters.spaceenergycategory.export(result)
         resp.body = json.dumps(result)
