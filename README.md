@@ -23,6 +23,8 @@ falcon_cors
 
 gunicorn
 
+openpyxl
+
 
 ## Installation
 
@@ -76,6 +78,31 @@ $ sudo python3 setup.py install
   $ mkdir ~/tools/gunicorn && cd ~/tools/gunicorn
   $ pip3 download gunicorn
   $ sudo pip3 install --no-index --find-links ~/tools/gunicorn gunicorn
+```
+
+* Install openpyxl, refer to https://foss.heptapod.net/openpyxl/openpyxl
+
+Get the latest version of et_xmlfile from https://bitbucket.org/openpyxl/et_xmlfile/downloads/
+
+Get the latest version of jdcal from https://github.com/phn/jdcal
+
+Get the latest version of openpyxl from https://bitbucket.org/openpyxl/openpyxl/downloads/
+
+```
+  $ cd ~/tools  
+  $ wget https://foss.heptapod.net/openpyxl/et_xmlfile/-/archive/branch/default/et_xmlfile-branch-default.zip
+  $ 7z x et_xmlfile-branch-default.zip
+  $ cd ~/tools/et_xmlfile-branch-default
+  $ sudo python3 setup.py install
+  $ cd ~/tools
+  $ git clone https://github.com/phn/jdcal.git
+  $ cd ~/tools/jdcal
+  $ sudo python3 setup.py install
+  $ cd ~/tools
+  $ wget https://foss.heptapod.net/openpyxl/openpyxl/-/archive/branch/3.0/openpyxl-branch-3.0.zip
+  $ 7z x openpyxl-branch-3.0.zip
+  $ cd ~/tools/openpyxl-branch-3.0
+  $ sudo python3 setup.py install
 ```
 
 * Install gunicorn service for myems-api:
