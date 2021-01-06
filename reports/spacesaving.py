@@ -591,15 +591,9 @@ class Reporting:
             for energy_category_id in energy_category_set:
                 child_space_data[energy_category_id] = dict()
                 child_space_data[energy_category_id]['child_space_names'] = list()
-                child_space_data[energy_category_id]['subtotal_baseline'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_actual'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_saving'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_in_kgce_baseline'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_in_kgce_actual'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_in_kgce_saving'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_in_kgco2e_baseline'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_in_kgco2e_actual'] = Decimal(0.0)
-                child_space_data[energy_category_id]['subtotal_in_kgco2e_saving'] = Decimal(0.0)
+                child_space_data[energy_category_id]['subtotals_saving'] = list()
+                child_space_data[energy_category_id]['subtotals_in_kgce_saving'] = list()
+                child_space_data[energy_category_id]['subtotals_in_kgco2e_saving'] = list()
                 kgce = energy_category_dict[energy_category_id]['kgce']
                 kgco2e = energy_category_dict[energy_category_id]['kgco2e']
                 for child_space in child_space_list:
@@ -619,9 +613,9 @@ class Reporting:
                     row_subtotal = cursor_energy_baseline.fetchone()
 
                     subtotal = Decimal(0.0) if (row_subtotal is None or row_subtotal[0] is None) else row_subtotal[0]
-                    child_space_data[energy_category_id]['subtotal_baseline'] = subtotal
-                    child_space_data[energy_category_id]['subtotal_in_kgce_baseline'] = subtotal * kgce
-                    child_space_data[energy_category_id]['subtotal_in_kgco2e_baseline'] = subtotal * kgco2e
+                    subtotal_baseline = subtotal
+                    subtotal_in_kgce_baseline = subtotal * kgce
+                    subtotal_in_kgco2e_baseline = subtotal * kgco2e
                     # query child space's energy actual
                     cursor_energy.execute(" SELECT SUM(actual_value) "
                                           " FROM tbl_space_input_category_hourly "
@@ -637,20 +631,17 @@ class Reporting:
                     row_subtotal = cursor_energy.fetchone()
 
                     subtotal = Decimal(0.0) if (row_subtotal is None or row_subtotal[0] is None) else row_subtotal[0]
-                    child_space_data[energy_category_id]['subtotal_actual'] = subtotal
-                    child_space_data[energy_category_id]['subtotal_in_kgce_actual'] = subtotal * kgce
-                    child_space_data[energy_category_id]['subtotal_in_kgco2e_actual'] = subtotal * kgco2e
+                    subtotal_actual = subtotal
+                    subtotal_in_kgce_actual = subtotal * kgce
+                    subtotal_in_kgco2e_actual = subtotal * kgco2e
 
                     # calculate child space's energy saving
-                    child_space_data[energy_category_id]['subtotal_saving'] = \
-                        child_space_data[energy_category_id]['subtotal_baseline'] - \
-                        child_space_data[energy_category_id]['subtotal_actual']
-                    child_space_data[energy_category_id]['subtotal_in_kgce_saving'] = \
-                        child_space_data[energy_category_id]['subtotal_in_kgce_baseline'] - \
-                        child_space_data[energy_category_id]['subtotal_in_kgce_actual']
-                    child_space_data[energy_category_id]['subtotal_in_kgco2e_saving'] = \
-                        child_space_data[energy_category_id]['subtotal_in_kgco2e_baseline'] - \
-                        child_space_data[energy_category_id]['subtotal_in_kgco2e_actual']
+                    child_space_data[energy_category_id]['subtotals_saving'].append(
+                        subtotal_baseline - subtotal_actual)
+                    child_space_data[energy_category_id]['subtotals_in_kgce_saving'].append(
+                        subtotal_in_kgce_baseline - subtotal_in_kgce_actual)
+                    child_space_data[energy_category_id]['subtotals_in_kgco2e_saving'].append(
+                        subtotal_in_kgco2e_baseline - subtotal_in_kgco2e_actual)
         ################################################################################################################
         # Step 12: construct the report
         ################################################################################################################
@@ -761,23 +752,23 @@ class Reporting:
         }
 
         result['child_space'] = dict()
-        result['child_space']['energy_category_names'] = list()
-        result['child_space']['units'] = list()
-        result['child_space']['child_space_names_array'] = list()
-        result['child_space']['subtotals_saving'] = list()
-        result['child_space']['subtotals_in_kgce_saving'] = list()
-        result['child_space']['subtotals_in_kgco2e_saving'] = list()
+        result['child_space']['energy_category_names'] = list()  # 1D array [energy category]
+        result['child_space']['units'] = list()  # 1D array [energy category]
+        result['child_space']['child_space_names_array'] = list()  # 2D array [energy category][child space]
+        result['child_space']['subtotals_saving_array'] = list()  # 2D array [energy category][child space]
+        result['child_space']['subtotals_in_kgce_saving_array'] = list()  # 2D array [energy category][child space]
+        result['child_space']['subtotals_in_kgco2e_saving_array'] = list()  # 2D array [energy category][child space]
         if energy_category_set is not None and len(energy_category_set) > 0:
             for energy_category_id in energy_category_set:
                 result['child_space']['energy_category_names'].append(energy_category_dict[energy_category_id]['name'])
                 result['child_space']['units'].append(energy_category_dict[energy_category_id]['unit_of_measure'])
                 result['child_space']['child_space_names_array'].append(
                     child_space_data[energy_category_id]['child_space_names'])
-                result['child_space']['subtotals_saving'].append(
-                    child_space_data[energy_category_id]['subtotal_saving'])
-                result['child_space']['subtotals_in_kgce_saving'].append(
-                    child_space_data[energy_category_id]['subtotal_in_kgce_saving'])
-                result['child_space']['subtotals_in_kgco2e_saving'].append(
-                    child_space_data[energy_category_id]['subtotal_in_kgco2e_saving'])
+                result['child_space']['subtotals_saving_array'].append(
+                    child_space_data[energy_category_id]['subtotals_saving'])
+                result['child_space']['subtotals_in_kgce_saving_array'].append(
+                    child_space_data[energy_category_id]['subtotals_in_kgce_saving'])
+                result['child_space']['subtotals_in_kgco2e_saving_array'].append(
+                    child_space_data[energy_category_id]['subtotals_in_kgco2e_saving'])
 
         resp.body = json.dumps(result)
