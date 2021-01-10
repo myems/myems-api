@@ -1,10 +1,5 @@
 import falcon
 import simplejson as json
-import mysql.connector
-import config
-from datetime import datetime, timedelta, timezone
-import utilities
-from decimal import *
 
 
 class Reporting:

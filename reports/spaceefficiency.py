@@ -3,7 +3,7 @@ import simplejson as json
 import mysql.connector
 import config
 from datetime import datetime, timedelta, timezone
-import utilities
+from core import utilities
 from decimal import *
 
 
