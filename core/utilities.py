@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import mysql.connector
 import collections
-from decimal import *
+from decimal import Decimal
 import config
 import statistics
 

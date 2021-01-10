@@ -4,7 +4,7 @@ import mysql.connector
 import config
 from datetime import datetime, timedelta, timezone
 from core import utilities
-from decimal import *
+from decimal import Decimal
 import excelexporters.spaceenergycategory
 
 
