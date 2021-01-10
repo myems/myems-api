@@ -1,43 +1,11 @@
 import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
-import combinedequipment
-import contact
-import costcenter
-import datasource
-import distributioncircuit
-import distributionsystem
-import emailmessage
-import emailserver
-import energycategory
-import energyflowdiagram
-import energyitem
-import equipment
-import gateway
-import gsmmodem
-import knowledgefile
-import meter
-import offlinemeter
-import offlinemeterfile
-import point
-import privilege
-import rule
-import sensor
-import shopfloor
-import space
-import store
-import storetype
-import tariff
-import tenant
-import tenanttype
-import textmessage
-import timezone
-import user
-import virtualmeter
-import webmessage
-import wechatmessage
-import version
-from reports import auxiliarysystemdistributionsystem
+from core import auxiliarysystemdistributionsystem, privilege, textmessage, distributioncircuit, virtualmeter, \
+    costcenter, point, knowledgefile, meter, gsmmodem, tariff, user, energyflowdiagram, storetype, timezone, \
+    offlinemeterfile, version, contact, emailserver, combinedequipment, datasource, equipment, tenant, shopfloor, \
+    webmessage, distributionsystem, store, emailmessage, tenanttype, wechatmessage, space, gateway, offlinemeter, \
+    rule, energycategory, sensor, energyitem
 from reports import auxiliarysystemenergyflowdiagram
 from reports import combinedequipmentcost
 from reports import combinedequipmentefficiency

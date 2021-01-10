@@ -9,7 +9,7 @@ from openpyxl.chart.label import DataLabelList
 
 ####################################################################################################################
 # PROCEDURES
-# Step 1: Valid the JSON string parameter
+# Step 1: Validate the report data
 # Step 2: Generate excelexporters file
 # Step 3: Encode the excelexporters file to Base64
 ####################################################################################################################
