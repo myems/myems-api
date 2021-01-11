@@ -35,7 +35,7 @@ def export(report_data, start, end, period):
     export_name = generate_excel(report_data, start, end, period)
 
     ####################################################################################################################
-    # Step 3: Encode the excelexporters file to Base64
+    # Step 3: Encode the excel exporters file to Base64
     ####################################################################################################################
     data = open(export_name, 'rb').read()
     base64_encoded = base64.b64encode(data).decode('UTF-8')
@@ -395,7 +395,7 @@ def generate_excel(data, start, end, period):
                 ws[col + row] = round(report['values'][i][j], 0)
                 ws[col + row].border = f_border
             # bar
-            # 25~30: bar
+            # 39~: bar
             bar = BarChart()
             labels = Reference(ws, min_col=2, min_row=39, max_row=max_row + 1)
             bar_data = Reference(ws, min_col=3 + i, min_row=38, max_row=max_row + 1)  # openpyxl bug
@@ -422,9 +422,9 @@ def generate_excel(data, start, end, period):
 # Test Data
 """
 parameter:
-data,
-start, end
-period
+    data,
+    start, end
+    period
 """
 with open('test.json', 'r') as fr:
     json_data = fr.read()
