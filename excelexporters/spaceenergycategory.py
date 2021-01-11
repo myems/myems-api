@@ -69,7 +69,7 @@ def generate_excel(data, start, end, period):
     for i in range(2, 37 + 1):
         ws.row_dimensions[i].height = 30
 
-    for i in range(37, 69 + 1):
+    for i in range(38, 69 + 1):
         ws.row_dimensions[i].height = 15
 
     # Col width
