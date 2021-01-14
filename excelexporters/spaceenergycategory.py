@@ -23,6 +23,7 @@ def export(result,
            reporting_start_datetime_local,
            reporting_end_datetime_local,
            period_type):
+
     ####################################################################################################################
     # Step 1: Validate the report data
     ####################################################################################################################
@@ -30,11 +31,11 @@ def export(result,
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
+
     filename = generate_excel(result,
                               reporting_start_datetime_local,
                               reporting_end_datetime_local,
                               period_type)
-
     ####################################################################################################################
     # Step 3: Encode the excel file to Base64
     ####################################################################################################################
@@ -128,7 +129,8 @@ def generate_excel(result,
     ws['C3'].border = b_border
     ws['C3'].alignment = b_c_alignment
     ws['C3'].font = name_font
-    ws['C3'] = result['space']['name']
+    # ws['C3'] = data['space']['name']
+    ws['C3'] = name
 
     ws['D3'].font = name_font
     ws['D3'].alignment = b_r_alignment
@@ -155,7 +157,7 @@ def generate_excel(result,
     #################################################
 
     ws['B6'].font = title_font
-    ws['B6'] = '能耗分析'
+    ws['B6'] = name+' 能耗分析'
 
     report = result['reporting_period']
     print(report)
@@ -204,14 +206,61 @@ def generate_excel(result,
         ws[col + '10'] = str(round(report['increment_rates'][i] * 100, 2)) + "%"
         ws[col + '10'].border = f_border
 
-    ################################################
+    # TCE TCO2E
+    end_col = col
+    # TCE
+    tce_col = chr(ord(end_col) + 1)
+    ws[tce_col + '7'].fill = table_fill
+    ws[tce_col + '7'].font = name_font
+    ws[tce_col + '7'].alignment = c_c_alignment
+    ws[tce_col + '7'] = "TCE"
+    ws[tce_col + '7'].border = f_border
+
+    ws[tce_col + '8'].font = name_font
+    ws[tce_col + '8'].alignment = c_c_alignment
+    ws[tce_col + '8'] = round(report['total_in_kgce'], 0)
+    ws[tce_col + '8'].border = f_border
+
+    ws[tce_col + '9'].font = name_font
+    ws[tce_col + '9'].alignment = c_c_alignment
+    ws[tce_col + '9'] = round(report['total_in_kgce_per_unit_area'], 2)
+    ws[tce_col + '9'].border = f_border
+
+    ws[tce_col + '10'].font = name_font
+    ws[tce_col + '10'].alignment = c_c_alignment
+    ws[tce_col + '10'] = str(round(report['increment_rate_in_kgce'] * 100, 2)) + "%"
+    ws[tce_col + '10'].border = f_border
+
+    # TCO2E
+    tco2e_col = chr(ord(end_col) + 2)
+    ws[tco2e_col + '7'].fill = table_fill
+    ws[tco2e_col + '7'].font = name_font
+    ws[tco2e_col + '7'].alignment = c_c_alignment
+    ws[tco2e_col + '7'] = "TCO2E"
+    ws[tco2e_col + '7'].border = f_border
+
+    ws[tco2e_col + '8'].font = name_font
+    ws[tco2e_col + '8'].alignment = c_c_alignment
+    ws[tco2e_col + '8'] = round(report['total_in_kgco2e'], 0)
+    ws[tco2e_col + '8'].border = f_border
+
+    ws[tco2e_col + '9'].font = name_font
+    ws[tco2e_col + '9'].alignment = c_c_alignment
+    ws[tco2e_col + '9'] = round(report['total_in_kgco2e_per_unit_area'], 2)
+    ws[tco2e_col + '9'].border = f_border
+
+    ws[tco2e_col + '10'].font = name_font
+    ws[tco2e_col + '10'].alignment = c_c_alignment
+    ws[tco2e_col + '10'] = str(round(report['increment_rate_in_kgco2e'] * 100, 2)) + "%"
+    ws[tco2e_col + '10'].border = f_border
+    #################################################
     # Second: 分时电耗
     # 12: title
     # 13: table title
     # 14~17 table_data
     ################################################
     ws['B12'].font = title_font
-    ws['B12'] = '分时电耗'
+    ws['B12'] = name+' 分时电耗'
 
     ws['B13'].fill = table_fill
     ws['B13'].font = name_font
@@ -292,7 +341,7 @@ def generate_excel(result,
     child_subtotals = child['subtotals_array'][0]
 
     ws['B19'].font = title_font
-    ws['B19'] = '子空间能耗'
+    ws['B19'] = name+' 子空间能耗'
 
     ws['B20'].fill = table_fill
     ws['B20'].border = f_border
@@ -349,7 +398,7 @@ def generate_excel(result,
     times = report['timestamps']
 
     ws['B37'].font = title_font
-    ws['B37'] = '电耗详情'
+    ws['B37'] = name+' 电耗详情'
 
     ws['B38'].fill = table_fill
     ws['B38'].border = f_border
@@ -417,4 +466,5 @@ def generate_excel(result,
     wb.save(filename)
 
     return filename
+
 
