@@ -37,6 +37,7 @@ def export(report_data, name, start, end, period):
     ####################################################################################################################
     data = open(export_name, 'rb').read()
     base64_encoded = base64.b64encode(data).decode('UTF-8')
+    # todo: replace the demo string
 
     return base64_encoded
 
@@ -45,16 +46,17 @@ def generate_excel(data, name, start, end, period):
 
     """
     parameter:
-    data,
     name,
+    data,
     start, end
     period
     """
+    # For test
     # start = "2021-01-01"
     # end = "2021-01-05"
     # period = 'day'
-
-    # For test
+    # name = "AHc01进线柜正向有功Wp"
+    #
     # with open('test.json', 'r') as fr:
     #     json_data = fr.read()
     #     data = json.loads(json_data)
@@ -64,10 +66,10 @@ def generate_excel(data, name, start, end, period):
 
     # Row height
     ws.row_dimensions[1].height = 118
-    for i in range(2, 37 + 1):
+    for i in range(2, 11 + 1):
         ws.row_dimensions[i].height = 30
 
-    for i in range(38, 69 + 1):
+    for i in range(12, 43 + 1):
         ws.row_dimensions[i].height = 15
 
     # Col width
@@ -126,7 +128,6 @@ def generate_excel(data, name, start, end, period):
     ws['C3'].border = b_border
     ws['C3'].alignment = b_c_alignment
     ws['C3'].font = name_font
-    # ws['C3'] = data['space']['name']
     ws['C3'] = name
 
     ws['D3'].font = name_font
@@ -150,15 +151,15 @@ def generate_excel(data, name, start, end, period):
     # First: 能耗分析
     # 6: title
     # 7: table title
-    # 8~11 table_data
+    # 8~9 table_data
     #################################################
 
     ws['B6'].font = title_font
-    ws['B6'] = name+' 能耗分析'
+    ws['B6'] = name + '能耗分析'
 
     report = data['reporting_period']
-    print(report)
-    category = report['names']
+    # print(report)
+    category = data['meter']['energy_category_name']
     ca_len = len(category)
 
     ws['B7'].fill = table_fill
@@ -170,13 +171,8 @@ def generate_excel(data, name, start, end, period):
 
     ws['B9'].font = title_font
     ws['B9'].alignment = c_c_alignment
-    ws['B9'] = '单位面积能耗'
+    ws['B9'] = '环比'
     ws['B9'].border = f_border
-
-    ws['B10'].font = title_font
-    ws['B10'].alignment = c_c_alignment
-    ws['B10'] = '环比'
-    ws['B10'].border = f_border
 
     for i in range(0, ca_len):
         col = chr(ord('C') + i)
@@ -185,23 +181,18 @@ def generate_excel(data, name, start, end, period):
         ws[col + '7'].fill = table_fill
         ws[col + '7'].font = name_font
         ws[col + '7'].alignment = c_c_alignment
-        ws[col + '7'] = report['names'][i] + " (" + report['units'][i] + ")"
+        ws[col + '7'] = data['meter']['energy_category_name'] + " (" + data['meter']['unit_of_measure'] + ")"
         ws[col + '7'].border = f_border
 
         ws[col + '8'].font = name_font
         ws[col + '8'].alignment = c_c_alignment
-        ws[col + '8'] = round(report['subtotals'][i], 0)
+        ws[col + '8'] = round(report['total_in_category'], 0)
         ws[col + '8'].border = f_border
 
         ws[col + '9'].font = name_font
         ws[col + '9'].alignment = c_c_alignment
-        ws[col + '9'] = round(report['subtotals_per_unit_area'][i], 2)
+        ws[col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%"
         ws[col + '9'].border = f_border
-
-        ws[col + '10'].font = name_font
-        ws[col + '10'].alignment = c_c_alignment
-        ws[col + '10'] = str(round(report['increment_rates'][i] * 100, 2)) + "%"
-        ws[col + '10'].border = f_border
 
     # TCE TCO2E
     end_col = col
@@ -215,18 +206,13 @@ def generate_excel(data, name, start, end, period):
 
     ws[tce_col + '8'].font = name_font
     ws[tce_col + '8'].alignment = c_c_alignment
-    ws[tce_col + '8'] = round(report['total_in_kgce'], 0)
+    ws[tce_col + '8'] = round(report['total_in_category'], 0)
     ws[tce_col + '8'].border = f_border
 
     ws[tce_col + '9'].font = name_font
     ws[tce_col + '9'].alignment = c_c_alignment
-    ws[tce_col + '9'] = round(report['total_in_kgce_per_unit_area'], 2)
+    ws[tce_col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%"
     ws[tce_col + '9'].border = f_border
-
-    ws[tce_col + '10'].font = name_font
-    ws[tce_col + '10'].alignment = c_c_alignment
-    ws[tce_col + '10'] = str(round(report['increment_rate_in_kgce'] * 100, 2)) + "%"
-    ws[tce_col + '10'].border = f_border
 
     # TCO2E
     tco2e_col = chr(ord(end_col) + 2)
@@ -243,176 +229,35 @@ def generate_excel(data, name, start, end, period):
 
     ws[tco2e_col + '9'].font = name_font
     ws[tco2e_col + '9'].alignment = c_c_alignment
-    ws[tco2e_col + '9'] = round(report['total_in_kgco2e_per_unit_area'], 2)
+    ws[tco2e_col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%"
     ws[tco2e_col + '9'].border = f_border
-
-    ws[tco2e_col + '10'].font = name_font
-    ws[tco2e_col + '10'].alignment = c_c_alignment
-    ws[tco2e_col + '10'] = str(round(report['increment_rate_in_kgco2e'] * 100, 2)) + "%"
-    ws[tco2e_col + '10'].border = f_border
     #################################################
-    # Second: 分时电耗
-    # 12: title
-    # 13: table title
-    # 14~17 table_data
-    #################################################
-    ws['B12'].font = title_font
-    ws['B12'] = name+' 分时电耗'
-
-    ws['B13'].fill = table_fill
-    ws['B13'].font = name_font
-    ws['B13'].alignment = c_c_alignment
-    ws['B13'].border = f_border
-
-    ws['C13'].fill = table_fill
-    ws['C13'].font = name_font
-    ws['C13'].alignment = c_c_alignment
-    ws['C13'].border = f_border
-    ws['C13'] = '分时电耗'
-
-    ws['B14'].font = title_font
-    ws['B14'].alignment = c_c_alignment
-    ws['B14'] = '尖'
-    ws['B14'].border = f_border
-
-    ws['C14'].font = title_font
-    ws['C14'].alignment = c_c_alignment
-    ws['C14'].border = f_border
-    ws['C14'] = round(report['toppeaks'][0], 0)
-
-    ws['B15'].font = title_font
-    ws['B15'].alignment = c_c_alignment
-    ws['B15'] = '峰'
-    ws['B15'].border = f_border
-
-    ws['C15'].font = title_font
-    ws['C15'].alignment = c_c_alignment
-    ws['C15'].border = f_border
-    ws['C15'] = round(report['onpeaks'][0], 0)
-
-    ws['B16'].font = title_font
-    ws['B16'].alignment = c_c_alignment
-    ws['B16'] = '平'
-    ws['B16'].border = f_border
-
-    ws['C16'].font = title_font
-    ws['C16'].alignment = c_c_alignment
-    ws['C16'].border = f_border
-    ws['C16'] = round(report['midpeaks'][0], 0)
-
-    ws['B17'].font = title_font
-    ws['B17'].alignment = c_c_alignment
-    ws['B17'] = '谷'
-    ws['B17'].border = f_border
-
-    ws['C17'].font = title_font
-    ws['C17'].alignment = c_c_alignment
-    ws['C17'].border = f_border
-    ws['C17'] = round(report['offpeaks'][0], 0)
-
-    pie = PieChart()
-    labels = Reference(ws, min_col=2, min_row=14, max_row=17)
-    pie_data = Reference(ws, min_col=3, min_row=14, max_row=17)
-    pie.add_data(pie_data, titles_from_data=True)
-    pie.set_categories(labels)
-    pie.height = 5.25  # cm 1.05*5 1.05cm = 30 pt
-    pie.width = 9
-    # pie.title = "Pies sold by category"
-    s1 = pie.series[0]
-    s1.dLbls = DataLabelList()
-    s1.dLbls.showCatName = True  # 标签显示
-    s1.dLbls.showVal = True  # 数量显示
-    s1.dLbls.showPercent = True  # 百分比显示
-    # s1 = CharacterProperties(sz=1800)     # 图表中字体大小 *100
-
-    ws.add_chart(pie, "D13")
-
-    #################################################
-    # Third: 子空间能耗
-    # 19: title
-    # 20: table title
-    # 21~24 table_data
-    #################################################
-    child = data['child_space']
-    child_spaces = child['child_space_names_array'][0]
-    child_subtotals = child['subtotals_array'][0]
-
-    ws['B19'].font = title_font
-    ws['B19'] = name+' 子空间能耗'
-
-    ws['B20'].fill = table_fill
-    ws['B20'].border = f_border
-
-    ws['C20'].fill = table_fill
-    ws['C20'].font = title_font
-    ws['C20'].alignment = c_c_alignment
-    ws['C20'].border = f_border
-    ws['C20'] = child['energy_category_names'][0]
-
-    ca_len = len(child['energy_category_names'])
-    space_len = len(child['child_space_names_array'][0])
-    for i in range(0, space_len):
-        row = str(i + 21)
-
-        ws['B' + row].font = name_font
-        ws['B' + row].alignment = c_c_alignment
-        ws['B' + row] = child['child_space_names_array'][0][i]
-        ws['B' + row].border = f_border
-
-        for j in range(0, ca_len):
-            col = chr(ord('C') + j)
-            ws[col + row].font = name_font
-            ws[col + row].alignment = c_c_alignment
-            ws[col + row] = child['subtotals_array'][0][i]
-            ws[col + row].border = f_border
-            # pie
-            # 25~30: pie
-            pie = PieChart()
-            labels = Reference(ws, min_col=2, min_row=21, max_row=23)
-            pie_data = Reference(ws, min_col=3 + j, min_row=21, max_row=23)
-            pie.add_data(pie_data, titles_from_data=True)
-            pie.set_categories(labels)
-            pie.height = 5.25  # cm 1.05*5 1.05cm = 30 pt
-            pie.width = 8
-            # pie.title = "Pies sold by category"
-            s1 = pie.series[0]
-            s1.dLbls = DataLabelList()
-            s1.dLbls.showCatName = True  # 标签显示
-            s1.dLbls.showVal = True  # 数量显示
-            s1.dLbls.showPercent = True  # 百分比显示
-            # s1 = CharacterProperties(sz=1800)     # 图表中字体大小 *100
-            chart_col = chr(ord('B') + 2 * j)
-            chart_cell = chart_col + '26'
-            ws.add_chart(pie, chart_cell)
-
-    #################################################
-    # Third: 电耗详情
-    # 37: title
-    # 38: table title
-    # 39~69: table_data
+    # Second: 电耗详情
+    # 11: title
+    # 12: table title
+    # 13~43: table_data
     #################################################
     report = data['reporting_period']
     times = report['timestamps']
 
-    ws['B37'].font = title_font
-    ws['B37'] = name+' 电耗详情'
+    ws['B11'].font = title_font
+    ws['B11'] = name + '电耗详情'
 
-    ws['B38'].fill = table_fill
-    ws['B38'].border = f_border
-    ws['B38'].alignment = c_c_alignment
-    ws['B38'] = '时间'
-    time = times[0]
+    ws['B12'].fill = table_fill
+    ws['B12'].border = f_border
+    ws['B12'].alignment = c_c_alignment
+    ws['B12'] = '时间'
+    time = times
     has_data = False
     max_row = 0
     if len(time) > 0:
         has_data = True
-        max_row = 38 + len(time)
-        print("max_row", max_row)
+        max_row = 12 + len(time)
 
     if has_data:
         for i in range(0, len(time)):
             col = 'B'
-            row = str(39 + i)
+            row = str(13 + i)
             # col = chr(ord('B') + i)
             ws[col + row].font = title_font
             ws[col + row].alignment = c_c_alignment
@@ -420,31 +265,31 @@ def generate_excel(data, name, start, end, period):
             ws[col + row].border = f_border
 
         for i in range(0, ca_len):
-            # 38 title
+            # 12 title
             col = chr(ord('C') + i)
 
-            ws[col + '38'].fill = table_fill
-            ws[col + '38'].font = title_font
-            ws[col + '38'].alignment = c_c_alignment
-            ws[col + '38'] = report['names'][i] + " (" + report['units'][i] + ")"
-            ws[col + '38'].border = f_border
+            ws[col + '12'].fill = table_fill
+            ws[col + '12'].font = title_font
+            ws[col + '12'].alignment = c_c_alignment
+            ws[col + '12'] = data['meter']['energy_category_name'] + " (" + data['meter']['unit_of_measure'] + ")"
+            ws[col + '12'].border = f_border
 
-            # 39 data
-            time = times[i]
+            # 13 data
+            time = times
             time_len = len(time)
 
             for j in range(0, time_len):
-                row = str(39 + j)
+                row = str(13 + j)
                 # col = chr(ord('B') + i)
                 ws[col + row].font = title_font
                 ws[col + row].alignment = c_c_alignment
-                ws[col + row] = round(report['values'][i][j], 0)
+                ws[col + row] = round(report['values'][j], 0)
                 ws[col + row].border = f_border
             # bar
-            # 39~: bar
+            # 13~: bar
             bar = BarChart()
-            labels = Reference(ws, min_col=2, min_row=39, max_row=max_row + 1)
-            bar_data = Reference(ws, min_col=3 + i, min_row=38, max_row=max_row + 1)  # openpyxl bug
+            labels = Reference(ws, min_col=2, min_row=13, max_row=max_row + 1)
+            bar_data = Reference(ws, min_col=3 + i, min_row=12, max_row=max_row + 1)  # openpyxl bug
             bar.add_data(bar_data, titles_from_data=True)
             bar.set_categories(labels)
             bar.height = 5.25  # cm 1.05*5 1.05cm = 30 pt
@@ -459,7 +304,7 @@ def generate_excel(data, name, start, end, period):
             chart_cell = chart_col + str(max_row + 2)
             ws.add_chart(bar, chart_cell)
 
-    export_name = "energy.xlsx"
+    export_name = "meter.xlsx"
     wb.save(export_name)
 
     return export_name
@@ -472,12 +317,12 @@ parameter:
     start, end
     period
 """
-with open('test2.json', 'r') as fr:
+with open('test.json', 'r') as fr:
     json_data = fr.read()
     report_data = json.loads(json_data)
 start = "2021-01-01"
 end = "2021-01-05"
 period = 'day'
-name = "远洋太古里"
+name = "AHc01进线柜正向有功Wp"
 base64_encoded = export(report_data, name, start, end, period)
 print(base64_encoded)
