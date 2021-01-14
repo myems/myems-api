@@ -634,5 +634,9 @@ class Reporting:
                 result['child_space']['subtotals_in_kgco2e_array'].append(
                     child_space_data[energy_category_id]['subtotals_in_kgco2e'])
         # export result to Excel file and then encode the file to base64 string
-        result['excel_base64'] = excelexporters.spaceenergycategory.export(result)
+        result['excel_bytes_base64'] = excelexporters.spaceenergycategory.export(result,
+                                                                                 reporting_start_datetime_local,
+                                                                                 reporting_end_datetime_local,
+                                                                                 period_type)
+
         resp.body = json.dumps(result)
