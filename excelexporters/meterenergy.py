@@ -210,7 +210,8 @@ def generate_excel(data, name, start, end, period):
 
             ws[col + '9'].font = name_font
             ws[col + '9'].alignment = c_c_alignment
-            ws[col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%"
+            ws[col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%" \
+                if report['increment_rate'] is not None else "-"
             ws[col + '9'].border = f_border
 
         # TCE TCO2E
@@ -230,7 +231,8 @@ def generate_excel(data, name, start, end, period):
 
         ws[tce_col + '9'].font = name_font
         ws[tce_col + '9'].alignment = c_c_alignment
-        ws[tce_col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%"
+        ws[tce_col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%" \
+            if report['increment_rate'] is not None else "-"
         ws[tce_col + '9'].border = f_border
 
         # TCO2E
@@ -248,7 +250,8 @@ def generate_excel(data, name, start, end, period):
 
         ws[tco2e_col + '9'].font = name_font
         ws[tco2e_col + '9'].alignment = c_c_alignment
-        ws[tco2e_col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%"
+        ws[tco2e_col + '9'] = str(round(report['increment_rate'] * 100, 2)) + "%" \
+            if report['increment_rate'] is not None else "-"
         ws[tco2e_col + '9'].border = f_border
     else:
         for i in range(6, 9 + 1):
