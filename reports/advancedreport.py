@@ -12,7 +12,7 @@ class AdvancedReportCollection:
         pass
 
     @staticmethod
-    def on_options(req, resp, startdatetime, enddatetime):
+    def on_options(req, resp):
         resp.status = falcon.HTTP_200
 
     ####################################################################################################################
