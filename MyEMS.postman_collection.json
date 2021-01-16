@@ -18,10 +18,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"MyEMS Chiller Plant\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"description\":\"equipment description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"MyEMS Chiller Plant\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"description\":\"equipment description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/combinedequipments",
@@ -586,9 +583,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Contact",
@@ -638,10 +633,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"albert\", \"email\":\"albert@myems.io\", \"phone\":\"+8613888888888\", \"description\":\"contact description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"albert\", \"email\":\"albert@myems.io\", \"phone\":\"+8613888888888\", \"description\":\"contact description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/contacts",
@@ -662,10 +654,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"albert\", \"email\":\"albert@myems.io\", \"phone\":\"+8613888888899\", \"description\":\"contact description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"albert\", \"email\":\"albert@myems.io\", \"phone\":\"+8613888888899\", \"description\":\"contact description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/contacts/2",
@@ -698,9 +687,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Cost Center",
@@ -863,9 +850,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Data Source",
@@ -912,10 +897,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"Modbus1\", \"gateway_id\": 1, \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.88\\\", \\\"port\\\":502}\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"Modbus1\", \"gateway_id\": 1, \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.88\\\", \\\"port\\\":502}\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/datasources",
@@ -954,10 +936,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"Modbus1\", \"gateway_id\":1, \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.99\\\", \\\"port\\\":502}\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"Modbus1\", \"gateway_id\":1, \"protocol\":\"modbus-tcp\", \"connection\":\"{\\\"host\\\":\\\"10.1.2.99\\\", \\\"port\\\":502}\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/datasources/1",
@@ -991,9 +970,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Distribution System",
@@ -1040,10 +1017,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"示例配电系统2\", \"svg\":\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><svg width=\\\"5cm\\\" height=\\\"4cm\\\" version=\\\"1.1\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"><desc>Four separate rectangles</desc><rect x=\\\".5cm\\\" y=\\\".5cm\\\" width=\\\"2cm\\\" height=\\\"1cm\\\"/></svg>\", \"description\":\"demo description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"示例配电系统2\", \"svg\":\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><svg width=\\\"5cm\\\" height=\\\"4cm\\\" version=\\\"1.1\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"><desc>Four separate rectangles</desc><rect x=\\\".5cm\\\" y=\\\".5cm\\\" width=\\\"2cm\\\" height=\\\"1cm\\\"/></svg>\", \"description\":\"demo description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/distributionsystems",
@@ -1082,10 +1056,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"示例配电系统1\", \"svg\":\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><svg width=\\\"5cm\\\" height=\\\"4cm\\\" version=\\\"1.1\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"><desc>Four separate rectangles</desc><rect x=\\\".5cm\\\" y=\\\".5cm\\\" width=\\\"2cm\\\" height=\\\"1cm\\\"/></svg>\", \"description\":\"demo description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"示例配电系统1\", \"svg\":\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><svg width=\\\"5cm\\\" height=\\\"4cm\\\" version=\\\"1.1\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"><desc>Four separate rectangles</desc><rect x=\\\".5cm\\\" y=\\\".5cm\\\" width=\\\"2cm\\\" height=\\\"1cm\\\"/></svg>\", \"description\":\"demo description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/distributionsystems/1",
@@ -1162,9 +1133,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Distribution Circuit",
@@ -1211,10 +1180,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"51W92\", \"distribution_system_id\":1, \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"51W92\", \"distribution_system_id\":1, \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/distributioncircuits",
@@ -1253,10 +1219,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"51W91\", \"distribution_system_id\":1, \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"51W91\", \"distribution_system_id\":1, \"distribution_room\":\"EW1\", \"switchgear\":\"51AL9\", \"peak_load\": 30, \"peak_current\": 53.6, \"customers\": \"地下室应急照明\", \"meters\": \"ALE-1102, ALE-1082\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/distributioncircuits/1",
@@ -1333,9 +1296,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Email Server",
@@ -1436,9 +1397,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Email Message",
@@ -1535,9 +1494,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Energy Category",
@@ -1605,10 +1562,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"汽油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"汽油\",\"unit_of_measure\":\"L\", \"kgce\":0.1229 , \"kgco2e\":0.8825}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/energycategories/9",
@@ -1641,9 +1595,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Energy Flow Diagram",
@@ -1916,9 +1868,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Energy Item",
@@ -1986,10 +1936,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"空调用\",\"energy_category_id\":1}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"空调用\",\"energy_category_id\":1}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/energyitems/1",
@@ -2022,9 +1969,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Equipment",
@@ -2036,10 +1981,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"description\":\"equipment description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"MyEMS Chiller\", \"is_input_counted\":true, \"is_output_counted\":false, \"cost_center_id\":1, \"description\":\"equipment description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/equipments",
@@ -2542,9 +2484,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Gateway",
@@ -2591,10 +2531,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"MyEMS Gateway 3\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"MyEMS Gateway 3\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/gateways",
@@ -2633,10 +2570,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"MyEMS Gateway #3\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"MyEMS Gateway #3\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/gateways/3",
@@ -2670,9 +2604,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "GSM Modem",
@@ -2773,9 +2705,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Knowledge File",
@@ -2890,9 +2820,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Meter",
@@ -2939,10 +2867,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"description\":\"空调用电\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"PM20\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"description\":\"空调用电\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/meters",
@@ -2963,10 +2888,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"description\":\"空调用电\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"PM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"parent_meter_id\":7, \"description\":\"空调用电\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/meters/28",
@@ -3080,9 +3002,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Offline Meter",
@@ -3129,10 +3049,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"OfflinePM21\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"空调用电\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"OfflinePM21\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"空调用电\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/offlinemeters",
@@ -3153,10 +3070,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"OfflinePM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"空调用电\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"OfflinePM201\", \"energy_category_id\":1, \"hourly_low_limit\":0.000, \"hourly_high_limit\":999.99, \"is_counted\":true, \"cost_center_id\":1, \"energy_item_id\":1, \"description\":\"空调用电\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/offlinemeters/6",
@@ -3189,9 +3103,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Offline Meter File",
@@ -3287,9 +3199,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Point",
@@ -3336,10 +3246,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"ModbusPoint2\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":1,\"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/points",
@@ -3378,10 +3285,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"ModbusPoint1\", \"data_source_id\":1, \"object_type\": \"ENERGY_VALUE\", \"units\":\"kWh\", \"high_limit\":999999999, \"low_limit\":0, \"ratio\":100, \"is_trend\":true, \"address\":\"{\\\"slave_id\\\":1, \\\"function_code\\\":3, \\\"offset\\\":1, \\\"number_of_registers\\\":2, \\\"data_format\\\":\\\"float\\\"}\", \"description\":null}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/points/1",
@@ -3396,9 +3300,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Privilege",
@@ -3427,10 +3329,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"privilege 1\", \"data\":\"{\\\"spaces\\\":[1, 3]}\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"privilege 1\", \"data\":\"{\\\"spaces\\\":[1, 3]}\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/privileges/2",
@@ -3484,9 +3383,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Rule",
@@ -3587,9 +3484,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Sensor",
@@ -3636,10 +3531,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"Sensor10\", \"description\":\"sensor description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"Sensor10\", \"description\":\"sensor description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/sensors",
@@ -3660,10 +3552,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"Sensor10\", \"description\":\"sensor description\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"Sensor10\", \"description\":\"sensor description\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/sensors/5",
@@ -3758,9 +3647,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Shopfloor",
@@ -4233,9 +4120,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Space",
@@ -5004,9 +4889,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Store",
@@ -5417,9 +5300,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "StoreType",
@@ -5520,9 +5401,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Tariff",
@@ -5633,10 +5512,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"new2020分时电价1-6\",\"energy_category\":{\"id\":1}, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.456}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"new2020分时电价1-6\",\"energy_category\":{\"id\":1}, \"tariff_type\":\"timeofuse\", \"unit_of_price\":\"元/千瓦时\", \"valid_from\":\"2020-01-01T00:00:00\", \"valid_through\":\"2020-07-01T00:00:00\", \"timeofuse\":[{\"start_time_of_day\":\"00:00:00\", \"end_time_of_day\":\"05:59:59\", \"peak_type\":\"offpeak\", \"price\":0.456}, {\"start_time_of_day\":\"06:00:00\", \"end_time_of_day\":\"07:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"08:00:00\", \"end_time_of_day\":\"10:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"11:00:00\", \"end_time_of_day\":\"17:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"18:00:00\", \"end_time_of_day\":\"20:59:59\", \"peak_type\":\"onpeak\", \"price\":1.159}, {\"start_time_of_day\":\"21:00:00\", \"end_time_of_day\":\"21:59:59\", \"peak_type\":\"midpeak\", \"price\":0.708}, {\"start_time_of_day\":\"22:00:00\", \"end_time_of_day\":\"23:59:59\", \"peak_type\":\"offpeak\", \"price\":0.345}]}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/tariffs/19",
@@ -5669,9 +5545,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Tenant",
@@ -6082,9 +5956,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "TenantType",
@@ -6185,9 +6057,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Text Message",
@@ -6291,9 +6161,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Timezone",
@@ -6355,9 +6223,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "User",
@@ -6389,10 +6255,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/users",
@@ -6413,10 +6276,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"administrator\", \"password\":\"!MyEMS1\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"administrator\", \"password\":\"!MyEMS1\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/users/login",
@@ -6438,10 +6298,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"email\":\"administrator@myems.io\", \"password\":\"!MyEMS1\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"email\":\"administrator@myems.io\", \"password\":\"!MyEMS1\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/users/login",
@@ -6481,10 +6338,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"albert\", \"display_name\":\"Mr. Albert\", \"email\":\"albert@myems.io\", \"is_admin\":false, \"privilege_id\":1, \"password\":\"!MyEMS1\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/users/2",
@@ -6613,10 +6467,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"old_password\":\"!MyEMS1\", \"new_password\":\"!MyEMS2\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"old_password\":\"!MyEMS1\", \"new_password\":\"!MyEMS2\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/users/changepassword",
@@ -6649,10 +6500,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"johnson\",\"password\":\"NewPassword2\"}}",
-									"options": {
-										"raw": {}
-									}
+									"raw": "{\"data\":{\"name\":\"johnson\",\"password\":\"NewPassword2\"}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/users/resetpassword",
@@ -6667,9 +6515,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Virtual Meter",
@@ -6770,9 +6616,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Web Message",
@@ -6904,9 +6748,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Wechat Message",
@@ -7010,16 +6852,79 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Reports",
 			"item": [
+				{
+					"name": "GET AdvancedReports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/advancedreports?reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"advancedreports"
+							],
+							"query": [
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET AdvancedReport by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/advancedreports/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"advancedreports",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE AdvancedReport by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/advancedreports/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"advancedreports",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Dashboard",
 					"request": {
@@ -8495,9 +8400,52 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Dashboard Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/dashboard?useruuid=dcdb67d1-6116-4987-916f-6fc6cf2bc0e4&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"dashboard"
+							],
+							"query": [
+								{
+									"key": "useruuid",
+									"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4"
+								},
+								{
+									"key": "periodtype",
+									"value": "daily"
+								},
+								{
+									"key": "baseperiodstartdatetime",
+									"value": "2020-08-01T00:00:00"
+								},
+								{
+									"key": "baseperiodenddatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Version",
@@ -8516,6 +8464,5 @@
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

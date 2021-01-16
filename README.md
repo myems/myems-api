@@ -1977,6 +1977,22 @@ $ curl -i -X DELETE http://BASE_URL/wechatmessages/{id}
 ```
 
 ### Reports
+* GET AdvancedReports
+```
+$ curl -i -X GET http://BASE_URL/reports/advancedreports?reportingperiodstartdatetime={reportingperiodstartdatetime}&reportingperiodenddatetime={reportingperiodenddatetime}
+```
+* GET AdvancedReport by ID
+```
+$ curl -i -X GET http://BASE_URL/reports/advancedreports/{id}
+```
+* DELETE AdvancedReport by ID
+```
+$ curl -i -X GET http://BASE_URL/reports/advancedreports/{id}
+```
+* GET Dashboard
+```
+$ curl -i -X GET {{base_url}}/reports/dashboard?useruuid={useruuid}&periodtype={periodtype}&baseperiodstartdatetime={baseperiodstartdatetime}&baseperiodenddatetime={baseperiodenddatetime}&reportingperiodstartdatetime={reportingperiodstartdatetime}&reportingperiodenddatetime={reportingperiodenddatetime}
+```
 * GET Report of Meter Energy
 ```bash
 $ curl -i -X GET http://BASE_URL/reports/meterenergy?meterid={meterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}
