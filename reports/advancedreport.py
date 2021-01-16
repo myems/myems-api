@@ -3,6 +3,7 @@ import simplejson as json
 import mysql.connector
 from datetime import datetime, timedelta, timezone
 import base64
+import sys
 import config
 
 
@@ -92,13 +93,14 @@ class AdvancedReportCollection:
                 base64_encoded_data = base64.b64encode(row['file_object'])
                 # get the Base64 encoded data using human-readable characters.
                 base64_message = base64_encoded_data.decode('utf-8')
-
+                create_datetime_local = row['create_datetime_utc'].replace(tzinfo=None) + \
+                    timedelta(minutes=timezone_offset)
                 meta_result = {"id": row['id'],
                                "file_name": row['file_name'],
                                "uuid": row['uuid'],
-                               "create_datetime":
-                                   row['create_datetime_utc'].replace(tzinfo=timezone.utc).timestamp() * 1000,
+                               "create_datetime_local": create_datetime_local.isoformat(),
                                "file_type": row['file_type'],
+                               "file_size_bytes": sys.getsizeof(row['file_object']),
                                "file_bytes_base64": base64_message}
                 result.append(meta_result)
 
