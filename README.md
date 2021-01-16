@@ -98,6 +98,12 @@ Get the latest version of openpyxl from https://bitbucket.org/openpyxl/openpyxl/
   $ git clone https://github.com/phn/jdcal.git
   $ cd ~/tools/jdcal
   $ sudo python3 setup.py install
+  $ mkdir ~/tools/pillow
+  $ cd ~/tools/pillow
+    -- Note: This address is for Python version 3.8
+    -- Refer to :https://pypi.org/project/Pillow/#files
+  $ wget https://files.pythonhosted.org/packages/aa/12/a5e5e1b9bcd6c16eb4833069e6d586dc2b8ebbd3141a369cb1bdb9e4cc04/Pillow-7.2.0-cp38-cp38-manylinux1_x86_64.whl
+  $ sudo pip3 install Pillow-7.2.0-cp38-cp38-manylinux1_x86_64.whl
   $ cd ~/tools
   $ wget https://foss.heptapod.net/openpyxl/openpyxl/-/archive/branch/3.0/openpyxl-branch-3.0.zip
   $ 7z x openpyxl-branch-3.0.zip
