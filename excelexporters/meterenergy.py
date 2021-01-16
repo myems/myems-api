@@ -132,7 +132,7 @@ def generate_excel(data, name, start, end, period):
                               shrink_to_fit=False,
                               indent=0)
     # Img
-    img = Image("myems.png")
+    img = Image("excelexporters/myems.png")
     ws.add_image(img, 'B1')
 
     # Title
