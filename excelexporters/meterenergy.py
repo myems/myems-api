@@ -259,8 +259,9 @@ def generate_excel(data, name, start, end, period):
     #################################################
     # Second: 能耗详情
     # 11: title
-    # 12: table title
-    # 13~43: table_data
+    # 12 ~ 16: chart
+    # 18: table title
+    # 19~43: table_data
     #################################################
     has_energy_detail_flag = True
     report = data['reporting_period']
@@ -273,21 +274,22 @@ def generate_excel(data, name, start, end, period):
         ws['B11'].font = title_font
         ws['B11'] = name + '能耗详情'
 
-        ws['B12'].fill = table_fill
-        ws['B12'].border = f_border
-        ws['B12'].alignment = c_c_alignment
-        ws['B12'] = '时间'
+        ws['B18'].fill = table_fill
+        ws['B18'].font = title_font
+        ws['B18'].border = f_border
+        ws['B18'].alignment = c_c_alignment
+        ws['B18'] = '时间'
         time = times
         has_data = False
         max_row = 0
         if len(time) > 0:
             has_data = True
-            max_row = 12 + len(time)
+            max_row = 18 + len(time)
 
         if has_data:
             for i in range(0, len(time)):
                 col = 'B'
-                row = str(13 + i)
+                row = str(19 + i)
                 # col = chr(ord('B') + i)
                 ws[col + row].font = title_font
                 ws[col + row].alignment = c_c_alignment
@@ -298,18 +300,18 @@ def generate_excel(data, name, start, end, period):
                 # 12 title
                 col = chr(ord('C') + i)
 
-                ws[col + '12'].fill = table_fill
-                ws[col + '12'].font = title_font
-                ws[col + '12'].alignment = c_c_alignment
-                ws[col + '12'] = data['meter']['energy_category_name'] + " (" + data['meter']['unit_of_measure'] + ")"
-                ws[col + '12'].border = f_border
+                ws[col + '18'].fill = table_fill
+                ws[col + '18'].font = title_font
+                ws[col + '18'].alignment = c_c_alignment
+                ws[col + '18'] = data['meter']['energy_category_name'] + " (" + data['meter']['unit_of_measure'] + ")"
+                ws[col + '18'].border = f_border
 
                 # 13 data
                 time = times
                 time_len = len(time)
 
                 for j in range(0, time_len):
-                    row = str(13 + j)
+                    row = str(19 + j)
                     # col = chr(ord('B') + i)
                     ws[col + row].font = title_font
                     ws[col + row].alignment = c_c_alignment
@@ -318,21 +320,21 @@ def generate_excel(data, name, start, end, period):
                 # bar
                 # 13~: bar
                 bar = BarChart()
-                labels = Reference(ws, min_col=2, min_row=13, max_row=max_row + 1)
-                bar_data = Reference(ws, min_col=3 + i, min_row=12, max_row=max_row + 1)  # openpyxl bug
+                labels = Reference(ws, min_col=2, min_row=19, max_row=max_row + 1)
+                bar_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row + 1)  # openpyxl bug
                 bar.add_data(bar_data, titles_from_data=True)
                 bar.set_categories(labels)
                 bar.height = 5.25  # cm 1.05*5 1.05cm = 30 pt
                 bar.width = 18
                 # pie.title = "Pies sold by category"
                 bar.dLbls = DataLabelList()
-                bar.dLbls.showCatName = True  # 标签显示
+                # bar.dLbls.showCatName = True  # 标签显示
                 bar.dLbls.showVal = True  # 数量显示
                 bar.dLbls.showPercent = True  # 百分比显示
                 # s1 = CharacterProperties(sz=1800)     # 图表中字体大小 *100
                 chart_col = chr(ord('B') + 2 * i)
                 chart_cell = chart_col + str(max_row + 2)
-                ws.add_chart(bar, chart_cell)
+                ws.add_chart(bar, "B12")
     else:
         for i in range(11, 43 + 1):
             ws.row_dimensions[i].height = 0.0
