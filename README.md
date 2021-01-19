@@ -120,11 +120,11 @@ Get the latest version of openpyxl from https://bitbucket.org/openpyxl/openpyxl/
 ```
   $ sudo nano /myems-api/config.py
 ```
-   Change the listening port (8080 as an example) in gunicorn.socket:
+   Change the listening port (default is 8000) in gunicorn.socket:
 ```
    $ sudo nano /myems-api/gunicorn.socket
-ListenStream=0.0.0.0:8080
-    $ sudo ufw allow 8080
+ListenStream=0.0.0.0:8000
+    $ sudo ufw allow 8000
 ```
    Setup systemd configure files:
 ```
@@ -146,7 +146,7 @@ ListenStream=0.0.0.0:8080
 ## Run for debugging and testing
 ```
 $ cd myems-api
-$ sudo gunicorn -b 127.0.0.1:8080 app:api
+$ sudo gunicorn -b 127.0.0.1:8000 app:api
 ```
 
 ## API List
