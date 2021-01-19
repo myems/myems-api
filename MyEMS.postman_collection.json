@@ -6987,6 +6987,38 @@
 					"response": []
 				},
 				{
+					"name": "GET Energy Flow Diagram Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/energyflowdiagram?reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00&energyflowdiagramid=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"energyflowdiagram"
+							],
+							"query": [
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								},
+								{
+									"key": "energyflowdiagramid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "GET Equipment Cost Report",
 					"request": {
 						"method": "GET",
