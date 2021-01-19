@@ -20,7 +20,7 @@ from openpyxl.chart.label import DataLabelList
 ####################################################################################################################
 
 
-def export(report,
+def export(result,
            name,
            reporting_start_datetime_local,
            reporting_end_datetime_local,
@@ -28,16 +28,16 @@ def export(report,
     ####################################################################################################################
     # Step 1: Validate the report data
     ####################################################################################################################
-    if report is None:
+    if result is None:
         return None
 
-    if "reporting_period" not in report.keys() or \
-            "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
+    if "reporting_period" not in result.keys() or \
+            "names" not in result['reporting_period'].keys() or len(result['reporting_period']['names']) == 0:
         return None
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
-    filename = generate_excel(report,
+    filename = generate_excel(result,
                               name,
                               reporting_start_datetime_local,
                               reporting_end_datetime_local,
@@ -164,19 +164,25 @@ def generate_excel(report,
     # 8~ table_data
     ################################################
     has_data_flag = True
-    report = report['reporting_period']
-    if "names" not in report.keys() or report['names'] is None or len(report['names']) == 0:
+    reporting_period_data = report['reporting_period']
+    if "names" not in reporting_period_data.keys() or \
+            reporting_period_data['names'] is None or \
+            len(reporting_period_data['names']) == 0:
         has_data_flag = False
 
-    if "timestamps" not in report.keys() or report['timestamps'] is None or len(report['timestamps']) == 0:
+    if "timestamps" not in reporting_period_data.keys() or \
+            reporting_period_data['timestamps'] is None or \
+            len(reporting_period_data['timestamps']) == 0:
         has_data_flag = False
 
-    if "values" not in report.keys() or report['values'] is None or len(report['values']) == 0:
+    if "values" not in reporting_period_data.keys() or \
+            reporting_period_data['values'] is None or \
+            len(reporting_period_data['values']) == 0:
         has_data_flag = False
-    ca = report['names']
+    ca = reporting_period_data['names']
     ca_len = len(ca)
     temp_max_row = 0
-    times = report['timestamps']
+    times = reporting_period_data['timestamps']
     if has_data_flag:
         ws['B6'].font = title_font
         ws['B6'] = name + ' 趋势'
@@ -210,7 +216,7 @@ def generate_excel(report,
                 ws[col + '7'].fill = table_fill
                 ws[col + '7'].font = title_font
                 ws[col + '7'].alignment = c_c_alignment
-                ws[col + '7'] = report['names'][i]
+                ws[col + '7'] = reporting_period_data['names'][i]
                 ws[col + '7'].border = f_border
 
                 # 39 data
@@ -222,7 +228,7 @@ def generate_excel(report,
                     # col = chr(ord('B') + i)
                     ws[col + row].font = title_font
                     ws[col + row].alignment = c_c_alignment
-                    ws[col + row] = round(report['values'][i][j], 0)
+                    ws[col + row] = round(reporting_period_data['values'][i][j], 0)
                     ws[col + row].border = f_border
                 # bar
                 # 39~: bar
