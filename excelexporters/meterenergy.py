@@ -25,7 +25,6 @@ def export(result, name, reporting_start_datetime_local, reporting_end_datetime_
     if result is None:
         return None
 
-
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
