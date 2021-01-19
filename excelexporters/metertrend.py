@@ -20,7 +20,7 @@ from openpyxl.chart.label import DataLabelList
 ####################################################################################################################
 
 
-def export(result,
+def export(report,
            name,
            reporting_start_datetime_local,
            reporting_end_datetime_local,
@@ -28,16 +28,16 @@ def export(result,
     ####################################################################################################################
     # Step 1: Validate the report data
     ####################################################################################################################
-    if result is None:
+    if report is None:
         return None
 
-    if "reporting_period" not in result.keys() or \
-            "names" not in result['reporting_period'].keys() or len(result['reporting_period']['names']) == 0:
+    if "reporting_period" not in report.keys() or \
+            "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
         return None
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
-    filename = generate_excel(result,
+    filename = generate_excel(report,
                               name,
                               reporting_start_datetime_local,
                               reporting_end_datetime_local,
@@ -64,7 +64,7 @@ def export(result,
     return base64_message
 
 
-def generate_excel(result,
+def generate_excel(report,
                    name,
                    reporting_start_datetime_local,
                    reporting_end_datetime_local,
@@ -164,7 +164,7 @@ def generate_excel(result,
     # 8~ table_data
     ################################################
     has_data_flag = True
-    report = result['reporting_period']
+    report = report['reporting_period']
     if "names" not in report.keys() or report['names'] is None or len(report['names']) == 0:
         has_data_flag = False
 

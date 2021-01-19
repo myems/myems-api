@@ -19,7 +19,7 @@ from openpyxl.chart.label import DataLabelList
 ####################################################################################################################
 
 
-def export(result,
+def export(report,
            name,
            reporting_start_datetime_local,
            reporting_end_datetime_local,
@@ -27,16 +27,16 @@ def export(result,
     ####################################################################################################################
     # Step 1: Validate the report data
     ####################################################################################################################
-    if result is None:
+    if report is None:
         return None
 
-    if "reporting_period" not in result.keys() or \
-            "names" not in result['reporting_period'].keys() or len(result['reporting_period']['names']) == 0:
+    if "reporting_period" not in report.keys() or \
+            "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
         return None
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
-    filename = generate_excel(result,
+    filename = generate_excel(report,
                               name,
                               reporting_start_datetime_local,
                               reporting_end_datetime_local,
@@ -62,7 +62,7 @@ def export(result,
     return base64_message
 
 
-def generate_excel(result,
+def generate_excel(report,
                    name,
                    reporting_start_datetime_local,
                    reporting_end_datetime_local,
@@ -162,7 +162,7 @@ def generate_excel(result,
     # Total: 5 rows
     # if has not energy data: set low height for rows
     #################################################
-    report = result['reporting_period']
+    report = report['reporting_period']
 
     has_energy_data_flag = True
     if "names" not in report.keys() or report['names'] is None or len(report['names']) ==0:
@@ -364,12 +364,12 @@ def generate_excel(result,
     ################################################
     has_child_flag = True
     # Judge if the space has child space, if not, delete it.
-    if "child_space" not in result.keys() or "energy_category_names" not in result['child_space'].keys() or \
-        len(result['child_space']["energy_category_names"]) == 0:
+    if "child_space" not in report.keys() or "energy_category_names" not in report['child_space'].keys() or \
+        len(report['child_space']["energy_category_names"]) == 0:
         has_child_flag = False
 
     if has_child_flag:
-        child = result['child_space']
+        child = report['child_space']
         child_spaces = child['child_space_names_array'][0]
         child_subtotals = child['subtotals_array'][0]
 
@@ -429,7 +429,7 @@ def generate_excel(result,
     # 38: table title
     # 39~69: table_data
     ################################################
-    report = result['reporting_period']
+    report = report['reporting_period']
     times = report['timestamps']
     has_detail_data_flag = True
 

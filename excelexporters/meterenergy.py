@@ -18,20 +18,20 @@ from openpyxl.chart.label import DataLabelList
 # Step 3: Encode the excelexporters file to Base64
 ####################################################################################################################
 
-def export(result, name, reporting_start_datetime_local, reporting_end_datetime_local, period_type):
+def export(report, name, reporting_start_datetime_local, reporting_end_datetime_local, period_type):
     ####################################################################################################################
     # Step 1: Validate the report data
     ####################################################################################################################
-    if result is None:
+    if report is None:
         return None
 
-    if "reporting_period" not in result.keys() or \
-            "values" not in result['reporting_period'].keys() or len(result['reporting_period']['values']) == 0:
+    if "reporting_period" not in report.keys() or \
+            "values" not in report['reporting_period'].keys() or len(report['reporting_period']['values']) == 0:
         return None
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
-    filename = generate_excel(result,
+    filename = generate_excel(report,
                               name,
                               reporting_start_datetime_local,
                               reporting_end_datetime_local,
@@ -57,24 +57,7 @@ def export(result, name, reporting_start_datetime_local, reporting_end_datetime_
     return base64_message
 
 
-def generate_excel(data, name, start, end, period):
-    """
-    parameter:
-    name,
-    data,
-    start, end
-    period
-    """
-    # For test
-    # start = "2021-01-01"
-    # end = "2021-01-05"
-    # period = 'day'
-    # name = "AHc01进线柜正向有功Wp"
-    #
-    # with open('test.json', 'r') as fr:
-    #     json_data = fr.read()
-    #     data = json.loads(json_data)
-
+def generate_excel(report, name, reporting_start_datetime_local, reporting_end_datetime_local, period_type):
     wb = Workbook()
     ws = wb.active
 
@@ -150,7 +133,7 @@ def generate_excel(data, name, start, end, period):
     ws['E3'].border = b_border
     ws['E3'].alignment = b_c_alignment
     ws['E3'].font = name_font
-    ws['E3'] = period
+    ws['E3'] = period_type
 
     ws['F3'].font = name_font
     ws['F3'].alignment = b_r_alignment
@@ -158,7 +141,7 @@ def generate_excel(data, name, start, end, period):
     ws['G3'].border = b_border
     ws['G3'].alignment = b_c_alignment
     ws['G3'].font = name_font
-    ws['G3'] = start + "__" + end
+    ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
     ws.merge_cells("G3:H3")
 
     #################################################
@@ -169,16 +152,16 @@ def generate_excel(data, name, start, end, period):
     #################################################
     has_energy_data_flag = True
 
-    if "values" not in data['reporting_period'].keys() or len(data['reporting_period']['values']) == 0:
+    if "values" not in report['reporting_period'].keys() or len(report['reporting_period']['values']) == 0:
         has_energy_data_flag = False
 
     if has_energy_data_flag:
         ws['B6'].font = title_font
         ws['B6'] = name + '能耗分析'
 
-        report = data['reporting_period']
+        report = report['reporting_period']
         # print(report)
-        category = data['meter']['energy_category_name']
+        category = report['meter']['energy_category_name']
         ca_len = len(category)
 
         ws['B7'].fill = table_fill
@@ -200,7 +183,7 @@ def generate_excel(data, name, start, end, period):
             ws[col + '7'].fill = table_fill
             ws[col + '7'].font = name_font
             ws[col + '7'].alignment = c_c_alignment
-            ws[col + '7'] = data['meter']['energy_category_name'] + " (" + data['meter']['unit_of_measure'] + ")"
+            ws[col + '7'] = report['meter']['energy_category_name'] + " (" + report['meter']['unit_of_measure'] + ")"
             ws[col + '7'].border = f_border
 
             ws[col + '8'].font = name_font
@@ -264,10 +247,10 @@ def generate_excel(data, name, start, end, period):
     # 19~43: table_data
     #################################################
     has_energy_detail_flag = True
-    report = data['reporting_period']
+    report = report['reporting_period']
     times = report['timestamps']
 
-    if "values" not in data['reporting_period'].keys() or len(data['reporting_period']['values']) == 0:
+    if "values" not in report['reporting_period'].keys() or len(report['reporting_period']['values']) == 0:
         has_energy_detail_flag = False
 
     if has_energy_detail_flag:
@@ -303,7 +286,7 @@ def generate_excel(data, name, start, end, period):
                 ws[col + '18'].fill = table_fill
                 ws[col + '18'].font = title_font
                 ws[col + '18'].alignment = c_c_alignment
-                ws[col + '18'] = data['meter']['energy_category_name'] + " (" + data['meter']['unit_of_measure'] + ")"
+                ws[col + '18'] = report['meter']['energy_category_name'] + " (" + report['meter']['unit_of_measure'] + ")"
                 ws[col + '18'].border = f_border
 
                 # 13 data
