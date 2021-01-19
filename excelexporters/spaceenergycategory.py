@@ -123,7 +123,8 @@ def generate_excel(report,
                               shrink_to_fit=False,
                               indent=0)
     # Img
-    img = Image("excelexporters/myems.png")
+    # img = Image("excelexporters/myems.png")
+    img = Image("myems.png")
     ws.add_image(img, 'B1')
 
     # Title
@@ -351,7 +352,7 @@ def generate_excel(report,
         # pie.title = "Pies sold by category"
         s1 = pie.series[0]
         s1.dLbls = DataLabelList()
-        s1.dLbls.showCatName = True  # 标签显示
+        s1.dLbls.showCatName = False  # 标签显示
         s1.dLbls.showVal = True  # 数量显示
         s1.dLbls.showPercent = True  # 百分比显示
         # s1 = CharacterProperties(sz=1800)     # 图表中字体大小 *100
@@ -431,6 +432,8 @@ def generate_excel(report,
     else:
         for i in range(19, 36 + 1):
             ws.row_dimensions[i].height = 0.1
+    for i in range(31, 35 + 1):
+        ws.row_dimensions[i].height = 0.1
     ################################################
     # Fourth: 能耗详情
     # 37: title
