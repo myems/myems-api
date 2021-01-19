@@ -123,8 +123,7 @@ def generate_excel(report,
                               shrink_to_fit=False,
                               indent=0)
     # Img
-    # img = Image("excelexporters/myems.png")
-    img = Image("myems.png")
+    img = Image("excelexporters/myems.png")
     ws.add_image(img, 'B1')
 
     # Title
