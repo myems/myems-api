@@ -31,9 +31,6 @@ def export(result,
     if result is None:
         return None
 
-    if "reporting_period" not in result.keys() or \
-            "names" not in result['reporting_period'].keys() or len(result['reporting_period']['names']) == 0:
-        return None
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
@@ -156,7 +153,12 @@ def generate_excel(report,
     ws['G3'].font = name_font
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
     ws.merge_cells("G3:H3")
+    if "reporting_period" not in report.keys() or \
+            "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
+        filename = str(uuid.uuid4()) + '.xlsx'
+        wb.save(filename)
 
+        return filename
     ################################################
     # First: 趋势
     # 6: title

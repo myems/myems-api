@@ -30,9 +30,7 @@ def export(report,
     if report is None:
         return None
     print(report)
-    if "reporting_period" not in report.keys() or \
-            "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
-        return None
+
     ####################################################################################################################
     # Step 2: Generate excel file from the report data
     ####################################################################################################################
@@ -154,6 +152,12 @@ def generate_excel(report,
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
     ws.merge_cells("G3:H3")
 
+    if "reporting_period" not in report.keys() or \
+            "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
+        filename = str(uuid.uuid4()) + '.xlsx'
+        wb.save(filename)
+
+        return filename
     #################################################
     # First: 能耗分析
     # 6: title
