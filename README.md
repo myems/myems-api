@@ -98,6 +98,12 @@ Get the latest version of openpyxl from https://bitbucket.org/openpyxl/openpyxl/
   $ git clone https://github.com/phn/jdcal.git
   $ cd ~/tools/jdcal
   $ sudo python3 setup.py install
+  $ mkdir ~/tools/pillow
+  $ cd ~/tools/pillow
+    -- Note: This address is for Python version 3.8
+    -- Refer to :https://pypi.org/project/Pillow/#files
+  $ wget https://files.pythonhosted.org/packages/aa/12/a5e5e1b9bcd6c16eb4833069e6d586dc2b8ebbd3141a369cb1bdb9e4cc04/Pillow-7.2.0-cp38-cp38-manylinux1_x86_64.whl
+  $ sudo pip3 install Pillow-7.2.0-cp38-cp38-manylinux1_x86_64.whl
   $ cd ~/tools
   $ wget https://foss.heptapod.net/openpyxl/openpyxl/-/archive/branch/3.0/openpyxl-branch-3.0.zip
   $ 7z x openpyxl-branch-3.0.zip
@@ -114,11 +120,11 @@ Get the latest version of openpyxl from https://bitbucket.org/openpyxl/openpyxl/
 ```
   $ sudo nano /myems-api/config.py
 ```
-   Change the listening port (8080 as an example) in gunicorn.socket:
+   Change the listening port (default is 8000) in gunicorn.socket:
 ```
    $ sudo nano /myems-api/gunicorn.socket
-ListenStream=0.0.0.0:8080
-    $ sudo ufw allow 8080
+ListenStream=0.0.0.0:8000
+    $ sudo ufw allow 8000
 ```
    Setup systemd configure files:
 ```
@@ -140,7 +146,7 @@ ListenStream=0.0.0.0:8080
 ## Run for debugging and testing
 ```
 $ cd myems-api
-$ sudo gunicorn -b 127.0.0.1:8080 app:api
+$ sudo gunicorn -b 127.0.0.1:8000 app:api
 ```
 
 ## API List
@@ -1977,6 +1983,22 @@ $ curl -i -X DELETE http://BASE_URL/wechatmessages/{id}
 ```
 
 ### Reports
+* GET AdvancedReports
+```
+$ curl -i -X GET http://BASE_URL/reports/advancedreports?reportingperiodstartdatetime={reportingperiodstartdatetime}&reportingperiodenddatetime={reportingperiodenddatetime}
+```
+* GET AdvancedReport by ID
+```
+$ curl -i -X GET http://BASE_URL/reports/advancedreports/{id}
+```
+* DELETE AdvancedReport by ID
+```
+$ curl -i -X GET http://BASE_URL/reports/advancedreports/{id}
+```
+* GET Dashboard
+```
+$ curl -i -X GET {{base_url}}/reports/dashboard?useruuid={useruuid}&periodtype={periodtype}&baseperiodstartdatetime={baseperiodstartdatetime}&baseperiodenddatetime={baseperiodenddatetime}&reportingperiodstartdatetime={reportingperiodstartdatetime}&reportingperiodenddatetime={reportingperiodenddatetime}
+```
 * GET Report of Meter Energy
 ```bash
 $ curl -i -X GET http://BASE_URL/reports/meterenergy?meterid={meterid}&periodtype={periodtype}&baseperiodbeginsdatetime={baseperiodbeginsdatetime}&baseperiodendsdatetime={baseperiodendsdatetime}&reportingperiodbeginsdatetime={reportingperiodbeginsdatetime}&reportingperiodendsdatetime={reportingperiodendsdatetime}

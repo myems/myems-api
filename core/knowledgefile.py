@@ -3,8 +3,10 @@ import json
 import mysql.connector
 import config
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import os
+import base64
+import sys
 
 
 class KnowledgeFileCollection:
@@ -19,7 +21,7 @@ class KnowledgeFileCollection:
     @staticmethod
     def on_get(req, resp):
         cnx = mysql.connector.connect(**config.myems_user_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         query = (" SELECT uuid, display_name "
                  " FROM tbl_users ")
@@ -31,12 +33,12 @@ class KnowledgeFileCollection:
         user_dict = dict()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                user_dict[row[0]] = row[1]
+                user_dict[row['uuid']] = row['display_name']
 
         cnx = mysql.connector.connect(**config.myems_system_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
-        query = (" SELECT id, file_name, uuid, upload_datetime_utc, upload_user_uuid "
+        query = (" SELECT id, file_name, uuid, upload_datetime_utc, upload_user_uuid, file_object"
                  " FROM tbl_knowledge_files "
                  " ORDER BY upload_datetime_utc desc ")
         cursor.execute(query)
@@ -46,14 +48,27 @@ class KnowledgeFileCollection:
 
         result = list()
         if rows is not None and len(rows) > 0:
+            timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
+            if config.utc_offset[0] == '-':
+                timezone_offset = -timezone_offset
             for row in rows:
-                upload_datetime = row[3]
+                # Base64 encode the bytes
+                base64_encoded_data = base64.b64encode(row['file_object'])
+                # get the Base64 encoded data using human-readable characters.
+                base64_message = base64_encoded_data.decode('utf-8')
+                upload_datetime_local = row['upload_datetime_utc'].replace(tzinfo=None) + \
+                    timedelta(minutes=timezone_offset)
+                upload_datetime = row['upload_datetime_utc']
                 upload_datetime = upload_datetime.replace(tzinfo=timezone.utc)
-                meta_result = {"id": row[0],
-                               "file_name": row[1],
-                               "uuid": row[2],
+                meta_result = {"id": row['id'],
+                               "file_name": row['file_name'],
+                               "uuid": row['uuid'],
                                "upload_datetime": upload_datetime.timestamp() * 1000,
-                               "user_display_name": user_dict.get(row[4], None)}
+                               "upload_datetime_local": upload_datetime_local.isoformat(),
+                               "user_display_name": user_dict.get(row['upload_user_uuid'], None),
+                               "file_size_bytes": sys.getsizeof(row['file_object']),
+                               "file_bytes_base64": base64_message
+                               }
                 result.append(meta_result)
 
         resp.body = json.dumps(result)

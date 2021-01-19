@@ -6,6 +6,7 @@ from core import auxiliarysystemdistributionsystem, privilege, textmessage, dist
     offlinemeterfile, version, contact, emailserver, combinedequipment, datasource, equipment, tenant, shopfloor, \
     webmessage, distributionsystem, store, emailmessage, tenanttype, wechatmessage, space, gateway, offlinemeter, \
     rule, energycategory, sensor, energyitem
+from reports import advancedreport
 from reports import auxiliarysystemenergyflowdiagram
 from reports import combinedequipmentcost
 from reports import combinedequipmentefficiency
@@ -465,6 +466,10 @@ api.add_route('/version',
 ########################################################################################################################
 # Routes for Reports
 ########################################################################################################################
+api.add_route('/reports/advancedreports',
+              advancedreport.AdvancedReportCollection())
+api.add_route('/reports/advancedreports/{id_}',
+              advancedreport.AdvancedReportItem())
 api.add_route('/reports/auxiliarysystemdistributionsystem',
               auxiliarysystemdistributionsystem.Reporting())
 api.add_route('/reports/auxiliarysystemenergyflowdiagram',
