@@ -244,7 +244,7 @@ def generate_excel(report,
                 # pie.title = "Pies sold by category"
                 bar.dLbls = DataLabelList()
                 # bar.dLbls.showCatName = True  # label show
-                # bar.dLbls.showVal = True  # val show
+                bar.dLbls.showVal = True  # val show
                 bar.dLbls.showPercent = True  # percent show
                 # s1 = CharacterProperties(sz=1800)     # font size *100
                 chart_col = chr(ord('B'))
