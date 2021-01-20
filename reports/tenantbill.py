@@ -51,7 +51,7 @@ class Reporting:
 
         if reporting_start_datetime_local is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description="API.INVALID_REPORTING_PERIOD_BEGINS_DATETIME")
+                                   description="API.INVALID_REPORTING_PERIOD_START_DATETIME")
         else:
             reporting_start_datetime_local = str.strip(reporting_start_datetime_local)
             try:
@@ -60,11 +60,11 @@ class Reporting:
                     timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description="API.INVALID_REPORTING_PERIOD_BEGINS_DATETIME")
+                                       description="API.INVALID_REPORTING_PERIOD_START_DATETIME")
 
         if reporting_end_datetime_local is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description="API.INVALID_REPORTING_PERIOD_ENDS_DATETIME")
+                                   description="API.INVALID_REPORTING_PERIOD_END_DATETIME")
         else:
             reporting_end_datetime_local = str.strip(reporting_end_datetime_local)
             try:
@@ -73,11 +73,11 @@ class Reporting:
                     timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                       description="API.INVALID_REPORTING_PERIOD_ENDS_DATETIME")
+                                       description="API.INVALID_REPORTING_PERIOD_END_DATETIME")
 
         if reporting_start_datetime_utc >= reporting_end_datetime_utc:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_REPORTING_PERIOD_ENDS_DATETIME')
+                                   description='API.INVALID_REPORTING_PERIOD_END_DATETIME')
 
         ################################################################################################################
         # Step 2: query the tenant

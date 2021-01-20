@@ -1,13 +1,14 @@
 import falcon
 from falcon_cors import CORS
 from falcon_multipart.middleware import MultipartMiddleware
-from core import auxiliarysystemdistributionsystem, privilege, textmessage, distributioncircuit, virtualmeter, \
-    costcenter, point, knowledgefile, meter, gsmmodem, tariff, user, energyflowdiagram, storetype, timezone, \
+from core import energyflowdiagram, privilege, textmessage, distributioncircuit, virtualmeter, \
+    costcenter, point, knowledgefile, meter, gsmmodem, tariff, user, storetype, timezone, \
     offlinemeterfile, version, contact, emailserver, combinedequipment, datasource, equipment, tenant, shopfloor, \
     webmessage, distributionsystem, store, emailmessage, tenanttype, wechatmessage, space, gateway, offlinemeter, \
     rule, energycategory, sensor, energyitem
 from reports import advancedreport
-from reports import auxiliarysystemenergyflowdiagram
+from reports import distributionsystem as distributionsystemreport
+from reports import energyflowdiagram as energyflowdiagramreport
 from reports import combinedequipmentcost
 from reports import combinedequipmentefficiency
 from reports import combinedequipmentenergycategory
@@ -470,10 +471,10 @@ api.add_route('/reports/advancedreports',
               advancedreport.AdvancedReportCollection())
 api.add_route('/reports/advancedreports/{id_}',
               advancedreport.AdvancedReportItem())
-api.add_route('/reports/auxiliarysystemdistributionsystem',
-              auxiliarysystemdistributionsystem.Reporting())
-api.add_route('/reports/auxiliarysystemenergyflowdiagram',
-              auxiliarysystemenergyflowdiagram.Reporting())
+api.add_route('/reports/distributionsystem',
+              distributionsystemreport.Reporting())
+api.add_route('/reports/energyflowdiagram',
+              energyflowdiagramreport.Reporting())
 api.add_route('/reports/combinedequipmentcost',
               combinedequipmentcost.Reporting())
 api.add_route('/reports/combinedequipmentefficiency',
@@ -606,11 +607,11 @@ api.add_route('/reports/virtualmetercost',
               virtualmetercost.Reporting())
 
 ########################################################################################################################
-# BEGIN Routes for Enterprise Version
+# BEGIN Routes for Enterprise Edition
 ########################################################################################################################
 
 ########################################################################################################################
-# END Routes for Enterprise Version
+# END Routes for Enterprise Edition
 ########################################################################################################################
 
 

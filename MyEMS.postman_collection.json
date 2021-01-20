@@ -6853,6 +6853,23 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Version",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/version",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"version"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -6926,7 +6943,7 @@
 					"response": []
 				},
 				{
-					"name": "Dashboard",
+					"name": "GET Dashboard",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -6970,7 +6987,39 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Cost",
+					"name": "GET Energy Flow Diagram Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/energyflowdiagram?reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00&energyflowdiagramid=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"energyflowdiagram"
+							],
+							"query": [
+								{
+									"key": "reportingperiodstartdatetime",
+									"value": "2020-09-01T00:00:00"
+								},
+								{
+									"key": "reportingperiodenddatetime",
+									"value": "2020-10-01T00:00:00"
+								},
+								{
+									"key": "energyflowdiagramid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Equipment Cost Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7014,7 +7063,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Efficiency",
+					"name": "GET Equipment Efficiency Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7058,7 +7107,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Energy Category",
+					"name": "GET Equipment Energy Category Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7102,7 +7151,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Energy Item",
+					"name": "GET Equipment Energy Item Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7146,7 +7195,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Income",
+					"name": "GET Equipment Income Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7190,7 +7239,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Load",
+					"name": "GET Equipment Load Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7234,7 +7283,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Output",
+					"name": "GET Equipment Output Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7278,7 +7327,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Saving",
+					"name": "GET Equipment Saving Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7322,7 +7371,7 @@
 					"response": []
 				},
 				{
-					"name": "Equipment Statistics",
+					"name": "GET Equipment Statistics Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7366,7 +7415,7 @@
 					"response": []
 				},
 				{
-					"name": "Meter Energy",
+					"name": "GET Meter Energy Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7410,7 +7459,7 @@
 					"response": []
 				},
 				{
-					"name": "Meter Cost",
+					"name": "GET Meter Cost Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7454,7 +7503,7 @@
 					"response": []
 				},
 				{
-					"name": "Meter Realtime",
+					"name": "GET Meter Realtime Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7478,7 +7527,7 @@
 					"response": []
 				},
 				{
-					"name": "Meter Trend",
+					"name": "GET Meter Trend Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7510,7 +7559,7 @@
 					"response": []
 				},
 				{
-					"name": "Meter Tracking",
+					"name": "GET Meter Tracking Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7534,7 +7583,7 @@
 					"response": []
 				},
 				{
-					"name": "Offline Meter Energy",
+					"name": "GET Offline Meter Energy Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7578,7 +7627,7 @@
 					"response": []
 				},
 				{
-					"name": "Offline Meter Cost",
+					"name": "GET Offline Meter Cost Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7622,7 +7671,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Cost",
+					"name": "GET Space Cost Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7666,7 +7715,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Efficiency",
+					"name": "GET Space Efficiency Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7710,7 +7759,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Energy Category",
+					"name": "GET Space Energy Category Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7754,7 +7803,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Energy Item",
+					"name": "GET Space Energy Item Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7798,7 +7847,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Income",
+					"name": "GET Space Income Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7842,7 +7891,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Load",
+					"name": "GET Space Load Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7886,7 +7935,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Output",
+					"name": "GET Space Output Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7930,7 +7979,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Saving",
+					"name": "GET Space Saving Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -7974,7 +8023,7 @@
 					"response": []
 				},
 				{
-					"name": "Space Statistics",
+					"name": "GET Space Statistics Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8018,7 +8067,7 @@
 					"response": []
 				},
 				{
-					"name": "Tenant Bill",
+					"name": "GET Tenant Bill Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8050,7 +8099,7 @@
 					"response": []
 				},
 				{
-					"name": "Tenant Cost",
+					"name": "GET Tenant Cost Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8094,7 +8143,7 @@
 					"response": []
 				},
 				{
-					"name": "Tenant Energy Category",
+					"name": "GET Tenant Energy Category Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8138,7 +8187,7 @@
 					"response": []
 				},
 				{
-					"name": "Tenant Energy Item",
+					"name": "GET Tenant Energy Item Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8182,7 +8231,7 @@
 					"response": []
 				},
 				{
-					"name": "Tenant Load",
+					"name": "GET Tenant Load Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8226,7 +8275,7 @@
 					"response": []
 				},
 				{
-					"name": "Tenant Saving",
+					"name": "GET Tenant Saving Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8270,7 +8319,7 @@
 					"response": []
 				},
 				{
-					"name": "Tenant Statistics",
+					"name": "GET Tenant Statistics Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8314,7 +8363,7 @@
 					"response": []
 				},
 				{
-					"name": "Virtual Meter Energy",
+					"name": "GET Virtual Meter Energy Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8358,7 +8407,7 @@
 					"response": []
 				},
 				{
-					"name": "Virtual Meter Cost",
+					"name": "GET Virtual Meter Cost Report",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -8400,69 +8449,8 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Dashboard Copy",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/reports/dashboard?useruuid=dcdb67d1-6116-4987-916f-6fc6cf2bc0e4&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"reports",
-								"dashboard"
-							],
-							"query": [
-								{
-									"key": "useruuid",
-									"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4"
-								},
-								{
-									"key": "periodtype",
-									"value": "daily"
-								},
-								{
-									"key": "baseperiodstartdatetime",
-									"value": "2020-08-01T00:00:00"
-								},
-								{
-									"key": "baseperiodenddatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodstartdatetime",
-									"value": "2020-09-01T00:00:00"
-								},
-								{
-									"key": "reportingperiodenddatetime",
-									"value": "2020-10-01T00:00:00"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			]
-		},
-		{
-			"name": "Version",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/version",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"version"
-					]
-				}
-			},
-			"response": []
 		}
 	]
 }
