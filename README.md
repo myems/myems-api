@@ -2001,7 +2001,7 @@ $ curl -i -X GET {{base_url}}/reports/dashboard?useruuid={useruuid}&periodtype={
 ```
 * GET Distribution System Report
 ```
-$ curl -i -X GET {{base_url}}/reports/distributionsystem?distributionsystemid=1&reportingperiodstartdatetime={reportingperiodstartdatetime}&reportingperiodenddatetime={reportingperiodenddatetime}
+$ curl -i -X GET {{base_url}}/reports/distributionsystem?distributionsystemid=1
 ```
 * GET Energy Flow Diagram Report
 ```
