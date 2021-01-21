@@ -184,7 +184,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ws['B9'] = '环比'
         ws['B9'].border = f_border
 
-        for i in range(0,ca_len):
+        for i in range(0, ca_len):
             col = chr(ord('C')+i)
 
             ws[col + '7'].fill = table_fill
@@ -205,7 +205,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws[col + '9'].border = f_border
 
     else:
-        for i in range(6,9+1):
+        for i in range(6, 9+1):
             ws.rows_dimensions[i].height = 0.1
 
     ######################################
@@ -247,7 +247,6 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
             bar = BarChart()
 
-
             for i in range(0, ca_len):
 
                 col = chr(ord('C') + i)
@@ -256,7 +255,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + '18'].font = title_font
                 ws[col + '18'].alignment = c_c_alignment
                 ws[col + '18'] = report['meter']['energy_category_name'] + \
-                                 " (" + report['meter']['unit_of_measure'] + ")"
+                    " (" + report['meter']['unit_of_measure'] + ")"
                 ws[col + '18'].border = f_border
 
                 time = times
@@ -269,7 +268,6 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                     ws[col + row].alignment = c_c_alignment
                     ws[col + row] = round(reporting_period_data['values'][j], 0)
                     ws[col + row].border = f_border
-
 
                 bar_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row + 1)
                 bar.series.append(Series(bar_data, title_from_data=True))
