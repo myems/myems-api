@@ -124,6 +124,7 @@ def generate_excel(report,
                               indent=0)
     # Img
     img = Image("excelexporters/myems.png")
+    # img = Image("myems.png")
     ws.add_image(img, 'B1')
 
     # Title
@@ -436,13 +437,15 @@ def generate_excel(report,
     ################################################
     # Fourth: 能耗详情
     # 37: title
-    # 38: table title
-    # 39~69: table_data
+    # 38~ 38+ca_len*5-1: bar
+    # 38+ca_len*5: table title
+    # 38+ca_len*5~: table_data
     ################################################
     reporting_period_data = report['reporting_period']
     times = reporting_period_data['timestamps']
     has_detail_data_flag = True
-
+    ca_len = len(report['reporting_period']['names'])
+    table_row = 38 + ca_len*5
     if "timestamps" not in reporting_period_data.keys() or \
             reporting_period_data['timestamps'] is None or \
             len(reporting_period_data['timestamps']) == 0:
@@ -452,22 +455,22 @@ def generate_excel(report,
         ws['B37'].font = title_font
         ws['B37'] = name+' 能耗详情'
 
-        ws['B38'].fill = table_fill
-        ws['B38'].border = f_border
-        ws['B38'].alignment = c_c_alignment
-        ws['B38'] = '时间'
+        ws['B'+str(table_row)].fill = table_fill
+        ws['B'+str(table_row)].border = f_border
+        ws['B'+str(table_row)].alignment = c_c_alignment
+        ws['B'+str(table_row)] = '时间'
         time = times[0]
         has_data = False
         max_row = 0
         if len(time) > 0:
             has_data = True
-            max_row = 38 + len(time)
+            max_row = table_row + len(time)
             print("max_row", max_row)
 
         if has_data:
             for i in range(0, len(time)):
                 col = 'B'
-                row = str(39 + i)
+                row = str(table_row+1 + i)
                 # col = chr(ord('B') + i)
                 ws[col + row].font = title_font
                 ws[col + row].alignment = c_c_alignment
@@ -478,18 +481,18 @@ def generate_excel(report,
                 # 38 title
                 col = chr(ord('C') + i)
 
-                ws[col + '38'].fill = table_fill
-                ws[col + '38'].font = title_font
-                ws[col + '38'].alignment = c_c_alignment
-                ws[col + '38'] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
-                ws[col + '38'].border = f_border
+                ws[col + str(table_row)].fill = table_fill
+                ws[col + str(table_row)].font = title_font
+                ws[col + str(table_row)].alignment = c_c_alignment
+                ws[col + str(table_row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
+                ws[col + str(table_row)].border = f_border
 
                 # 39 data
                 time = times[i]
                 time_len = len(time)
 
                 for j in range(0, time_len):
-                    row = str(39 + j)
+                    row = str(table_row+1 + j)
                     # col = chr(ord('B') + i)
                     ws[col + row].font = title_font
                     ws[col + row].alignment = c_c_alignment
@@ -498,8 +501,8 @@ def generate_excel(report,
                 # bar
                 # 39~: bar
                 bar = BarChart()
-                labels = Reference(ws, min_col=2, min_row=39, max_row=max_row + 1)
-                bar_data = Reference(ws, min_col=3 + i, min_row=38, max_row=max_row + 1)  # openpyxl bug
+                labels = Reference(ws, min_col=2, min_row=table_row+1, max_row=max_row + 1)
+                bar_data = Reference(ws, min_col=3 + i, min_row=table_row, max_row=max_row + 1)  # openpyxl bug
                 bar.add_data(bar_data, titles_from_data=True)
                 bar.set_categories(labels)
                 bar.height = 5.25  # cm 1.05*5 1.05cm = 30 pt
@@ -510,8 +513,8 @@ def generate_excel(report,
                 bar.dLbls.showVal = True  # val show
                 bar.dLbls.showPercent = True  # percent show
                 # s1 = CharacterProperties(sz=1800)     # font size *100
-                chart_col = chr(ord('B') + 2 * i)
-                chart_cell = chart_col + str(max_row + 2)
+                chart_col = 'B'
+                chart_cell = chart_col + str(38 + 5*i)
                 ws.add_chart(bar, chart_cell)
     else:
         for i in range(37, 69 + 1):
