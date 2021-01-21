@@ -84,7 +84,7 @@ class Reporting:
         # Step 4: query circuits' associated points
         ################################################################################################################
         for x in range(len(circuit_list)):
-            query = (" SELECT p.id, p.name, p.object_type "
+            query = (" SELECT p.id, p.name, p.object_type, p.units "
                      " FROM tbl_points p, tbl_distribution_circuits_points dcp, tbl_distribution_circuits dc "
                      " WHERE dcp.distribution_circuit_id = %s AND p.id = dcp.point_id "
                      "       AND dcp.distribution_circuit_id = dc.id "
@@ -97,6 +97,7 @@ class Reporting:
                     circuit_list[x]['points'].append({"id": row['id'],
                                                       "name": row['name'],
                                                       "object_type": row['object_type'],
+                                                      "units": row['units'],
                                                       "value": None})
         if cursor_system:
             cursor_system.close()
