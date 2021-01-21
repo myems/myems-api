@@ -221,7 +221,8 @@ def generate_excel(report,
 
             ws[col + '10'].font = name_font
             ws[col + '10'].alignment = c_c_alignment
-            ws[col + '10'] = str(round(reporting_period_data['increment_rates'][i] * 100, 2)) + "%"
+            ws[col + '10'] = str(round(reporting_period_data['increment_rates'][i] * 100, 2)) + "%" \
+                if reporting_period_data['increment_rates'][i] is not None else "-"
             ws[col + '10'].border = f_border
 
         # TCE TCO2E
@@ -246,7 +247,8 @@ def generate_excel(report,
 
         ws[tce_col + '10'].font = name_font
         ws[tce_col + '10'].alignment = c_c_alignment
-        ws[tce_col + '10'] = str(round(reporting_period_data['increment_rate_in_kgce'] * 100, 2)) + "%"
+        ws[tce_col + '10'] = str(round(reporting_period_data['increment_rate_in_kgce'] * 100, 2)) + "%" \
+            if reporting_period_data['increment_rate_in_kgce'] is not None else "-"
         ws[tce_col + '10'].border = f_border
 
         # TCO2E
@@ -269,7 +271,8 @@ def generate_excel(report,
 
         ws[tco2e_col + '10'].font = name_font
         ws[tco2e_col + '10'].alignment = c_c_alignment
-        ws[tco2e_col + '10'] = str(round(reporting_period_data['increment_rate_in_kgco2e'] * 100, 2)) + "%"
+        ws[tco2e_col + '10'] = str(round(reporting_period_data['increment_rate_in_kgco2e'] * 100, 2)) + "%" \
+            if reporting_period_data['increment_rate_in_kgco2e'] is not None else "-"
         ws[tco2e_col + '10'].border = f_border
     else:
         for i in range(6, 10 + 1):
@@ -387,14 +390,16 @@ def generate_excel(report,
 
         ws['B20'].fill = table_fill
         ws['B20'].border = f_border
-
-        ws['C20'].fill = table_fill
-        ws['C20'].font = title_font
-        ws['C20'].alignment = c_c_alignment
-        ws['C20'].border = f_border
-        ws['C20'] = child['energy_category_names'][0]
-
         ca_len = len(child['energy_category_names'])
+
+        for i in range(0, ca_len):
+            row = chr(ord('C') + i)
+            ws[row + '20'].fill = table_fill
+            ws[row + '20'].font = title_font
+            ws[row + '20'].alignment = c_c_alignment
+            ws[row + '20'].border = f_border
+            ws[row + '20'] = child['energy_category_names'][i]
+
         space_len = len(child['child_space_names_array'][0])
         for i in range(0, space_len):
             row = str(i + 21)
@@ -408,7 +413,7 @@ def generate_excel(report,
                 col = chr(ord('C') + j)
                 ws[col + row].font = name_font
                 ws[col + row].alignment = c_c_alignment
-                ws[col + row] = child['subtotals_array'][0][i]
+                ws[col + row] = child['subtotals_array'][j][i]
                 ws[col + row].border = f_border
                 # pie
                 # 25~30: pie
