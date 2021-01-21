@@ -281,10 +281,9 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             bar.height = 5.25
             bar.width = len(time)
             ws.add_chart(bar, "B12")
-
-        else:
-            for i in range(11, 43 + 1):
-                ws.row_dimensions[i].height = 0.0
+    else:
+        for i in range(11, 43 + 1):
+            ws.row_dimensions[i].height = 0.0
 
     filename = str(uuid.uuid4()) + '.xlsx'
     wb.save(filename)
