@@ -361,8 +361,8 @@ def generate_excel(report,
         # Pie
         for i in range(0, ca_len):
             pie = PieChart()
-            labels = Reference(ws, min_col=2, min_row=current_row_flag-space_len, max_row=current_row_flag)
-            pie_data = Reference(ws, min_col=3 + j, min_row=current_row_flag-space_len-1, max_row=current_row_flag)
+            labels = Reference(ws, min_col=2, min_row=current_row_flag-space_len, max_row=current_row_flag-1)
+            pie_data = Reference(ws, min_col=3 + j, min_row=current_row_flag-space_len-1, max_row=current_row_flag-1)
             pie.add_data(pie_data, titles_from_data=True)
             pie.set_categories(labels)
             pie.height = 5.25
@@ -371,7 +371,7 @@ def generate_excel(report,
             pie.title = ws[col + '20'].value
             s1 = pie.series[0]
             s1.dLbls = DataLabelList()
-            s1.dLbls.showCatName = True
+            s1.dLbls.showCatName = False
             s1.dLbls.showVal = True
             s1.dLbls.showPercent = True
             chart_col = chr(ord('B') + 2 * j)
