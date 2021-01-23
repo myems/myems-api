@@ -2,14 +2,15 @@ import base64
 import uuid
 import os
 from openpyxl.chart import (
-        PieChart,
-        BarChart,
-        Reference,
-    )
+    PieChart,
+    BarChart,
+    Reference,
+)
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
 from openpyxl.drawing.image import Image
 from openpyxl import Workbook
 from openpyxl.chart.label import DataLabelList
+
 
 ####################################################################################################################
 # PROCEDURES
@@ -65,7 +66,6 @@ def generate_excel(report,
                    reporting_start_datetime_local,
                    reporting_end_datetime_local,
                    period_type):
-
     wb = Workbook()
     ws = wb.active
 
@@ -227,7 +227,6 @@ def generate_excel(report,
         for i in range(6, 10 + 1):
             ws.row_dimensions[i].height = 0.1
 
-
     ##############################
 
     has_ele_peak_flag = True
@@ -238,7 +237,7 @@ def generate_excel(report,
 
     if has_ele_peak_flag:
         ws['B12'].font = title_font
-        ws['B12'] = name+' 分时电耗成本'
+        ws['B12'] = name + ' 分时电耗成本'
 
         ws['B13'].fill = table_fill
         ws['B13'].font = name_font
@@ -322,12 +321,12 @@ def generate_excel(report,
         child = report['child_space']
 
         ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name+' 子空间能耗成本'
+        ws['B' + str(current_row_flag)] = name + ' 子空间能耗成本'
 
         current_row_flag += 1
 
         ws['B' + str(current_row_flag)].fill = table_fill
-        ws['B'+ str(current_row_flag)].border = f_border
+        ws['B' + str(current_row_flag)].border = f_border
         ca_len = len(child['energy_category_names'])
 
         for i in range(0, ca_len):
@@ -361,20 +360,21 @@ def generate_excel(report,
         # Pie
         for i in range(0, ca_len):
             pie = PieChart()
-            labels = Reference(ws, min_col=2, min_row=current_row_flag-space_len, max_row=current_row_flag-1)
-            pie_data = Reference(ws, min_col=3 + j, min_row=current_row_flag-space_len-1, max_row=current_row_flag-1)
+            labels = Reference(ws, min_col=2, min_row=current_row_flag - space_len, max_row=current_row_flag - 1)
+            pie_data = Reference(ws, min_col=3 + i, min_row=current_row_flag - space_len - 1,
+                                 max_row=current_row_flag - 1)
             pie.add_data(pie_data, titles_from_data=True)
             pie.set_categories(labels)
             pie.height = 5.25
             pie.width = 8
-            col = chr(ord('C')+i)
+            col = chr(ord('C') + i)
             pie.title = ws[col + '20'].value
             s1 = pie.series[0]
             s1.dLbls = DataLabelList()
             s1.dLbls.showCatName = False
             s1.dLbls.showVal = True
             s1.dLbls.showPercent = True
-            chart_col = chr(ord('B') + 2 * j)
+            chart_col = chr(ord('B') + 2 * i)
             chart_cell = chart_col + str(current_row_flag)
             ws.add_chart(pie, chart_cell)
 
@@ -400,12 +400,12 @@ def generate_excel(report,
 
     if has_detail_data_flag:
         ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name+' 能耗成本详情'
+        ws['B' + str(current_row_flag)] = name + ' 能耗成本详情'
 
-        ws['B'+str(table_row)].fill = table_fill
-        ws['B'+str(table_row)].border = f_border
-        ws['B'+str(table_row)].alignment = c_c_alignment
-        ws['B'+str(table_row)] = '时间'
+        ws['B' + str(table_row)].fill = table_fill
+        ws['B' + str(table_row)].border = f_border
+        ws['B' + str(table_row)].alignment = c_c_alignment
+        ws['B' + str(table_row)] = '时间'
         time = times[0]
         has_data = False
         max_row = 0
@@ -429,7 +429,8 @@ def generate_excel(report,
                 ws[col + str(table_row)].fill = table_fill
                 ws[col + str(table_row)].font = title_font
                 ws[col + str(table_row)].alignment = c_c_alignment
-                ws[col + str(table_row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
+                ws[col + str(table_row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][
+                    i] + ")"
                 ws[col + str(table_row)].border = f_border
 
                 # 39 data
@@ -437,8 +438,7 @@ def generate_excel(report,
                 time_len = len(time)
 
                 for j in range(0, time_len):
-                    row = str(table_row+1 + j)
-                    # col = chr(ord('B') + i)
+                    row = str(table_row + 1 + j)
                     ws[col + row].font = title_font
                     ws[col + row].alignment = c_c_alignment
                     ws[col + row] = round(reporting_period_data['values'][i][j], 0)
@@ -455,7 +455,7 @@ def generate_excel(report,
                 bar.dLbls.showVal = True
                 bar.dLbls.showPercent = True
                 chart_col = 'B'
-                chart_cell = chart_col + str(current_row_flag+1 + 5 * i)
+                chart_cell = chart_col + str(current_row_flag + 1 + 5 * i)
                 ws.add_chart(bar, chart_cell)
     else:
         for i in range(37, 69 + 1):
