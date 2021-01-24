@@ -69,7 +69,6 @@ def generate_excel(report,
     wb = Workbook()
     ws = wb.active
 
-    # todo
     # Row height
     ws.row_dimensions[1].height = 118
     for i in range(2, 37 + 1):
@@ -176,7 +175,7 @@ def generate_excel(report,
 
     if has_cost_data_flag:
         ws['B6'].font = title_font
-        ws['B6'] = name + ' 能耗成本分析'
+        ws['B6'] = name + ' 报告期成本'
 
         category = reporting_period_data['names']
         ca_len = len(category)
@@ -190,7 +189,7 @@ def generate_excel(report,
 
         ws['B9'].font = title_font
         ws['B9'].alignment = c_c_alignment
-        ws['B9'] = '单位面积能耗成本'
+        ws['B9'] = '单位面积值'
         ws['B9'].border = f_border
 
         ws['B10'].font = title_font
@@ -237,7 +236,7 @@ def generate_excel(report,
 
     if has_ele_peak_flag:
         ws['B12'].font = title_font
-        ws['B12'] = name + ' 分时电耗成本'
+        ws['B12'] = name + '分时用电成本'
 
         ws['B13'].fill = table_fill
         ws['B13'].font = name_font
@@ -248,7 +247,7 @@ def generate_excel(report,
         ws['C13'].font = name_font
         ws['C13'].alignment = c_c_alignment
         ws['C13'].border = f_border
-        ws['C13'] = '分时电耗成本'
+        ws['C13'] = '分时用电成本'
 
         ws['B14'].font = title_font
         ws['B14'].alignment = c_c_alignment
@@ -321,7 +320,7 @@ def generate_excel(report,
         child = report['child_space']
 
         ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name + ' 子空间能耗成本'
+        ws['B' + str(current_row_flag)] = name + ' 子空间数据'
 
         current_row_flag += 1
 
@@ -400,12 +399,12 @@ def generate_excel(report,
 
     if has_detail_data_flag:
         ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name + ' 能耗成本详情'
+        ws['B' + str(current_row_flag)] = name + ' 详细数据'
 
         ws['B' + str(table_row)].fill = table_fill
         ws['B' + str(table_row)].border = f_border
         ws['B' + str(table_row)].alignment = c_c_alignment
-        ws['B' + str(table_row)] = '时间'
+        ws['B' + str(table_row)] = '日期时间'
         time = times[0]
         has_data = False
         max_row = 0
