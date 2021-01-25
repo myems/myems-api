@@ -191,7 +191,8 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws[col + '7'].fill = table_fill
             ws[col + '7'].font = name_font
             ws[col + '7'].alignment = c_c_alignment
-            ws[col + '7'] = report['offline_meter']['energy_category_name'] + " (" + report['offline_meter']['unit_of_measure'] + ")"
+            ws[col + '7'] = report['offline_meter']['energy_category_name'] + \
+                " (" + report['offline_meter']['unit_of_measure'] + ")"
             ws[col + '7'].border = f_border
 
             ws[col + '8'].font = name_font
@@ -292,7 +293,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
             ws['B' + str(end_data_flag + 1)].font = title_font
             ws['B' + str(end_data_flag + 1)].alignment = c_c_alignment
-            ws['B' + str(end_data_flag + 1)] = '合计'
+            ws['B' + str(end_data_flag + 1)] = '总计'
             ws['B' + str(end_data_flag + 1)].border = f_border
 
             bar = BarChart()
