@@ -5,6 +5,7 @@ import config
 from datetime import datetime, timedelta, timezone
 from core import utilities
 from decimal import Decimal
+import excelexporters.offlinemetercost
 
 
 class Reporting:
@@ -32,10 +33,10 @@ class Reporting:
         print(req.params)
         offline_meter_id = req.params.get('offlinemeterid')
         period_type = req.params.get('periodtype')
-        base_period_start_datetime = req.params.get('baseperiodstartdatetime')
-        base_period_end_datetime = req.params.get('baseperiodenddatetime')
-        reporting_period_start_datetime = req.params.get('reportingperiodstartdatetime')
-        reporting_period_end_datetime = req.params.get('reportingperiodenddatetime')
+        base_period_start_datetime = req.params.get('baseperiodbeginsdatetime')
+        base_period_end_datetime = req.params.get('baseperiodendsdatetime')
+        reporting_period_start_datetime = req.params.get('reportingperiodbeginsdatetime')
+        reporting_period_end_datetime = req.params.get('reportingperiodendsdatetime')
 
         ################################################################################################################
         # Step 1: valid parameters
@@ -71,7 +72,7 @@ class Reporting:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_START_DATETIME")
             base_start_datetime_utc = base_start_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
+                                      timedelta(minutes=timezone_offset)
 
         base_end_datetime_utc = None
         if base_period_end_datetime is not None and len(str.strip(base_period_end_datetime)) > 0:
@@ -82,7 +83,7 @@ class Reporting:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_END_DATETIME")
             base_end_datetime_utc = base_end_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
+                                    timedelta(minutes=timezone_offset)
 
         if base_start_datetime_utc is not None and base_end_datetime_utc is not None and \
                 base_start_datetime_utc >= base_end_datetime_utc:
@@ -100,7 +101,7 @@ class Reporting:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_START_DATETIME")
             reporting_start_datetime_utc = reporting_start_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
+                                           timedelta(minutes=timezone_offset)
 
         if reporting_period_end_datetime is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -113,7 +114,7 @@ class Reporting:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_END_DATETIME")
             reporting_end_datetime_utc = reporting_end_datetime_utc.replace(tzinfo=timezone.utc) - \
-                timedelta(minutes=timezone_offset)
+                                         timedelta(minutes=timezone_offset)
 
         if reporting_start_datetime_utc >= reporting_end_datetime_utc:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
@@ -256,7 +257,7 @@ class Reporting:
 
         for row_offline_meter_periodically in rows_offline_meter_periodically:
             current_datetime_local = row_offline_meter_periodically[0].replace(tzinfo=timezone.utc) + \
-                timedelta(minutes=timezone_offset)
+                                     timedelta(minutes=timezone_offset)
             if period_type == 'hourly':
                 current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
             elif period_type == 'daily':
@@ -357,7 +358,7 @@ class Reporting:
             },
             "reporting_period": {
                 "increment_rate":
-                    (reporting['total_in_category']-base['total_in_category'])/base['total_in_category']
+                    (reporting['total_in_category'] - base['total_in_category']) / base['total_in_category']
                     if base['total_in_category'] > 0 else None,
                 "total_in_category": reporting['total_in_category'],
                 "total_in_kgce": reporting['total_in_kgce'],
@@ -371,5 +372,13 @@ class Reporting:
                 "values": parameters_data['values']
             },
         }
+
+        # export result to Excel file and then encode the file to base64 string
+        result['excel_bytes_base64'] = \
+            excelexporters.offlinemetercost.export(result,
+                                                   offline_meter['name'],
+                                                   reporting_period_start_datetime,
+                                                   reporting_period_end_datetime,
+                                                   period_type)
 
         resp.body = json.dumps(result)
