@@ -74,13 +74,14 @@ def generate_excel(report,
     for i in range(2, 37 + 1):
         ws.row_dimensions[i].height = 30
 
-    for i in range(38, 69 + 1):
+    for i in range(38, 90 + 1):
         ws.row_dimensions[i].height = 30
 
     # Col width
     ws.column_dimensions['A'].width = 1.5
+    ws.column_dimensions['B'].width = 20.0
 
-    for i in range(ord('B'), ord('I')):
+    for i in range(ord('C'), ord('I')):
         ws.column_dimensions[chr(i)].width = 15.0
 
     # Font
