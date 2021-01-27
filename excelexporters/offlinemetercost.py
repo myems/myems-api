@@ -59,7 +59,6 @@ def export(report, name, reporting_start_datetime_local, reporting_end_datetime_
 
 
 def generate_excel(report, name, reporting_start_datetime_local, reporting_end_datetime_local, period_type):
-
     wb = Workbook()
 
     # todo
@@ -186,13 +185,13 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         col = 'B'
 
         for i in range(0, ca_len):
-            col = chr(ord('C')+i)
+            col = chr(ord('C') + i)
 
             ws[col + '7'].fill = table_fill
             ws[col + '7'].font = name_font
             ws[col + '7'].alignment = c_c_alignment
             ws[col + '7'] = report['offline_meter']['energy_category_name'] + \
-                " (" + report['offline_meter']['unit_of_measure'] + ")"
+                            " (" + report['offline_meter']['unit_of_measure'] + ")"
             ws[col + '7'].border = f_border
 
             ws[col + '8'].font = name_font
@@ -247,7 +246,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ws[tco2e_col + '9'].border = f_border
 
     else:
-        for i in range(6, 9+1):
+        for i in range(6, 9 + 1):
             ws.rows_dimensions[i].height = 0.1
 
     ######################################
@@ -306,27 +305,23 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + '18'].font = title_font
                 ws[col + '18'].alignment = c_c_alignment
                 ws[col + '18'] = report['offline_meter']['energy_category_name'] + \
-                    " (" + report['offline_meter']['unit_of_measure'] + ")"
+                                 " (" + report['offline_meter']['unit_of_measure'] + ")"
                 ws[col + '18'].border = f_border
 
                 time = times
                 time_len = len(time)
-
-                sum_value = 0
 
                 for j in range(0, time_len):
                     row = str(19 + j)
 
                     ws[col + row].font = title_font
                     ws[col + row].alignment = c_c_alignment
-                    value = round(reporting_period_data['values'][j], 0)
-                    sum_value += value
-                    ws[col + row] = value
+                    ws[col + row] = round(reporting_period_data['values'][j], 0)
                     ws[col + row].border = f_border
 
                 ws[col + str(end_data_flag + 1)].font = title_font
                 ws[col + str(end_data_flag + 1)].alignment = c_c_alignment
-                ws[col + str(end_data_flag + 1)] = sum_value
+                ws[col + str(end_data_flag + 1)] = round(reporting_period_data['total_in_category'], 0)
                 ws[col + str(end_data_flag + 1)].border = f_border
 
                 bar_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row)
