@@ -5,6 +5,7 @@ import config
 from datetime import datetime, timedelta, timezone
 from core import utilities
 from decimal import Decimal
+import excelexporters.virtualmeterenergy
 
 
 class Reporting:
@@ -30,10 +31,10 @@ class Reporting:
         print(req.params)
         virtual_meter_id = req.params.get('virtualmeterid')
         period_type = req.params.get('periodtype')
-        base_period_begins_datetime = req.params.get('baseperiodstartdatetime')
-        base_period_ends_datetime = req.params.get('baseperiodenddatetime')
-        reporting_period_begins_datetime = req.params.get('reportingperiodstartdatetime')
-        reporting_period_ends_datetime = req.params.get('reportingperiodenddatetime')
+        base_period_start_datetime_local = req.params.get('baseperiodstartdatetime')
+        base_period_end_datetime_local = req.params.get('baseperiodenddatetime')
+        reporting_period_start_datetime_local = req.params.get('reportingperiodstartdatetime')
+        reporting_period_end_datetime_local = req.params.get('reportingperiodenddatetime')
 
         ################################################################################################################
         # Step 1: valid parameters
@@ -61,10 +62,10 @@ class Reporting:
             timezone_offset = -timezone_offset
 
         base_start_datetime_utc = None
-        if base_period_begins_datetime is not None and len(str.strip(base_period_begins_datetime)) > 0:
-            base_period_begins_datetime = str.strip(base_period_begins_datetime)
+        if base_period_start_datetime_local is not None and len(str.strip(base_period_start_datetime_local)) > 0:
+            base_period_start_datetime_local = str.strip(base_period_start_datetime_local)
             try:
-                base_start_datetime_utc = datetime.strptime(base_period_begins_datetime, '%Y-%m-%dT%H:%M:%S')
+                base_start_datetime_utc = datetime.strptime(base_period_start_datetime_local, '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_START_DATETIME")
@@ -72,10 +73,10 @@ class Reporting:
                 timedelta(minutes=timezone_offset)
 
         base_end_datetime_utc = None
-        if base_period_ends_datetime is not None and len(str.strip(base_period_ends_datetime)) > 0:
-            base_period_ends_datetime = str.strip(base_period_ends_datetime)
+        if base_period_end_datetime_local is not None and len(str.strip(base_period_end_datetime_local)) > 0:
+            base_period_end_datetime_local = str.strip(base_period_end_datetime_local)
             try:
-                base_end_datetime_utc = datetime.strptime(base_period_ends_datetime, '%Y-%m-%dT%H:%M:%S')
+                base_end_datetime_utc = datetime.strptime(base_period_end_datetime_local, '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_END_DATETIME")
@@ -87,26 +88,28 @@ class Reporting:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_BASE_PERIOD_END_DATETIME')
 
-        if reporting_period_begins_datetime is None:
+        if reporting_period_start_datetime_local is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description="API.INVALID_REPORTING_PERIOD_START_DATETIME")
         else:
-            reporting_period_begins_datetime = str.strip(reporting_period_begins_datetime)
+            reporting_period_start_datetime_local = str.strip(reporting_period_start_datetime_local)
             try:
-                reporting_start_datetime_utc = datetime.strptime(reporting_period_begins_datetime, '%Y-%m-%dT%H:%M:%S')
+                reporting_start_datetime_utc = datetime.strptime(reporting_period_start_datetime_local,
+                                                                 '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_START_DATETIME")
             reporting_start_datetime_utc = reporting_start_datetime_utc.replace(tzinfo=timezone.utc) - \
                 timedelta(minutes=timezone_offset)
 
-        if reporting_period_ends_datetime is None:
+        if reporting_period_end_datetime_local is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description="API.INVALID_REPORTING_PERIOD_END_DATETIME")
         else:
-            reporting_period_ends_datetime = str.strip(reporting_period_ends_datetime)
+            reporting_period_end_datetime_local = str.strip(reporting_period_end_datetime_local)
             try:
-                reporting_end_datetime_utc = datetime.strptime(reporting_period_ends_datetime, '%Y-%m-%dT%H:%M:%S')
+                reporting_end_datetime_utc = datetime.strptime(reporting_period_end_datetime_local,
+                                                               '%Y-%m-%dT%H:%M:%S')
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_END_DATETIME")
@@ -222,7 +225,7 @@ class Reporting:
 
         for row_virtual_meter_periodically in rows_virtual_meter_periodically:
             current_datetime_local = row_virtual_meter_periodically[0].replace(tzinfo=timezone.utc) + \
-                timedelta(minutes=timezone_offset)
+                                     timedelta(minutes=timezone_offset)
             if period_type == 'hourly':
                 current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
             elif period_type == 'daily':
@@ -296,7 +299,7 @@ class Reporting:
             },
             "reporting_period": {
                 "increment_rate":
-                    (reporting['total_in_category'] - base['total_in_category'])/base['total_in_category']
+                    (reporting['total_in_category'] - base['total_in_category']) / base['total_in_category']
                     if base['total_in_category'] > 0 else None,
                 "total_in_category": reporting['total_in_category'],
                 "total_in_kgce": reporting['total_in_kgce'],
@@ -310,5 +313,13 @@ class Reporting:
                 "values": parameters_data['values']
             },
         }
+
+        # export result to Excel file and then encode the file to base64 string
+        result['excel_bytes_base64'] = \
+            excelexporters.virtualmeterenergy.export(result,
+                                                     virtual_meter['name'],
+                                                     reporting_period_start_datetime_local,
+                                                     reporting_period_end_datetime_local,
+                                                     period_type)
 
         resp.body = json.dumps(result)

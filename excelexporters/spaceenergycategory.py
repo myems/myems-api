@@ -173,7 +173,7 @@ def generate_excel(report,
     has_energy_data_flag = True
     if "names" not in reporting_period_data.keys() or \
             reporting_period_data['names'] is None or \
-            len(reporting_period_data['names']) ==0:
+            len(reporting_period_data['names']) == 0:
         has_energy_data_flag = False
 
     if has_energy_data_flag:
@@ -490,7 +490,8 @@ def generate_excel(report,
                 ws[col + str(table_row)].fill = table_fill
                 ws[col + str(table_row)].font = title_font
                 ws[col + str(table_row)].alignment = c_c_alignment
-                ws[col + str(table_row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
+                ws[col + str(table_row)] = reporting_period_data['names'][i] + \
+                    " (" + reporting_period_data['units'][i] + ")"
                 ws[col + str(table_row)].border = f_border
 
                 # 39 data
