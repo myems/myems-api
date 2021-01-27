@@ -189,7 +189,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws[col + '7'].font = name_font
             ws[col + '7'].alignment = c_c_alignment
             ws[col + '7'] = report['offline_meter']['energy_category_name'] + \
-                            " (" + report['offline_meter']['unit_of_measure'] + ")"
+                " (" + report['offline_meter']['unit_of_measure'] + ")"
             ws[col + '7'].border = f_border
 
             ws[col + '8'].font = name_font
@@ -249,16 +249,16 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
     ######################################
 
-    has_cost_datail_flag = True
+    has_cost_detail_flag = True
     reporting_period_data = report['reporting_period']
     category = report['offline_meter']['energy_category_name']
     ca_len = len(category)
     times = reporting_period_data['timestamps']
 
     if "values" not in reporting_period_data.keys() or len(reporting_period_data['values']) == 0:
-        has_cost_datail_flag = False
+        has_cost_detail_flag = False
 
-    if has_cost_datail_flag:
+    if has_cost_detail_flag:
         ws['B11'].font = title_font
         ws['B11'] = name + '详细数据'
 
@@ -303,7 +303,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + '18'].font = title_font
                 ws[col + '18'].alignment = c_c_alignment
                 ws[col + '18'] = report['offline_meter']['energy_category_name'] + \
-                                 " (" + report['offline_meter']['unit_of_measure'] + ")"
+                    " (" + report['offline_meter']['unit_of_measure'] + ")"
                 ws[col + '18'].border = f_border
 
                 time = times

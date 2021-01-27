@@ -192,7 +192,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws[col + '7'].font = name_font
             ws[col + '7'].alignment = c_c_alignment
             ws[col + '7'] = report['meter']['energy_category_name'] + \
-                            " (" + report['meter']['unit_of_measure'] + ")"
+                " (" + report['meter']['unit_of_measure'] + ")"
             ws[col + '7'].border = f_border
 
             ws[col + '8'].font = name_font
@@ -306,7 +306,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + '18'].font = title_font
                 ws[col + '18'].alignment = c_c_alignment
                 ws[col + '18'] = report['meter']['energy_category_name'] + \
-                                 " (" + report['meter']['unit_of_measure'] + ")"
+                    " (" + report['meter']['unit_of_measure'] + ")"
                 ws[col + '18'].border = f_border
 
                 time = times
