@@ -17,9 +17,12 @@ class RuleCollection:
     @staticmethod
     def on_get(req, resp):
         cnx = mysql.connector.connect(**config.myems_fdd_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
-        query = (" SELECT id, name, uuid, channel, expression, message, is_enabled "
+        query = (" SELECT id, name, uuid, "
+                 "        fdd_code, category, priority, "
+                 "        channel, expression, message_template, "
+                 "        is_enabled "
                  " FROM tbl_rules "
                  " ORDER BY id ")
         cursor.execute(query)
@@ -30,9 +33,11 @@ class RuleCollection:
         result = list()
         if rows is not None and len(rows) > 0:
             for row in rows:
-                meta_result = {"id": row[0], "name": row[1], "uuid": row[2],
-                               "channel": row[3], "expression": row[4], "message": row[5].replace("<br>", ""),
-                               "is_enabled": bool(row[6])}
+                meta_result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                               "fdd_code": row['fdd_code'], "category": row['category'], "priority": row['priority'],
+                               "channel": row['channel'], "expression": row['expression'],
+                               "message_template": row['message_template'].replace("<br>", ""),
+                               "is_enabled": bool(row['is_enabled'])}
                 result.append(meta_result)
 
         resp.body = json.dumps(result)
@@ -53,10 +58,38 @@ class RuleCollection:
                                    description='API.INVALID_RULE_NAME')
         name = str.strip(new_values['data']['name'])
 
+        if 'fdd_code' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['fdd_code'], str) or \
+                len(str.strip(new_values['data']['fdd_code'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_FDD_CODE')
+        fdd_code = str.strip(new_values['data']['fdd_code'])
+
+        if 'category' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['category'], str) or \
+                len(str.strip(new_values['data']['category'])) == 0 or \
+                str.strip(new_values['data']['category']) not in \
+                ('SYSTEM', 'SPACE', 'METER', 'TENANT', 'STORE', 'SHOPFLOOR', 'EQUIPMENT', 'COMBINEDEQUIPMENT'):
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_CATEGORY')
+        category = str.strip(new_values['data']['category'])
+
+        if 'priority' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['priority'], str) or \
+                len(str.strip(new_values['data']['priority'])) == 0 or \
+                str.strip(new_values['data']['priority']) not in \
+                ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW'):
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_PRIORITY')
+        priority = str.strip(new_values['data']['priority'])
+
         if 'channel' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['channel'], str) or \
                 len(str.strip(new_values['data']['channel'])) == 0 or \
-                str.strip(new_values['data']['channel']) not in ('call', 'sms', 'email', 'wechat', 'web'):
+                str.strip(new_values['data']['channel']) not in ('WEB', 'EMAIL', 'SMS', 'WECHAT', 'CALL'):
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
                                    description='API.INVALID_CHANNEL')
@@ -70,13 +103,13 @@ class RuleCollection:
                                    description='API.INVALID_EXPRESSION')
         expression = str.strip(new_values['data']['expression'])
 
-        if 'message' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['message'], str) or \
-                len(str.strip(new_values['data']['message'])) == 0:
+        if 'message_template' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['message_template'], str) or \
+                len(str.strip(new_values['data']['message_template'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.INVALID_MESSAGE')
-        message = str.strip(new_values['data']['message'])
+                                   description='API.INVALID_MESSAGE_TEMPLATE')
+        message_template = str.strip(new_values['data']['message_template'])
 
         if 'is_enabled' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_enabled'], bool):
@@ -97,13 +130,17 @@ class RuleCollection:
                                    description='API.RULE_NAME_IS_ALREADY_IN_USE')
 
         add_row = (" INSERT INTO tbl_rules "
-                   "             (name, uuid, channel, expression, message, is_enabled) "
-                   " VALUES (%s, %s, %s, %s, %s, %s) ")
+                   "             (name, uuid, fdd_code, category, priority, "
+                   "              channel, expression, message_template, is_enabled) "
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ")
         cursor.execute(add_row, (name,
                                  str(uuid.uuid4()),
+                                 fdd_code,
+                                 category,
+                                 priority,
                                  channel,
                                  expression,
-                                 message,
+                                 message_template,
                                  is_enabled))
         new_id = cursor.lastrowid
         cnx.commit()
@@ -130,10 +167,11 @@ class RuleItem:
                                    description='API.INVALID_RULE_ID')
 
         cnx = mysql.connector.connect(**config.myems_fdd_db)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
         query = (" SELECT id, name, uuid, "
-                 "        channel, expression, message, is_enabled "
+                 "        fdd_code, category, priority, "
+                 "        channel, expression, message_template, is_enabled "
                  " FROM tbl_rules "
                  " WHERE id = %s ")
         cursor.execute(query, (id_,))
@@ -144,9 +182,11 @@ class RuleItem:
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.RULE_NOT_FOUND')
 
-        result = {"id": row[0], "name": row[1], "uuid": row[2],
-                  "channel": row[3], "expression": row[4], "message": row[5].replace("<br>", ""),
-                  "is_enabled": bool(row[6])}
+        result = {"id": row['id'], "name": row['name'], "uuid": row['uuid'],
+                  "fdd_code": row['fdd_code'], "category": row['category'], "priority": row['priority'],
+                  "channel": row['channel'], "expression": row['expression'],
+                  "message_template": row['message_template'].replace("<br>", ""),
+                  "is_enabled": bool(row['is_enabled'])}
         resp.body = json.dumps(result)
 
     @staticmethod
@@ -196,10 +236,38 @@ class RuleItem:
                                    description='API.INVALID_RULE_NAME')
         name = str.strip(new_values['data']['name'])
 
+        if 'fdd_code' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['fdd_code'], str) or \
+                len(str.strip(new_values['data']['fdd_code'])) == 0:
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_FDD_CODE')
+        fdd_code = str.strip(new_values['data']['fdd_code'])
+
+        if 'category' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['category'], str) or \
+                len(str.strip(new_values['data']['category'])) == 0 or \
+                str.strip(new_values['data']['category']) not in \
+                ('SYSTEM', 'SPACE', 'METER', 'TENANT', 'STORE', 'SHOPFLOOR', 'EQUIPMENT', 'COMBINEDEQUIPMENT'):
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_CATEGORY')
+        category = str.strip(new_values['data']['category'])
+
+        if 'priority' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['priority'], str) or \
+                len(str.strip(new_values['data']['priority'])) == 0 or \
+                str.strip(new_values['data']['priority']) not in \
+                ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW'):
+            raise falcon.HTTPError(falcon.HTTP_400,
+                                   title='API.BAD_REQUEST',
+                                   description='API.INVALID_PRIORITY')
+        priority = str.strip(new_values['data']['priority'])
+
         if 'channel' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['channel'], str) or \
                 len(str.strip(new_values['data']['channel'])) == 0 or \
-                str.strip(new_values['data']['channel']) not in ('call', 'sms', 'email', 'wechat', 'web'):
+                str.strip(new_values['data']['channel']) not in ('WEB', 'EMAIL', 'SMS', 'WECHAT', 'CALL'):
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
                                    description='API.INVALID_CHANNEL')
@@ -213,13 +281,13 @@ class RuleItem:
                                    description='API.INVALID_EXPRESSION')
         expression = str.strip(new_values['data']['expression'])
 
-        if 'message' not in new_values['data'].keys() or \
-                not isinstance(new_values['data']['message'], str) or \
-                len(str.strip(new_values['data']['message'])) == 0:
+        if 'message_template' not in new_values['data'].keys() or \
+                not isinstance(new_values['data']['message_template'], str) or \
+                len(str.strip(new_values['data']['message_template'])) == 0:
             raise falcon.HTTPError(falcon.HTTP_400,
                                    title='API.BAD_REQUEST',
-                                   description='API.INVALID_MESSAGE')
-        message = str.strip(new_values['data']['message'])
+                                   description='API.INVALID_MESSAGE_TEMPLATE')
+        message_template = str.strip(new_values['data']['message_template'])
 
         if 'is_enabled' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['is_enabled'], bool):
@@ -249,12 +317,17 @@ class RuleItem:
                                    description='API.RULE_NAME_IS_ALREADY_IN_USE')
 
         update_row = (" UPDATE tbl_rules "
-                      " SET name = %s, channel = %s, expression = %s, message = %s, is_enabled = %s "
+                      " SET name = %s, fdd_code = %s, category = %s, priority = %s, "
+                      "     channel = %s, expression = %s, message_template = %s, "
+                      "     is_enabled = %s "
                       " WHERE id = %s ")
         cursor.execute(update_row, (name,
+                                    fdd_code,
+                                    category,
+                                    priority,
                                     channel,
                                     expression,
-                                    message,
+                                    message_template,
                                     is_enabled,
                                     id_,))
         cnx.commit()

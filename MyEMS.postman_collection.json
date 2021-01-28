@@ -3430,7 +3430,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"data\":{\"name\":\"用能单位今日电耗超标20%\", \"channel\":\"sms\", \"expression\":\"[{}]\", \"message\":\"%s今天截止到目前电耗%s，超标20%。\", \"is_enabled\":true, \"mute_start_datetime\":null, \"mute_end_datetime\":null}}"
+									"raw": "{\"data\":{\"name\":\"Space Energy Consumption Over Limit\", \"fdd_code\":\"SPACE01\", \"category\":\"SPACE\", \"priority\":\"HIGH\", \"channel\":\"WEB\", \"expression\":\"{\\\"space_id\\\":1, \\\"high_limit\\\":1000.000}\", \"message_template\":\"%s截止到目前电耗%s，超标%s。\", \"is_enabled\":true}}"
 								},
 								"url": {
 									"raw": "{{base_url}}/rules",
@@ -6853,23 +6853,6 @@
 							"response": []
 						}
 					]
-				},
-				{
-					"name": "Version",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/version",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"version"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -6987,12 +6970,36 @@
 					"response": []
 				},
 				{
+					"name": "GET Distribution System Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/distributionsystem?distributionsystemid=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"distributionsystem"
+							],
+							"query": [
+								{
+									"key": "distributionsystemid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "GET Energy Flow Diagram Report",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/reports/energyflowdiagram?reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00&energyflowdiagramid=1",
+							"raw": "{{base_url}}/reports/energyflowdiagram?energyflowdiagramid=1&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
 							"host": [
 								"{{base_url}}"
 							],
@@ -7002,16 +7009,16 @@
 							],
 							"query": [
 								{
+									"key": "energyflowdiagramid",
+									"value": "1"
+								},
+								{
 									"key": "reportingperiodstartdatetime",
 									"value": "2020-09-01T00:00:00"
 								},
 								{
 									"key": "reportingperiodenddatetime",
 									"value": "2020-10-01T00:00:00"
-								},
-								{
-									"key": "energyflowdiagramid",
-									"value": "1"
 								}
 							]
 						}
@@ -8451,6 +8458,23 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Version",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/version",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"version"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
