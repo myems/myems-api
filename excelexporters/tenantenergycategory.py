@@ -157,7 +157,6 @@ def generate_excel(report,
     ws['G3'].font = name_font
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
 
-
     if "reporting_period" not in report.keys() or \
             "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
         filename = str(uuid.uuid4()) + '.xlsx'
@@ -361,7 +360,7 @@ def generate_excel(report,
 
     ################################################
 
-    current_row_flag = 19
+    current_row_number = 19
 
     has_kgce_data_flag = True
     if "subtotals_in_kgce" not in reporting_period_data.keys() or \
@@ -370,46 +369,45 @@ def generate_excel(report,
         has_kgce_data_flag = False
 
     if has_kgce_data_flag:
-        ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name + ' 吨标准煤 (TCE) 占比'
+        ws['B' + str(current_row_number)].font = title_font
+        ws['B' + str(current_row_number)] = name + ' 吨标准煤 (TCE) 占比'
 
-        current_row_flag += 1
-        table_start_flag = current_row_flag
+        current_row_number += 1
+        table_start_row_number = current_row_number
 
-        ws['B' + str(current_row_flag)].fill = table_fill
-        ws['B' + str(current_row_flag)].font = name_font
-        ws['B' + str(current_row_flag)].alignment = c_c_alignment
-        ws['B' + str(current_row_flag)].border = f_border
+        ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].font = name_font
+        ws['B' + str(current_row_number)].alignment = c_c_alignment
+        ws['B' + str(current_row_number)].border = f_border
 
-        ws['C' + str(current_row_flag)].fill = table_fill
-        ws['C' + str(current_row_flag)].font = name_font
-        ws['C' + str(current_row_flag)].alignment = c_c_alignment
-        ws['C' + str(current_row_flag)].border = f_border
-        ws['C' + str(current_row_flag)] = '吨标准煤 (TCE) 占比'
+        ws['C' + str(current_row_number)].fill = table_fill
+        ws['C' + str(current_row_number)].font = name_font
+        ws['C' + str(current_row_number)].alignment = c_c_alignment
+        ws['C' + str(current_row_number)].border = f_border
+        ws['C' + str(current_row_number)] = '吨标准煤 (TCE) 占比'
 
-
-        current_row_flag += 1
+        current_row_number += 1
 
         ca_len = len(reporting_period_data['names'])
 
         for i in range(0, ca_len):
-            ws['B' + str(current_row_flag)].font = title_font
-            ws['B' + str(current_row_flag)].alignment = c_c_alignment
-            ws['B' + str(current_row_flag)] = reporting_period_data['names'][i]
-            ws['B' + str(current_row_flag)].border = f_border
+            ws['B' + str(current_row_number)].font = title_font
+            ws['B' + str(current_row_number)].alignment = c_c_alignment
+            ws['B' + str(current_row_number)] = reporting_period_data['names'][i]
+            ws['B' + str(current_row_number)].border = f_border
 
-            ws['C' + str(current_row_flag)].font = title_font
-            ws['C' + str(current_row_flag)].alignment = c_c_alignment
-            ws['C' + str(current_row_flag)].border = f_border
-            ws['C' + str(current_row_flag)] = round(reporting_period_data['subtotals_in_kgce'][i], 3)
+            ws['C' + str(current_row_number)].font = title_font
+            ws['C' + str(current_row_number)].alignment = c_c_alignment
+            ws['C' + str(current_row_number)].border = f_border
+            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgce'][i], 3)
 
-            current_row_flag += 1
+            current_row_number += 1
 
-        table_end_flag = current_row_flag - 1
+        table_end_row_number = current_row_number - 1
 
         pie = PieChart()
-        labels = Reference(ws, min_col=2, min_row=table_start_flag+1, max_row=table_end_flag)
-        pie_data = Reference(ws, min_col=3, min_row=table_start_flag, max_row=table_end_flag)
+        labels = Reference(ws, min_col=2, min_row=table_start_row_number+1, max_row=table_end_row_number)
+        pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
         pie.set_categories(labels)
         pie.height = 5.25
@@ -419,20 +417,20 @@ def generate_excel(report,
         s1.dLbls.showCatName = False
         s1.dLbls.showVal = True
         s1.dLbls.showPercent = True
-        table_cell = 'D' + str(table_start_flag)
+        table_cell = 'D' + str(table_start_row_number)
         ws.add_chart(pie, table_cell)
 
         if ca_len < 4:
-            current_row_flag = current_row_flag - ca_len + 4
+            current_row_number = current_row_number - ca_len + 4
 
     else:
         for i in range(21, 29 + 1):
-            current_row_flag = 30
+            current_row_number = 30
             ws.row_dimensions[i].height = 0.1
 
     #####################################################
 
-    current_row_flag += 1
+    current_row_number += 1
     has_kgco2e_data_flag = True
 
     if "subtotals_in_kgco2e" not in reporting_period_data.keys() or \
@@ -441,44 +439,44 @@ def generate_excel(report,
         has_kgco2e_data_flag = False
 
     if has_kgco2e_data_flag:
-        ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name + ' 吨二氧化碳排放 (TCO2E) 占比'
+        ws['B' + str(current_row_number)].font = title_font
+        ws['B' + str(current_row_number)] = name + ' 吨二氧化碳排放 (TCO2E) 占比'
 
-        current_row_flag += 1
-        table_start_flag = current_row_flag
+        current_row_number += 1
+        table_start_row_number = current_row_number
 
-        ws['B' + str(current_row_flag)].fill = table_fill
-        ws['B' + str(current_row_flag)].font = name_font
-        ws['B' + str(current_row_flag)].alignment = c_c_alignment
-        ws['B' + str(current_row_flag)].border = f_border
+        ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].font = name_font
+        ws['B' + str(current_row_number)].alignment = c_c_alignment
+        ws['B' + str(current_row_number)].border = f_border
 
-        ws['C' + str(current_row_flag)].fill = table_fill
-        ws['C' + str(current_row_flag)].font = name_font
-        ws['C' + str(current_row_flag)].alignment = c_c_alignment
-        ws['C' + str(current_row_flag)].border = f_border
-        ws['C' + str(current_row_flag)] = '吨二氧化碳排放 (TCO2E) 占比'
+        ws['C' + str(current_row_number)].fill = table_fill
+        ws['C' + str(current_row_number)].font = name_font
+        ws['C' + str(current_row_number)].alignment = c_c_alignment
+        ws['C' + str(current_row_number)].border = f_border
+        ws['C' + str(current_row_number)] = '吨二氧化碳排放 (TCO2E) 占比'
 
-        current_row_flag += 1
+        current_row_number += 1
 
         ca_len = len(reporting_period_data['names'])
 
         for i in range(0, ca_len):
-            ws['B' + str(current_row_flag)].font = title_font
-            ws['B' + str(current_row_flag)].alignment = c_c_alignment
-            ws['B' + str(current_row_flag)] = reporting_period_data['names'][i]
-            ws['B' + str(current_row_flag)].border = f_border
+            ws['B' + str(current_row_number)].font = title_font
+            ws['B' + str(current_row_number)].alignment = c_c_alignment
+            ws['B' + str(current_row_number)] = reporting_period_data['names'][i]
+            ws['B' + str(current_row_number)].border = f_border
 
-            ws['C' + str(current_row_flag)].font = title_font
-            ws['C' + str(current_row_flag)].alignment = c_c_alignment
-            ws['C' + str(current_row_flag)].border = f_border
-            ws['C' + str(current_row_flag)] = round(reporting_period_data['subtotals_in_kgco2e'][i], 3)
-            current_row_flag += 1
+            ws['C' + str(current_row_number)].font = title_font
+            ws['C' + str(current_row_number)].alignment = c_c_alignment
+            ws['C' + str(current_row_number)].border = f_border
+            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgco2e'][i], 3)
+            current_row_number += 1
 
-        table_end_flag = current_row_flag - 1
+        table_end_row_number = current_row_number - 1
 
         pie = PieChart()
-        labels = Reference(ws, min_col=2, min_row=table_start_flag + 1, max_row=table_end_flag)
-        pie_data = Reference(ws, min_col=3, min_row=table_start_flag, max_row=table_end_flag)
+        labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
+        pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
         pie.set_categories(labels)
         pie.height = 5.25
@@ -488,23 +486,23 @@ def generate_excel(report,
         s1.dLbls.showCatName = False
         s1.dLbls.showVal = True
         s1.dLbls.showPercent = True
-        table_cell = 'D' + str(table_start_flag)
+        table_cell = 'D' + str(table_start_row_number)
         ws.add_chart(pie, table_cell)
 
         if ca_len < 4:
-            current_row_flag = current_row_flag - ca_len + 4
+            current_row_number = current_row_number - ca_len + 4
 
     else:
         for i in range(30, 39 + 1):
-            current_row_flag = 40
+            current_row_number = 40
             ws.row_dimensions[i].height = 0.1
 
     ###############################################
-    current_row_flag += 1
+    current_row_number += 1
 
     has_detail_data_flag = True
 
-    table_start_draw_flag = current_row_flag + 1
+    table_start_draw_flag = current_row_number + 1
 
     if "timestamps" not in reporting_period_data.keys() or \
             reporting_period_data['timestamps'] is None or \
@@ -516,11 +514,11 @@ def generate_excel(report,
         times = reporting_period_data['timestamps']
         ca_len = len(report['reporting_period']['names'])
 
-        ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name+' 详细数据'
+        ws['B' + str(current_row_number)].font = title_font
+        ws['B' + str(current_row_number)] = name+' 详细数据'
 
-        table_start_flag = (current_row_flag + 1) + ca_len * 5
-        current_row_flag = table_start_flag
+        table_start_row_number = (current_row_number + 1) + ca_len * 5
+        current_row_number = table_start_row_number
 
         time = times[0]
         has_data = False
@@ -530,58 +528,58 @@ def generate_excel(report,
 
         if has_data:
 
-            ws['B' + str(current_row_flag)].fill = table_fill
-            ws['B' + str(current_row_flag)].font = title_font
-            ws['B' + str(current_row_flag)].border = f_border
-            ws['B' + str(current_row_flag)].alignment = c_c_alignment
-            ws['B' + str(current_row_flag)] = '日期时间'
+            ws['B' + str(current_row_number)].fill = table_fill
+            ws['B' + str(current_row_number)].font = title_font
+            ws['B' + str(current_row_number)].border = f_border
+            ws['B' + str(current_row_number)].alignment = c_c_alignment
+            ws['B' + str(current_row_number)] = '日期时间'
 
             for i in range(0, ca_len):
                 col = chr(ord('C') + i)
 
-                ws[col + str(current_row_flag)].fill = table_fill
-                ws[col + str(current_row_flag)].font = title_font
-                ws[col + str(current_row_flag)].alignment = c_c_alignment
-                ws[col + str(current_row_flag)] = reporting_period_data['names'][i] + \
-                                           " (" + reporting_period_data['units'][i] + ")"
-                ws[col + str(current_row_flag)].border = f_border
+                ws[col + str(current_row_number)].fill = table_fill
+                ws[col + str(current_row_number)].font = title_font
+                ws[col + str(current_row_number)].alignment = c_c_alignment
+                ws[col + str(current_row_number)] = reporting_period_data['names'][i] + \
+                    " (" + reporting_period_data['units'][i] + ")"
+                ws[col + str(current_row_number)].border = f_border
 
-            current_row_flag += 1
+            current_row_number += 1
 
             for i in range(0, len(time)):
-                ws['B' + str(current_row_flag)].font = title_font
-                ws['B' + str(current_row_flag)].alignment = c_c_alignment
-                ws['B' + str(current_row_flag)] = time[i]
-                ws['B' + str(current_row_flag)].border = f_border
+                ws['B' + str(current_row_number)].font = title_font
+                ws['B' + str(current_row_number)].alignment = c_c_alignment
+                ws['B' + str(current_row_number)] = time[i]
+                ws['B' + str(current_row_number)].border = f_border
 
                 for j in range(0, ca_len):
                     col = chr(ord('C') + j)
 
-                    ws[col + str(current_row_flag)].font = title_font
-                    ws[col + str(current_row_flag)].alignment = c_c_alignment
-                    ws[col + str(current_row_flag)] = round(reporting_period_data['values'][j][i], 0)
-                    ws[col + str(current_row_flag)].border = f_border
+                    ws[col + str(current_row_number)].font = title_font
+                    ws[col + str(current_row_number)].alignment = c_c_alignment
+                    ws[col + str(current_row_number)] = round(reporting_period_data['values'][j][i], 0)
+                    ws[col + str(current_row_number)].border = f_border
 
-                current_row_flag += 1
+                current_row_number += 1
 
-            table_end_flag = current_row_flag - 1
+            table_end_row_number = current_row_number - 1
 
-            ws['B' + str(current_row_flag)].font = title_font
-            ws['B' + str(current_row_flag)].alignment = c_c_alignment
-            ws['B' + str(current_row_flag)] = '小计'
-            ws['B' + str(current_row_flag)].border = f_border
+            ws['B' + str(current_row_number)].font = title_font
+            ws['B' + str(current_row_number)].alignment = c_c_alignment
+            ws['B' + str(current_row_number)] = '小计'
+            ws['B' + str(current_row_number)].border = f_border
 
             for i in range(0, ca_len):
                 col = chr(ord('C') + i)
-                ws[col + str(current_row_flag)].font = title_font
-                ws[col + str(current_row_flag)].alignment = c_c_alignment
-                ws[col + str(current_row_flag)] = round(reporting_period_data['subtotals'][i], 0)
-                ws[col + str(current_row_flag)].border = f_border
+                ws[col + str(current_row_number)].font = title_font
+                ws[col + str(current_row_number)].alignment = c_c_alignment
+                ws[col + str(current_row_number)] = round(reporting_period_data['subtotals'][i], 0)
+                ws[col + str(current_row_number)].border = f_border
 
                 # bar
                 bar = BarChart()
-                labels = Reference(ws, min_col=2, min_row=table_start_flag + 1, max_row=table_end_flag)
-                bar_data = Reference(ws, min_col=3 + i, min_row=table_start_flag, max_row=table_end_flag)  # openpyxl bug
+                labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
+                bar_data = Reference(ws, min_col=3 + i, min_row=table_start_row_number, max_row=table_end_row_number)
                 bar.add_data(bar_data, titles_from_data=True)
                 bar.set_categories(labels)
                 bar.height = 5.25
@@ -593,11 +591,11 @@ def generate_excel(report,
                 chart_cell = chart_col + str(table_start_draw_flag + 5 * i)
                 ws.add_chart(bar, chart_cell)
 
-            current_row_flag += 1
+            current_row_number += 1
 
     else:
         for i in range(40, 69 + 1):
-            current_row_flag = 70
+            current_row_number = 70
             ws.row_dimensions[i].height = 0.1
 
     filename = str(uuid.uuid4()) + '.xlsx'
