@@ -1127,12 +1127,13 @@ Result in JSON
 | id            | integer   | Rule ID                                   |
 | name          | string    | Rule Name                                 |
 | uuid          | string    | Rule UUID                                 |
-| channels      | string    | Channels ('call,sms,email,wechat,web')    |
-| expressions   | string    | Logic of factory, shop, line, recipients in JSON  |
-| messages      | string    | Messages to recipients                    |
+| fdd_code      | string    | SYSTEM01, SYSTEM02, ... SPACE01, SPACE02, ... METER01, METER02, ... |
+| category      | string    | SYSTEM, SPACE, METER, TENANT, STORE, SHOPFLOOR, EQUIPMENT, COMBINEDEQUIPMENT |
+| priority      | string    | CRITICAL, HIGH, MEDIUM, LOW               |
+| channel       | string    | WEB, EMAIL, SMS, WECHAT, CALL             |
+| expression    | string    | JSON string of diagnosed objects, points, values, and recipients |
+| message_template | string | Plain text template that supports $-substitutions |
 | is_enabled    | boolean   | Indicates if this rule is enabled         |
-| mute_start_datetime| float| Mute Start Datetime (POSIX timestamp * 1000), allow null|
-| mute_end_datetime  | float| Mute End Datetime (POSIX timestamp * 1000), allow null|
 
 ```bash
 $ curl -i -X GET {{base_url}}/rules/{id}
@@ -1147,11 +1148,11 @@ $ curl -i -X DELETE {{base_url}}/rules/{id}
 ```
 * POST Create New Rule
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":null, "mute_end_datetime":null}}' {{base_url}}/rules
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Space Energy Consumption Over Limit", "fdd_code":"SPACE01", "category":"SPACE", "priority":"HIGH", "channel":"WEB", "expression":"{\"space_id\":1, \"high_limit\":1000.000}", "message_template":"%s截止到目前电耗%s，超标%s。", "is_enabled":true}}' {{base_url}}/rules
 ```
 * PUT Update a Rule
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":"2020-05-01T00:00:00", "mute_end_datetime":"2020-05-06T00:00:00"}}' {{base_url}}/rules/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Space Energy Consumption Over Limit", "fdd_code":"SPACE01", "category":"SPACE", "priority":"HIGH", "channel":"WEB", "expression":"{\"space_id\":1, \"high_limit\":1000.000}", "message_template":"%s截止到目前电耗%s，超标%s。", "is_enabled":true}}' {{base_url}}/rules/{id}
 ```
 
 
