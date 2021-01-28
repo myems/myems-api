@@ -275,22 +275,22 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
         if has_data:
 
-            end_data_flag = 19
+            end_data_row_number = 19
 
             for i in range(0, len(time)):
                 col = 'B'
-                end_data_flag = 19 + i
-                row = str(end_data_flag)
+                end_data_row_number = 19 + i
+                row = str(end_data_row_number)
 
                 ws[col + row].font = title_font
                 ws[col + row].alignment = c_c_alignment
                 ws[col + row] = time[i]
                 ws[col + row].border = f_border
 
-            ws['B' + str(end_data_flag + 1)].font = title_font
-            ws['B' + str(end_data_flag + 1)].alignment = c_c_alignment
-            ws['B' + str(end_data_flag + 1)] = '总计'
-            ws['B' + str(end_data_flag + 1)].border = f_border
+            ws['B' + str(end_data_row_number + 1)].font = title_font
+            ws['B' + str(end_data_row_number + 1)].alignment = c_c_alignment
+            ws['B' + str(end_data_row_number + 1)] = '总计'
+            ws['B' + str(end_data_row_number + 1)].border = f_border
 
             bar = BarChart()
 
@@ -316,10 +316,10 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                     ws[col + row] = round(reporting_period_data['values'][j], 0)
                     ws[col + row].border = f_border
 
-                ws[col + str(end_data_flag + 1)].font = title_font
-                ws[col + str(end_data_flag + 1)].alignment = c_c_alignment
-                ws[col + str(end_data_flag + 1)] = round(reporting_period_data['total_in_category'], 0)
-                ws[col + str(end_data_flag + 1)].border = f_border
+                ws[col + str(end_data_row_number + 1)].font = title_font
+                ws[col + str(end_data_row_number + 1)].alignment = c_c_alignment
+                ws[col + str(end_data_row_number + 1)] = round(reporting_period_data['total_in_category'], 0)
+                ws[col + str(end_data_row_number + 1)].border = f_border
 
                 bar_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row)
                 bar.series.append(Series(bar_data, title_from_data=True))
