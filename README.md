@@ -2042,19 +2042,23 @@ $ curl -i -X GET {{base_url}}/reports/equipmentstatistics?equipmentid=1&periodty
 ```
 * GET Meter Energy Report
 ```
-$ curl -i -X GET {{base_url}}/reports/meterenergy?meterid=6&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/meterenergy?meterid=6&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Meter Cost Report
 ```
-$ curl -i -X GET {{base_url}}/reports/metercost?meterid=6&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/metercost?meterid=6&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Meter Realtime Report
 ```
 $ curl -i -X GET {{base_url}}/reports/meterrealtime?meterid=1
 ```
+* GET Meter Submeters Balance Report
+```
+$ curl -i -X GET {{base_url}}/reports/metersubmetersbalance?meterid=1&periodtype=daily&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
+```
 * GET Meter Trend Report
 ```
-$ curl -i -X GET {{base_url}}/reports/metertrend?meterid=6&reportingperiodbeginsdatetime=2020-09-10T00:00:00&reportingperiodendsdatetime=2020-09-11T00:00:00
+$ curl -i -X GET {{base_url}}/reports/metertrend?meterid=6&reportingperiodstartdatetime=2020-09-10T00:00:00&reportingperiodenddatetime=2020-09-11T00:00:00
 ```
 * GET Meter Tracking Report
 ```
@@ -2062,11 +2066,11 @@ $ curl -i -X GET {{base_url}}/reports/metertracking?spaceid=1
 ```
 * GET Offline Meter Energy Report
 ```
-$ curl -i -X GET {{base_url}}/reports/offlinemeterenergy?offlinemeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/offlinemeterenergy?offlinemeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Offline Meter Cost Report
 ```
-$ curl -i -X GET {{base_url}}/reports/offlinemetercost?offlinemeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/offlinemetercost?offlinemeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Space Cost Report
 ```
@@ -2134,13 +2138,9 @@ $ curl -i -X GET {{base_url}}/reports/tenantstatistics?tenantid=1&periodtype=dai
 ```
 * GET Virtual Meter Energy Report
 ```
-$ curl -i -X GET {{base_url}}/reports/virtualmeterenergy?virtualmeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/virtualmeterenergy?virtualmeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Virtual Meter Cost Report
 ```
-$ curl -i -X GET {{base_url}}/reports/virtualmetercost?virtualmeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
-```
-* GET  Report
-```
-$ curl -i -X GET 
+$ curl -i -X GET {{base_url}}/reports/virtualmetercost?virtualmeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
