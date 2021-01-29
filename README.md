@@ -955,9 +955,9 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20"
 ```bash
 $ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "description":"空调用电"}}' {{base_url}}/meters/{id}
 ```
-* GET All Children of Meter by ID
+* GET All Submeters of Meter by ID
 ```bash
-$ curl -i -X GET {{base_url}}/meters/{id}/children
+$ curl -i -X GET {{base_url}}/meters/{id}/submeters
 ```
 * GET All Points associated with Meter ID
 ```bash

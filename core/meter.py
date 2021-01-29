@@ -738,7 +738,7 @@ class MeterItem:
         resp.status = falcon.HTTP_200
 
 
-class MeterChildrenCollection:
+class MeterSubmeterCollection:
     @staticmethod
     def __init__():
         pass
