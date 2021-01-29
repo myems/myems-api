@@ -7534,18 +7534,18 @@
 					"response": []
 				},
 				{
-					"name": "GET Meter Submeter Loss Report",
+					"name": "GET Meter Submeters Balance Report",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/reports/metersubmeterloss?meterid=1&periodtype=daily&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
+							"raw": "{{base_url}}/reports/metersubmetersbalance?meterid=1&periodtype=daily&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"reports",
-								"metersubmeterloss"
+								"metersubmetersbalance"
 							],
 							"query": [
 								{
