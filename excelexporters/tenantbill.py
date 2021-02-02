@@ -161,7 +161,7 @@ def generate_excel(report,
     ws['C12'] = '付款通知书'
 
     # img
-    img = Image("excelexporters/myemstenantbill.png")
+    img = Image("excelexporters/myemslogo.png")
     img.width = 160
     img.height = 160
     ws.add_image(img, 'I12')
@@ -225,13 +225,11 @@ def generate_excel(report,
         ws['H38'] = report_tenant_data['lease_number']
         ws['H39'] = datetime.datetime.strptime(reporting_start_datetime_local, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d')
         ws['H40'] = datetime.datetime.strptime(reporting_end_datetime_local, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d')
-        ws['H41'] = report['reporting_period']['currency_unit'] + str(round(report['reporting_period']['total_cost'] \
-                                                                                if 'reporting_period' in report.keys() \
-                                                                                   and 'total_cost' in report[
-                                                                                       'reporting_period'].keys() \
-                                                                                   and report['reporting_period'][
-                                                                                       'total_cost'] is not None \
-                                                                                else 0, 2))
+        ws['H41'] = report['reporting_period']['currency_unit'] + \
+            str(round(report['reporting_period']['total_cost']
+                      if 'reporting_period' in report.keys() and 'total_cost' in report['reporting_period'].keys()
+                and report['reporting_period']['total_cost'] is not None
+                      else 0, 2))
 
     has_reporting_period_data_flag = True
 
@@ -303,11 +301,10 @@ def generate_excel(report,
 
         ws['B' + str(current_row_number)] = '小计:'
         ws['H' + str(current_row_number)] = report['reporting_period']['currency_unit'] + str(
-            round(report['reporting_period']['total_cost'] \
-                      if 'reporting_period' in report.keys() \
-                         and 'total_cost' in report['reporting_period'].keys() \
-                         and report['reporting_period']['total_cost'] is not None \
-                      else 0, 2))
+            round(report['reporting_period']['total_cost']
+                  if 'reporting_period' in report.keys() and 'total_cost' in report['reporting_period'].keys()
+                     and report['reporting_period']['total_cost'] is not None
+                  else 0, 2))
 
         current_row_number += 1
 
@@ -321,11 +318,11 @@ def generate_excel(report,
 
         ws['B' + str(current_row_number)] = '应付金额合计:'
         ws['H' + str(current_row_number)] = report['reporting_period']['currency_unit'] + str(
-            round(report['reporting_period']['total_cost'] + taxes \
-                      if 'reporting_period' in report.keys() \
-                         and 'total_cost' in report['reporting_period'].keys() \
-                         and report['reporting_period']['total_cost'] is not None \
-                      else 0 + taxes, 2))
+            round(report['reporting_period']['total_cost'] + taxes
+                  if 'reporting_period' in report.keys()
+                     and 'total_cost' in report['reporting_period'].keys()
+                     and report['reporting_period']['total_cost'] is not None
+                  else 0 + taxes, 2))
 
     filename = str(uuid.uuid4()) + '.xlsx'
     wb.save(filename)
