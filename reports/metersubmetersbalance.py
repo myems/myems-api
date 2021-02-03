@@ -247,9 +247,12 @@ class Reporting:
         reporting['total_difference_in_category'] = \
             reporting['master_meter_total_in_category'] - reporting['submeters_total_in_category']
 
-        reporting['percentage_difference'] = \
-            reporting['total_difference_in_category'] / reporting['master_meter_total_in_category'] \
-            if abs(reporting['master_meter_total_in_category']) > Decimal(0.0) else Decimal(0.0)
+        if abs(reporting['master_meter_total_in_category']) > Decimal(0.0):
+            reporting['percentage_difference'] = \
+                reporting['total_difference_in_category'] / reporting['master_meter_total_in_category']
+        elif abs(reporting['master_meter_total_in_category']) == Decimal(0.0) and \
+                abs(reporting['submeters_total_in_category']) > Decimal(0.0):
+            reporting['percentage_difference'] = Decimal(-1.0)
 
         ################################################################################################################
         # Step 7: query submeter values as parameter data
