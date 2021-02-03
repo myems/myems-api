@@ -309,7 +309,7 @@ def generate_excel(report,
             ws.row_dimensions[i].height = 0.1
 
     ##################################
-    current_row_flag = 19
+    current_row_number = 19
 
     has_child_flag = True
     if "child_space" not in report.keys() or "energy_category_names" not in report['child_space'].keys() or \
@@ -319,28 +319,28 @@ def generate_excel(report,
     if has_child_flag:
         child = report['child_space']
 
-        ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name + ' 子空间数据'
+        ws['B' + str(current_row_number)].font = title_font
+        ws['B' + str(current_row_number)] = name + ' 子空间数据'
 
-        current_row_flag += 1
+        current_row_number += 1
 
-        ws['B' + str(current_row_flag)].fill = table_fill
-        ws['B' + str(current_row_flag)].border = f_border
+        ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].border = f_border
         ca_len = len(child['energy_category_names'])
 
         for i in range(0, ca_len):
             row = chr(ord('C') + i)
-            ws[row + str(current_row_flag)].fill = table_fill
-            ws[row + str(current_row_flag)].font = title_font
-            ws[row + str(current_row_flag)].alignment = c_c_alignment
-            ws[row + str(current_row_flag)].border = f_border
-            ws[row + str(current_row_flag)] = child['energy_category_names'][i]
+            ws[row + str(current_row_number)].fill = table_fill
+            ws[row + str(current_row_number)].font = title_font
+            ws[row + str(current_row_number)].alignment = c_c_alignment
+            ws[row + str(current_row_number)].border = f_border
+            ws[row + str(current_row_number)] = child['energy_category_names'][i]
 
         space_len = len(child['child_space_names_array'][0])
 
         for i in range(0, space_len):
-            current_row_flag += 1
-            row = str(current_row_flag)
+            current_row_number += 1
+            row = str(current_row_number)
 
             ws['B' + row].font = name_font
             ws['B' + row].alignment = c_c_alignment
@@ -354,14 +354,14 @@ def generate_excel(report,
                 ws[col + row] = child['subtotals_array'][j][i]
                 ws[col + row].border = f_border
 
-        current_row_flag += 1
+        current_row_number += 1
 
         # Pie
         for i in range(0, ca_len):
             pie = PieChart()
-            labels = Reference(ws, min_col=2, min_row=current_row_flag - space_len, max_row=current_row_flag - 1)
-            pie_data = Reference(ws, min_col=3 + i, min_row=current_row_flag - space_len - 1,
-                                 max_row=current_row_flag - 1)
+            labels = Reference(ws, min_col=2, min_row=current_row_number - space_len, max_row=current_row_number - 1)
+            pie_data = Reference(ws, min_col=3 + i, min_row=current_row_number - space_len - 1,
+                                 max_row=current_row_number - 1)
             pie.add_data(pie_data, titles_from_data=True)
             pie.set_categories(labels)
             pie.height = 5.25
@@ -374,32 +374,32 @@ def generate_excel(report,
             s1.dLbls.showVal = True
             s1.dLbls.showPercent = True
             chart_col = chr(ord('B') + 2 * i)
-            chart_cell = chart_col + str(current_row_flag)
+            chart_cell = chart_col + str(current_row_number)
             ws.add_chart(pie, chart_cell)
 
-        current_row_flag += 5
+        current_row_number += 5
 
     else:
         for i in range(19, 36 + 1):
-            current_row_flag = 36
+            current_row_number = 36
             ws.row_dimensions[i].height = 0.1
 
-    current_row_flag += 1
+    current_row_number += 1
 
     #############################################
     reporting_period_data = report['reporting_period']
     times = reporting_period_data['timestamps']
     has_detail_data_flag = True
     ca_len = len(report['reporting_period']['names'])
-    table_row = (current_row_flag + 1) + ca_len * 5
+    table_row = (current_row_number + 1) + ca_len * 5
     if "timestamps" not in reporting_period_data.keys() or \
             reporting_period_data['timestamps'] is None or \
             len(reporting_period_data['timestamps']) == 0:
         has_detail_data_flag = False
 
     if has_detail_data_flag:
-        ws['B' + str(current_row_flag)].font = title_font
-        ws['B' + str(current_row_flag)] = name + ' 详细数据'
+        ws['B' + str(current_row_number)].font = title_font
+        ws['B' + str(current_row_number)] = name + ' 详细数据'
 
         ws['B' + str(table_row)].fill = table_fill
         ws['B' + str(table_row)].border = f_border
@@ -454,7 +454,7 @@ def generate_excel(report,
                 bar.dLbls.showVal = True
                 bar.dLbls.showPercent = True
                 chart_col = 'B'
-                chart_cell = chart_col + str(current_row_flag + 1 + 5 * i)
+                chart_cell = chart_col + str(current_row_number + 1 + 5 * i)
                 ws.add_chart(bar, chart_cell)
     else:
         for i in range(37, 69 + 1):

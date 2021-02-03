@@ -936,7 +936,7 @@ Result
 | hourly_high_limit | decimal(18,3)   | Inclusive. Maximum energy consumption per hour, Rated total active Power, Rated Flow, etc.|
 | cost_center   | Object    | Cost Center Object                        |
 | energy_item   | Object    | Energy Item Object                        |
-| parent_meter  | Object    | Parent Meter Object                       |
+| master_meter  | Object    | Master Meter Object                       |
 | description   | string    | Meter description                         |
 
 * GET All Meters
@@ -949,15 +949,15 @@ $ curl -i -X DELETE {{base_url}}/meters/{id}
 ```
 * POST Create a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "description":"空调用电"}}' {{base_url}}/meters
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "master_meter_id":1, "description":"空调用电"}}' {{base_url}}/meters
 ```
 * PUT Update a Meter
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "parent_meter_id":1, "description":"空调用电"}}' {{base_url}}/meters/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"PM20", "energy_category_id":1, "hourly_low_limit":0.000, "hourly_high_limit":999.999, "is_counted":true, "cost_center_id":1, "energy_item_id":1, "master_meter_id":1, "description":"空调用电"}}' {{base_url}}/meters/{id}
 ```
-* GET All Children of Meter by ID
+* GET All Submeters of Meter by ID
 ```bash
-$ curl -i -X GET {{base_url}}/meters/{id}/children
+$ curl -i -X GET {{base_url}}/meters/{id}/submeters
 ```
 * GET All Points associated with Meter ID
 ```bash
@@ -1127,12 +1127,13 @@ Result in JSON
 | id            | integer   | Rule ID                                   |
 | name          | string    | Rule Name                                 |
 | uuid          | string    | Rule UUID                                 |
-| channels      | string    | Channels ('call,sms,email,wechat,web')    |
-| expressions   | string    | Logic of factory, shop, line, recipients in JSON  |
-| messages      | string    | Messages to recipients                    |
+| fdd_code      | string    | SYSTEM01, SYSTEM02, ... SPACE01, SPACE02, ... METER01, METER02, ... |
+| category      | string    | SYSTEM, SPACE, METER, TENANT, STORE, SHOPFLOOR, EQUIPMENT, COMBINEDEQUIPMENT |
+| priority      | string    | CRITICAL, HIGH, MEDIUM, LOW               |
+| channel       | string    | WEB, EMAIL, SMS, WECHAT, CALL             |
+| expression    | string    | JSON string of diagnosed objects, points, values, and recipients |
+| message_template | string | Plain text template that supports $-substitutions |
 | is_enabled    | boolean   | Indicates if this rule is enabled         |
-| mute_start_datetime| float| Mute Start Datetime (POSIX timestamp * 1000), allow null|
-| mute_end_datetime  | float| Mute End Datetime (POSIX timestamp * 1000), allow null|
 
 ```bash
 $ curl -i -X GET {{base_url}}/rules/{id}
@@ -1147,11 +1148,11 @@ $ curl -i -X DELETE {{base_url}}/rules/{id}
 ```
 * POST Create New Rule
 ```bash
-$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":null, "mute_end_datetime":null}}' {{base_url}}/rules
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"name":"Space Energy Consumption Over Limit", "fdd_code":"SPACE01", "category":"SPACE", "priority":"HIGH", "channel":"WEB", "expression":"{\"space_id\":1, \"high_limit\":1000.000}", "message_template":"%s截止到目前电耗%s，超标%s。", "is_enabled":true}}' {{base_url}}/rules
 ```
 * PUT Update a Rule
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"用能单位今日电耗超标20%", "channel":"sms", "expression":"[{}]", "message":"%s今天截止到目前电耗%s，超标20%。", "is_enabled":true, "mute_start_datetime":"2020-05-01T00:00:00", "mute_end_datetime":"2020-05-06T00:00:00"}}' {{base_url}}/rules/{id}
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"name":"Space Energy Consumption Over Limit", "fdd_code":"SPACE01", "category":"SPACE", "priority":"HIGH", "channel":"WEB", "expression":"{\"space_id\":1, \"high_limit\":1000.000}", "message_template":"%s截止到目前电耗%s，超标%s。", "is_enabled":true}}' {{base_url}}/rules/{id}
 ```
 
 
@@ -2041,19 +2042,23 @@ $ curl -i -X GET {{base_url}}/reports/equipmentstatistics?equipmentid=1&periodty
 ```
 * GET Meter Energy Report
 ```
-$ curl -i -X GET {{base_url}}/reports/meterenergy?meterid=6&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/meterenergy?meterid=6&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Meter Cost Report
 ```
-$ curl -i -X GET {{base_url}}/reports/metercost?meterid=6&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/metercost?meterid=6&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Meter Realtime Report
 ```
 $ curl -i -X GET {{base_url}}/reports/meterrealtime?meterid=1
 ```
+* GET Meter Submeters Balance Report
+```
+$ curl -i -X GET {{base_url}}/reports/metersubmetersbalance?meterid=1&periodtype=daily&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
+```
 * GET Meter Trend Report
 ```
-$ curl -i -X GET {{base_url}}/reports/metertrend?meterid=6&reportingperiodbeginsdatetime=2020-09-10T00:00:00&reportingperiodendsdatetime=2020-09-11T00:00:00
+$ curl -i -X GET {{base_url}}/reports/metertrend?meterid=6&reportingperiodstartdatetime=2020-09-10T00:00:00&reportingperiodenddatetime=2020-09-11T00:00:00
 ```
 * GET Meter Tracking Report
 ```
@@ -2061,11 +2066,11 @@ $ curl -i -X GET {{base_url}}/reports/metertracking?spaceid=1
 ```
 * GET Offline Meter Energy Report
 ```
-$ curl -i -X GET {{base_url}}/reports/offlinemeterenergy?offlinemeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/offlinemeterenergy?offlinemeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Offline Meter Cost Report
 ```
-$ curl -i -X GET {{base_url}}/reports/offlinemetercost?offlinemeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/offlinemetercost?offlinemeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Space Cost Report
 ```
@@ -2133,13 +2138,9 @@ $ curl -i -X GET {{base_url}}/reports/tenantstatistics?tenantid=1&periodtype=dai
 ```
 * GET Virtual Meter Energy Report
 ```
-$ curl -i -X GET {{base_url}}/reports/virtualmeterenergy?virtualmeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
+$ curl -i -X GET {{base_url}}/reports/virtualmeterenergy?virtualmeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```
 * GET Virtual Meter Cost Report
 ```
-$ curl -i -X GET {{base_url}}/reports/virtualmetercost?virtualmeterid=1&periodtype=daily&baseperiodbeginsdatetime=2020-08-01T00:00:00&baseperiodendsdatetime=2020-09-01T00:00:00&reportingperiodbeginsdatetime=2020-09-01T00:00:00&reportingperiodendsdatetime=2020-10-01T00:00:00
-```
-* GET  Report
-```
-$ curl -i -X GET 
+$ curl -i -X GET {{base_url}}/reports/virtualmetercost?virtualmeterid=1&periodtype=daily&baseperiodstartdatetime=2020-08-01T00:00:00&baseperiodenddatetime=2020-09-01T00:00:00&reportingperiodstartdatetime=2020-09-01T00:00:00&reportingperiodenddatetime=2020-10-01T00:00:00
 ```

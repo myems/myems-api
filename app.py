@@ -30,9 +30,7 @@ from reports import equipmentsaving
 from reports import equipmentstatistics
 from reports import equipmenttracking
 from reports import fddcombinedequipmentfault
-from reports import fddenergyloss
 from reports import fddequipmentfault
-from reports import fddfaultstatistics
 from reports import fddshopfloorfault
 from reports import fddspacefault
 from reports import fddstorefault
@@ -40,6 +38,7 @@ from reports import fddtenantfault
 from reports import meterenergy
 from reports import metercost
 from reports import meterrealtime
+from reports import metersubmetersbalance
 from reports import metertrend
 from reports import metertracking
 from reports import offlinemeterenergy
@@ -236,8 +235,8 @@ api.add_route('/meters',
               meter.MeterCollection())
 api.add_route('/meters/{id_}',
               meter.MeterItem())
-api.add_route('/meters/{id_}/children',
-              meter.MeterChildrenCollection())
+api.add_route('/meters/{id_}/submeters',
+              meter.MeterSubmeterCollection())
 api.add_route('/meters/{id_}/points',
               meter.MeterPointCollection())
 api.add_route('/meters/{id_}/points/{pid}',
@@ -517,12 +516,8 @@ api.add_route('/reports/equipmenttracking',
               equipmenttracking.Reporting())
 api.add_route('/reports/fddcombinedequipmentfault',
               fddcombinedequipmentfault.Reporting())
-api.add_route('/reports/fddenergyloss',
-              fddenergyloss.Reporting())
 api.add_route('/reports/fddequipmentfault',
               fddequipmentfault.Reporting())
-api.add_route('/reports/fddfaultstatistics',
-              fddfaultstatistics.Reporting())
 api.add_route('/reports/fddshopfloorfault',
               fddshopfloorfault.Reporting())
 api.add_route('/reports/fddspacefault',
@@ -537,6 +532,8 @@ api.add_route('/reports/meterenergy',
               meterenergy.Reporting())
 api.add_route('/reports/meterrealtime',
               meterrealtime.Reporting())
+api.add_route('/reports/metersubmetersbalance',
+              metersubmetersbalance.Reporting())
 api.add_route('/reports/metertrend',
               metertrend.Reporting())
 api.add_route('/reports/metertracking',
