@@ -154,7 +154,7 @@ def generate_excel(report,
     ws['C12'] = '付款通知书'
 
     # img
-    img = Image("excelexporters/myemstenantbill.png")
+    img = Image("excelexporters/myemslogo.png")
     img.width = 117
     img.height = 117
     ws.add_image(img, 'I12')
