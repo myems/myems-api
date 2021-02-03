@@ -200,44 +200,49 @@ class Reporting:
         ################################################################################################################
         # Step 5: query reporting period submeters energy consumption
         ################################################################################################################
-        query = (" SELECT start_datetime_utc, SUM(actual_value) "
-                 " FROM tbl_meter_hourly "
-                 " WHERE meter_id IN ( " + ', '.join(map(str, submeter_id_set)) + ") "
-                 " AND start_datetime_utc >= %s "
-                 " AND start_datetime_utc < %s "
-                 " GROUP BY start_datetime_utc "
-                 " ORDER BY start_datetime_utc ")
-        cursor_energy.execute(query, (reporting_start_datetime_utc, reporting_end_datetime_utc))
-        rows_submeters_hourly = cursor_energy.fetchall()
+        if len(submeter_list) > 0:
+            query = (" SELECT start_datetime_utc, SUM(actual_value) "
+                     " FROM tbl_meter_hourly "
+                     " WHERE meter_id IN ( " + ', '.join(map(str, submeter_id_set)) + ") "
+                     " AND start_datetime_utc >= %s "
+                     " AND start_datetime_utc < %s "
+                     " GROUP BY start_datetime_utc "
+                     " ORDER BY start_datetime_utc ")
+            cursor_energy.execute(query, (reporting_start_datetime_utc, reporting_end_datetime_utc))
+            rows_submeters_hourly = cursor_energy.fetchall()
 
-        rows_submeters_periodically = utilities.aggregate_hourly_data_by_period(rows_submeters_hourly,
-                                                                                reporting_start_datetime_utc,
-                                                                                reporting_end_datetime_utc,
-                                                                                period_type)
+            rows_submeters_periodically = utilities.aggregate_hourly_data_by_period(rows_submeters_hourly,
+                                                                                    reporting_start_datetime_utc,
+                                                                                    reporting_end_datetime_utc,
+                                                                                    period_type)
 
-        for row_submeters_periodically in rows_submeters_periodically:
-            current_datetime_local = row_submeters_periodically[0].replace(tzinfo=timezone.utc) + \
-                                     timedelta(minutes=timezone_offset)
-            if period_type == 'hourly':
-                current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
-            elif period_type == 'daily':
-                current_datetime = current_datetime_local.strftime('%Y-%m-%d')
-            elif period_type == 'monthly':
-                current_datetime = current_datetime_local.strftime('%Y-%m')
-            elif period_type == 'yearly':
-                current_datetime = current_datetime_local.strftime('%Y')
+            for row_submeters_periodically in rows_submeters_periodically:
+                current_datetime_local = row_submeters_periodically[0].replace(tzinfo=timezone.utc) + \
+                                         timedelta(minutes=timezone_offset)
+                if period_type == 'hourly':
+                    current_datetime = current_datetime_local.strftime('%Y-%m-%dT%H:%M:%S')
+                elif period_type == 'daily':
+                    current_datetime = current_datetime_local.strftime('%Y-%m-%d')
+                elif period_type == 'monthly':
+                    current_datetime = current_datetime_local.strftime('%Y-%m')
+                elif period_type == 'yearly':
+                    current_datetime = current_datetime_local.strftime('%Y')
 
-            actual_value = Decimal(0.0) if row_submeters_periodically[1] is None else row_submeters_periodically[1]
+                actual_value = Decimal(0.0) if row_submeters_periodically[1] is None else row_submeters_periodically[1]
 
-            reporting['submeters_values'].append(actual_value)
-            reporting['submeters_total_in_category'] += actual_value
+                reporting['submeters_values'].append(actual_value)
+                reporting['submeters_total_in_category'] += actual_value
 
         ################################################################################################################
         # Step 6: calculate reporting period difference between master meter and submeters
         ################################################################################################################
-        for i in range(len(reporting['timestamps'])):
-            reporting['difference_values'].append(reporting['master_meter_values'][i] -
-                                                  reporting['submeters_values'][i])
+        if len(submeter_list) > 0:
+            for i in range(len(reporting['timestamps'])):
+                reporting['difference_values'].append(reporting['master_meter_values'][i] -
+                                                      reporting['submeters_values'][i])
+        else:
+            for i in range(len(reporting['timestamps'])):
+                reporting['difference_values'].append(reporting['master_meter_values'][i])
 
         reporting['total_difference_in_category'] = \
             reporting['master_meter_total_in_category'] - reporting['submeters_total_in_category']
