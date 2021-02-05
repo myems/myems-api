@@ -140,8 +140,8 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
 
     if "reporting_period" not in report.keys() or \
-            "difference_values" not in report['reporting_period'].keys() or len(
-        report['reporting_period']['difference_values']) == 0:
+            "difference_values" not in report['reporting_period'].keys() or \
+            len(report['reporting_period']['difference_values']) == 0:
         filename = str(uuid.uuid4()) + '.xlsx'
         wb.save(filename)
 

@@ -183,7 +183,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws[col + str(current_row_number)].alignment = c_c_alignment
             ws[col + str(current_row_number)].border = f_border
             ws[col + str(current_row_number)] = reporting_period_data['names'][i] + \
-                                                " (" + reporting_period_data['units'][i] + "/H)"
+                " (" + reporting_period_data['units'][i] + "/H)"
 
         current_row_number += 1
 
@@ -244,7 +244,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws[col + str(current_row_number)].alignment = c_c_alignment
             ws[col + str(current_row_number)].border = f_border
             ws[col + str(current_row_number)] = reporting_period_data['names'][i] + \
-                                                " (" + reporting_period_data['units'][i] + "/H)"
+                " (" + reporting_period_data['units'][i] + "/H)"
 
         current_row_number += 1
 
@@ -384,7 +384,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + str(current_row_number)].alignment = c_c_alignment
                 ws[col + str(current_row_number)].border = f_border
                 ws[col + str(current_row_number)] = reporting_period_data['names'][i] + \
-                                                    " 平均负荷(" + reporting_period_data['units'][i] + "/H)"
+                    " 平均负荷(" + reporting_period_data['units'][i] + "/H)"
                 col = chr(ord(col) + 1)
 
             if has_sub_maximums_data_flag:
@@ -393,7 +393,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + str(current_row_number)].alignment = c_c_alignment
                 ws[col + str(current_row_number)].border = f_border
                 ws[col + str(current_row_number)] = reporting_period_data['names'][i] + \
-                                                    " 最大负荷(" + reporting_period_data['units'][i] + "/H)"
+                    " 最大负荷(" + reporting_period_data['units'][i] + "/H)"
                 col = chr(ord(col) + 1)
 
         current_row_number += 1
