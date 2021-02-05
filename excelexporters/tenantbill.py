@@ -74,18 +74,18 @@ def generate_excel(report,
     # Row height
     for i in range(1, 11 + 1):
         ws.row_dimensions[i].height = 0.1
-    ws.row_dimensions[12].height = 45.0
+    ws.row_dimensions[12].height = 30.0
     ws.row_dimensions[13].height = 10.0
     ws.merge_cells('B13:I13')
     for i in range(14, 23 + 1):
         ws.row_dimensions[i].height = 0.1
-    ws.row_dimensions[24].height = 30.0
+    ws.row_dimensions[24].height = 20.0
     ws.row_dimensions[25].height = 10.0
     ws.merge_cells('B25:I25')
     for i in range(26, 35 + 1):
         ws.row_dimensions[i].height = 0.1
     for i in range(36, 41 + 1):
-        ws.row_dimensions[i].height = 30.0
+        ws.row_dimensions[i].height = 20.0
     ws.row_dimensions[42].height = 10.0
     ws.merge_cells('B42:I42')
     for i in range(43, 52 + 1):
@@ -94,25 +94,18 @@ def generate_excel(report,
     # Col width
     ws.column_dimensions['A'].width = 1.5
     for i in range(ord('B'), ord('J')):
-        ws.column_dimensions[chr(i)].width = 17
+        ws.column_dimensions[chr(i)].width = 16
     ws.column_dimensions['J'].width = 1.5
-    ws.column_dimensions['E'].width = 14
-    ws.column_dimensions['F'].width = 14
 
     # merge cell
     ws.merge_cells('C12:H12')
 
     ws.merge_cells('C24:I24')
 
-    for i in range(36, 41 + 1):
-        ws.merge_cells('C{}:D{}'.format(i, i))
-        ws.merge_cells('E{}:F{}'.format(i, i))
-        ws.merge_cells('H{}:I{}'.format(i, i))
-
     # Font
-    notice_font = Font(name='宋体', size=25, bold=True)
-    name_font = Font(name='Constantia', size=14, bold=True)
-    title_font = Font(name='宋体', size=14, bold=True)
+    notice_font = Font(name='宋体', size=20, bold=True)
+    name_font = Font(name='Constantia', size=12, bold=True)
+    title_font = Font(name='宋体', size=11, bold=True)
     data_font = Font(name='Franklin Gothic Book', size=11)
 
     table_fill = PatternFill(fill_type='solid', fgColor='1F497D')
@@ -162,8 +155,8 @@ def generate_excel(report,
 
     # img
     img = Image("excelexporters/myemslogo.png")
-    img.width = 160
-    img.height = 160
+    img.width = 117
+    img.height = 117
     ws.add_image(img, 'I12')
 
     has_lease_number_data_flag = True
@@ -192,6 +185,7 @@ def generate_excel(report,
     if has_tenant_data_flag:
         report_tenant_data = report['tenant']
         for i in range(36, 41 + 1):
+            ws.merge_cells('C{}:D{}'.format(i, i))
             ws['C' + str(i)].alignment = b_l_alignment
             ws['C' + str(i)].font = name_font
 
@@ -208,17 +202,19 @@ def generate_excel(report,
 
         ws['C41'] = report_tenant_data['phone']
 
-        for i in range(36, 41 + 1):
-            ws['G' + str(i)].alignment = b_r_alignment
-            ws['G' + str(i)].font = name_font
+        for i in range(37, 41 + 1):
+            ws.merge_cells('E{}:G{}'.format(i, i))
+            ws.merge_cells('H{}:I{}'.format(i, i))
+            ws['E' + str(i)].alignment = b_r_alignment
+            ws['E' + str(i)].font = name_font
             ws['H' + str(i)].alignment = b_l_alignment
             ws['H' + str(i)].font = name_font
 
-        ws['G37'] = '账单号码:'
-        ws['G38'] = '租赁合同号码:'
-        ws['G39'] = '账单日期:'
-        ws['G40'] = '付款到期日:'
-        ws['G41'] = '应付款金额:'
+        ws['E37'] = '账单号码:'
+        ws['E38'] = '租赁合同号码:'
+        ws['E39'] = '账单日期:'
+        ws['E40'] = '付款到期日:'
+        ws['E41'] = '应付款金额:'
 
         # Simulated data
         ws['H37'] = ''
@@ -227,8 +223,9 @@ def generate_excel(report,
         ws['H40'] = datetime.datetime.strptime(reporting_end_datetime_local, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d')
         ws['H41'] = report['reporting_period']['currency_unit'] + \
             str(round(report['reporting_period']['total_cost']
-                      if 'reporting_period' in report.keys() and 'total_cost' in report['reporting_period'].keys()
-                and report['reporting_period']['total_cost'] is not None
+                      if 'reporting_period' in report.keys()
+                         and 'total_cost' in report['reporting_period'].keys()
+                         and report['reporting_period']['total_cost'] is not None
                       else 0, 2))
 
     has_reporting_period_data_flag = True
@@ -238,7 +235,7 @@ def generate_excel(report,
         has_reporting_period_data_flag = False
 
     if has_reporting_period_data_flag:
-        ws.row_dimensions[53].height = 30.0
+        ws.row_dimensions[53].height = 25.0
         for i in range(ord('B'), ord('J')):
             ws[chr(i) + '53'].fill = table_fill
             ws[chr(i) + '53'].font = title_font
@@ -259,7 +256,7 @@ def generate_excel(report,
         ca_len = len(names) if names is not None else 0
 
         for i in range(54, 54 + ca_len):
-            ws.row_dimensions[i].height = 30.0
+            ws.row_dimensions[i].height = 20.0
             for j in range(ord('B'), ord('J')):
                 ws[chr(j) + str(i)].font = title_font
                 ws[chr(j) + str(i)].alignment = c_c_alignment
@@ -291,7 +288,7 @@ def generate_excel(report,
 
         current_row_number = 54 + ca_len + 1
         for i in range(current_row_number, current_row_number + 3):
-            ws.row_dimensions[i].height = 30.0
+            ws.row_dimensions[i].height = 20.0
             ws['B' + str(i)].alignment = b_r_alignment
             ws['B' + str(i)].font = name_font
             ws['H' + str(i)].alignment = b_l_alignment
@@ -302,7 +299,8 @@ def generate_excel(report,
         ws['B' + str(current_row_number)] = '小计:'
         ws['H' + str(current_row_number)] = report['reporting_period']['currency_unit'] + str(
             round(report['reporting_period']['total_cost']
-                  if 'reporting_period' in report.keys() and 'total_cost' in report['reporting_period'].keys()
+                  if 'reporting_period' in report.keys()
+                     and 'total_cost' in report['reporting_period'].keys()
                      and report['reporting_period']['total_cost'] is not None
                   else 0, 2))
 
