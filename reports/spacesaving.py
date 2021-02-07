@@ -5,6 +5,7 @@ import config
 from datetime import datetime, timedelta, timezone
 from core import utilities
 from decimal import Decimal
+import excelexporters.spacesaving
 
 
 class Reporting:
@@ -770,5 +771,12 @@ class Reporting:
                     child_space_data[energy_category_id]['subtotals_in_kgce_saving'])
                 result['child_space']['subtotals_in_kgco2e_saving_array'].append(
                     child_space_data[energy_category_id]['subtotals_in_kgco2e_saving'])
+
+        # export result to Excel file and then encode the file to base64 string
+        result['excel_bytes_base64'] = excelexporters.spacesaving.export(result,
+                                                                                 space['name'],
+                                                                                 reporting_start_datetime_local,
+                                                                                 reporting_end_datetime_local,
+                                                                                 period_type)
 
         resp.body = json.dumps(result)
