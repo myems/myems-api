@@ -346,7 +346,9 @@ def generate_excel(report,
         table_end_row_number = current_row_number - 1
 
         if ca_len < 4:
-            current_row_number = current_row_number - ca_len + 5
+            current_row_number = current_row_number - ca_len + 4
+
+        current_row_number += 1
 
         pie = PieChart()
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
@@ -395,7 +397,9 @@ def generate_excel(report,
         table_end_row_number = current_row_number - 1
 
         if ca_len < 4:
-            current_row_number = current_row_number - ca_len + 5
+            current_row_number = current_row_number - ca_len + 4
+
+        current_row_number += 1
 
         pie = PieChart()
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
