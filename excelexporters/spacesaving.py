@@ -351,6 +351,7 @@ def generate_excel(report,
         current_row_number += 1
 
         pie = PieChart()
+        pie.title = '吨标准煤(TCE)占比'
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
         pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
@@ -402,6 +403,7 @@ def generate_excel(report,
         current_row_number += 1
 
         pie = PieChart()
+        pie.title = '吨二氧化碳排放(TCO2E)占比'
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
         pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
@@ -568,14 +570,37 @@ def generate_excel(report,
 
         table_end_row_number = current_row_number - 1
 
+        format_time_width_number = 1.0
+        min_len_number = 1.0
+        min_width_number = 11.0  # format_time_width_number * min_len_number + 4 and min_width_number > 11.0
+
+        if period_type == 'hourly':
+            format_time_width_number = 4.0
+            min_len_number = 2
+            min_width_number = 12.0
+        elif period_type == 'daily':
+            format_time_width_number = 2.5
+            min_len_number = 4
+            min_width_number = 14.0
+        elif period_type == 'monthly':
+            format_time_width_number = 2.1
+            min_len_number = 4
+            min_width_number = 12.4
+        elif period_type == 'yearly':
+            format_time_width_number = 1.5
+            min_len_number = 5
+            min_width_number = 11.5
+
         for i in range(0, ca_len):
             bar = BarChart()
+            bar.title = \
+                reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
             labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
             bar_data = Reference(ws, min_col=3 + i, min_row=table_start_row_number, max_row=table_end_row_number)
             bar.add_data(bar_data, titles_from_data=True)
             bar.set_categories(labels)
             bar.height = 5.25
-            bar.width = len(time)
+            bar.width = format_time_width_number * len(time) if len(time) > min_len_number else min_width_number
             bar.dLbls = DataLabelList()
             bar.dLbls.showVal = True
             bar.dLbls.showPercent = True
