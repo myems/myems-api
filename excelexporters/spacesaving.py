@@ -193,8 +193,8 @@ def generate_excel(report,
             ws[col + str(current_row_number)].font = name_small_font
             ws[col + str(current_row_number)].alignment = c_c_alignment
             ws[col + str(current_row_number)].border = f_border
-            ws[col + str(current_row_number)] = reporting_period_data['names'][i] + " (基线-实际) (" + \
-                                                reporting_period_data['units'][i] + ")"
+            ws[col + str(current_row_number)] = \
+                reporting_period_data['names'][i] + " (基线-实际) (" + reporting_period_data['units'][i] + ")"
 
             col = chr(ord(col) + 1)
 
@@ -449,8 +449,8 @@ def generate_excel(report,
             ws[col + str(current_row_number)].font = name_font
             ws[col + str(current_row_number)].alignment = c_c_alignment
             ws[col + str(current_row_number)].border = f_border
-            ws[col + str(current_row_number)] = child_space_data['energy_category_names'][i] + " (" + \
-                                                child_space_data['units'][i] + ")"
+            ws[col + str(current_row_number)] = \
+                child_space_data['energy_category_names'][i] + " (" + child_space_data['units'][i] + ")"
             col = chr(ord(col) + 1)
 
         current_row_number += 1
@@ -487,7 +487,7 @@ def generate_excel(report,
             pie.add_data(pie_data, titles_from_data=True)
             pie.set_categories(labels)
             pie.title = reporting_period_data['names'][i] + " (" + \
-                        reporting_period_data['units'][i] + ")"
+                                                            reporting_period_data['units'][i] + ")"
             pie.height = 5.25
             pie.width = 9
             s1 = pie.series[0]
@@ -543,8 +543,8 @@ def generate_excel(report,
             ws[col + str(current_row_number)].font = title_font
             ws[col + str(current_row_number)].alignment = c_c_alignment
             ws[col + str(current_row_number)].border = f_border
-            ws[col + str(current_row_number)] = reporting_period_data['names'][i] + " (" + \
-                                                reporting_period_data['units'][i] + ")"
+            ws[col + str(current_row_number)] = \
+                reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
             col = chr(ord(col) + 1)
 
         current_row_number += 1
