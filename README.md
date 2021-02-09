@@ -82,11 +82,11 @@ $ sudo python3 setup.py install
 
 * Install openpyxl, refer to https://foss.heptapod.net/openpyxl/openpyxl
 
-Get the latest version of et_xmlfile from https://bitbucket.org/openpyxl/et_xmlfile/downloads/
+Get the latest version of et_xmlfile from https://foss.heptapod.net/openpyxl/et_xmlfile
 
 Get the latest version of jdcal from https://github.com/phn/jdcal
 
-Get the latest version of openpyxl from https://bitbucket.org/openpyxl/openpyxl/downloads/
+Get the latest version of openpyxl from https://foss.heptapod.net/openpyxl/openpyxl
 
 ```
   $ cd ~/tools  
