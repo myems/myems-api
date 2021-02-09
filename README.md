@@ -98,9 +98,9 @@ Get the latest version of openpyxl from https://bitbucket.org/openpyxl/openpyxl/
   $ git clone https://github.com/phn/jdcal.git
   $ cd ~/tools/jdcal
   $ sudo python3 setup.py install
-  $ git clone https://github.com/python-pillow/Pillow.git
-  $ cd ~/tools/Pillow
-  $ sudo python3 setup.py install
+  $ mkdir ~/tools/pillow && cd ~/tools/pillow 
+  $ pip3 download Pillow
+  $ sudo pip3 install --no-index --find-links ~/tools/pillow Pillow
   $ cd ~/tools
   $ wget https://foss.heptapod.net/openpyxl/openpyxl/-/archive/branch/3.0/openpyxl-branch-3.0.tar.gz
   $ tar xzf openpyxl-branch-3.0.tar.gz
