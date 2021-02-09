@@ -276,6 +276,8 @@ def generate_excel(report,
 
         col = chr(ord(col) + 1)
 
+        current_row_number += 1
+
         ws['B' + str(current_row_number)].font = title_font
         ws['B' + str(current_row_number)].alignment = c_c_alignment
         ws['B' + str(current_row_number)].border = f_border
@@ -569,6 +571,22 @@ def generate_excel(report,
             current_row_number += 1
 
         table_end_row_number = current_row_number - 1
+
+        ws['B' + str(current_row_number)].font = title_font
+        ws['B' + str(current_row_number)].alignment = c_c_alignment
+        ws['B' + str(current_row_number)].border = f_border
+        ws['B' + str(current_row_number)] = '小计'
+
+        col = 'C'
+
+        for i in range(0, ca_len):
+            ws[col + str(current_row_number)].font = title_font
+            ws[col + str(current_row_number)].alignment = c_c_alignment
+            ws[col + str(current_row_number)].border = f_border
+            ws[col + str(current_row_number)] = round(reporting_period_data['subtotals_saving'][i], 2)
+            col = chr(ord(col) + 1)
+
+        current_row_number += 2
 
         format_time_width_number = 1.0
         min_len_number = 1.0
