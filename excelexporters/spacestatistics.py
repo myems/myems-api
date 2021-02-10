@@ -10,6 +10,7 @@ from openpyxl.drawing.image import Image
 from openpyxl import Workbook
 from openpyxl.chart.label import DataLabelList
 
+
 ####################################################################################################################
 # PROCEDURES
 # Step 1: Validate the report data
@@ -86,7 +87,7 @@ def generate_excel(report,
     # Font
     name_font = Font(name='Constantia', size=15, bold=True)
     title_font = Font(name='宋体', size=15, bold=True)
-    data_font = Font(name='Franklin Gothic Book', size=11)
+    # data_font = Font(name='Franklin Gothic Book', size=11)
 
     table_fill = PatternFill(fill_type='solid', fgColor='1F497D')
     f_border = Border(left=Side(border_style='medium', color='00000000'),
@@ -116,12 +117,12 @@ def generate_excel(report,
                               wrap_text=False,
                               shrink_to_fit=False,
                               indent=0)
-    c_r_alignment = Alignment(vertical='bottom',
-                              horizontal='center',
-                              text_rotation=0,
-                              wrap_text=False,
-                              shrink_to_fit=False,
-                              indent=0)
+    # c_r_alignment = Alignment(vertical='bottom',
+    #                           horizontal='center',
+    #                           text_rotation=0,
+    #                           wrap_text=False,
+    #                           shrink_to_fit=False,
+    #                           indent=0)
 
     # Img
     img = Image("excelexporters/myems.png")
@@ -190,7 +191,7 @@ def generate_excel(report,
 
         category = reporting_period_data['names']
 
-        #table_title
+        # table_title
         ws['B7'].fill = table_fill
         ws['B7'].font = title_font
         ws['B7'].alignment = c_c_alignment
@@ -227,49 +228,49 @@ def generate_excel(report,
         ws['H7'] = '样本方差'
         ws['H7'].border = f_border
 
-        #table_data
+        # table_data
 
-        for index,value in enumerate(category):
-            row=index+8;
-            ws['B'+str(row)].font = name_font
-            ws['B'+str(row)].alignment = c_c_alignment
-            ws['B'+str(row)] = reporting_period_data['names'][index] + " (" + reporting_period_data['units'][index] + ")"
-            ws['B'+str(row)].border = f_border
+        for i, value in enumerate(category):
+            row = i + 8
+            ws['B' + str(row)].font = name_font
+            ws['B' + str(row)].alignment = c_c_alignment
+            ws['B' + str(row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + " )"
+            ws['B' + str(row)].border = f_border
 
             ws['C' + str(row)].font = name_font
             ws['C' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['means'][index] or reporting_period_data['means'][index]==0:
-                ws['C' + str(row)] = round(reporting_period_data['means'][index],2)
+            if reporting_period_data['means'][i] or reporting_period_data['means'][i] == 0:
+                ws['C' + str(row)] = round(reporting_period_data['means'][i], 2)
             ws['C' + str(row)].border = f_border
 
             ws['D' + str(row)].font = name_font
             ws['D' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['medians'][index] or reporting_period_data['medians'][index]==0:
-                ws['D' + str(row)] = round(reporting_period_data['medians'][index], 2)
+            if reporting_period_data['medians'][i] or reporting_period_data['medians'][i] == 0:
+                ws['D' + str(row)] = round(reporting_period_data['medians'][i], 2)
             ws['D' + str(row)].border = f_border
 
             ws['E' + str(row)].font = name_font
             ws['E' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['minimums'][index] or reporting_period_data['minimums'][index]==0:
-                ws['E' + str(row)] = round(reporting_period_data['minimums'][index], 2)
+            if reporting_period_data['minimums'][i] or reporting_period_data['minimums'][i] == 0:
+                ws['E' + str(row)] = round(reporting_period_data['minimums'][i], 2)
             ws['E' + str(row)].border = f_border
 
             ws['F' + str(row)].font = name_font
             ws['F' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['maximums'][index] or reporting_period_data['maximums'][index]==0:
-                ws['F' + str(row)] = round(reporting_period_data['maximums'][index], 2)
+            if reporting_period_data['maximums'][i] or reporting_period_data['maximums'][i] == 0:
+                ws['F' + str(row)] = round(reporting_period_data['maximums'][i], 2)
             ws['F' + str(row)].border = f_border
 
             ws['G' + str(row)].font = name_font
             ws['G' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['stdevs'][index] or reporting_period_data['stdevs'][index]==0:
-                ws['G' + str(row)] = round(reporting_period_data['stdevs'][index], 2)
+            if reporting_period_data['stdevs'][i] or reporting_period_data['stdevs'][i] == 0:
+                ws['G' + str(row)] = round(reporting_period_data['stdevs'][i], 2)
             ws['G' + str(row)].border = f_border
 
             ws['H' + str(row)].font = name_font
             ws['H' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['variances'][index] or reporting_period_data['variances'][index]==0:
-                ws['H' + str(row)] = round(reporting_period_data['variances'][index], 2)
+            if reporting_period_data['variances'][i] or reporting_period_data['variances'][i] == 0:
+                ws['H' + str(row)] = round(reporting_period_data['variances'][i], 2)
             ws['H' + str(row)].border = f_border
 
     #################################################
@@ -285,7 +286,7 @@ def generate_excel(report,
         ws['B13'].font = title_font
         ws['B13'] = name + ' 单位面积值'
         ws['D13'].font = title_font
-        ws['D13'] = str(report['space']['area']) +'M²'
+        ws['D13'] = str(report['space']['area']) + 'M²'
 
         category = reporting_period_data['names']
 
@@ -328,48 +329,54 @@ def generate_excel(report,
 
         # table_data
 
-        for index, value in enumerate(category):
-            row = index + 15;
+        for i, value in enumerate(category):
+            row = i + 15
             ws['B' + str(row)].font = name_font
             ws['B' + str(row)].alignment = c_c_alignment
-            ws['B' + str(row)] = reporting_period_data['names'][index] + " (" + reporting_period_data['units'][
-                index] + "/M²)"
+            ws['B' + str(row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][
+                i] + "/M²)"
             ws['B' + str(row)].border = f_border
 
             ws['C' + str(row)].font = name_font
             ws['C' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['means_per_unit_area'][index] or reporting_period_data['means_per_unit_area'][index]==0:
-                ws['C' + str(row)] = round(reporting_period_data['means_per_unit_area'][index], 2)
+            if reporting_period_data['means_per_unit_area'][i] \
+                    or reporting_period_data['means_per_unit_area'][i] == 0:
+                ws['C' + str(row)] = round(reporting_period_data['means_per_unit_area'][i], 2)
             ws['C' + str(row)].border = f_border
 
             ws['D' + str(row)].font = name_font
             ws['D' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['medians_per_unit_area'][index] or reporting_period_data['medians_per_unit_area'][index]==0:
-                ws['D' + str(row)] = round(reporting_period_data['medians_per_unit_area'][index], 2)
+            if reporting_period_data['medians_per_unit_area'][i] \
+                    or reporting_period_data['medians_per_unit_area'][i] == 0:
+                ws['D' + str(row)] = round(reporting_period_data['medians_per_unit_area'][i], 2)
             ws['D' + str(row)].border = f_border
 
             ws['E' + str(row)].font = name_font
             ws['E' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['minimums_per_unit_area'][index] or reporting_period_data['minimums_per_unit_area'][index]==0:
-               ws['E' + str(row)] = round(reporting_period_data['minimums_per_unit_area'][index], 2)
+            if reporting_period_data['minimums_per_unit_area'][i] \
+                    or reporting_period_data['minimums_per_unit_area'][i] == 0:
+                ws['E' + str(row)] = round(reporting_period_data['minimums_per_unit_area'][i], 2)
             ws['E' + str(row)].border = f_border
 
             ws['F' + str(row)].font = name_font
             ws['F' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['maximums_per_unit_area'][index] or reporting_period_data['maximums_per_unit_area'][index]==0:
-                ws['F' + str(row)] = round(reporting_period_data['maximums_per_unit_area'][index], 2)
+            if reporting_period_data['maximums_per_unit_area'][i] \
+                    or reporting_period_data['maximums_per_unit_area'][i] == 0:
+                ws['F' + str(row)] = round(reporting_period_data['maximums_per_unit_area'][i], 2)
             ws['F' + str(row)].border = f_border
 
             ws['G' + str(row)].font = name_font
             ws['G' + str(row)].alignment = c_c_alignment
-            if (reporting_period_data['stdevs_per_unit_area'][index]) or reporting_period_data['stdevs_per_unit_area'][index]==0:
-                ws['G' + str(row)] = round(reporting_period_data['stdevs_per_unit_area'][index], 2)
+            if (reporting_period_data['stdevs_per_unit_area'][i]) \
+                    or reporting_period_data['stdevs_per_unit_area'][i] == 0:
+                ws['G' + str(row)] = round(reporting_period_data['stdevs_per_unit_area'][i], 2)
             ws['G' + str(row)].border = f_border
 
             ws['H' + str(row)].font = name_font
             ws['H' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['variances_per_unit_area'][index] or reporting_period_data['variances_per_unit_area'][index]==0:
-                ws['H' + str(row)] = round(reporting_period_data['variances_per_unit_area'][index], 2)
+            if reporting_period_data['variances_per_unit_area'][i] \
+                    or reporting_period_data['variances_per_unit_area'][i] == 0:
+                ws['H' + str(row)] = round(reporting_period_data['variances_per_unit_area'][i], 2)
             ws['H' + str(row)].border = f_border
 
     ################################################
@@ -395,7 +402,8 @@ def generate_excel(report,
         ws['B20'] = name + ' 报告期消耗'
         ws['B26'].font = title_font
         ws['B26'] = name + ' 详细数据'
-        #table
+        # table
+
         ws['B' + str(table_row)].fill = table_fill
         ws['B' + str(table_row)].border = f_border
         ws['B' + str(table_row)].alignment = c_c_alignment
@@ -409,7 +417,8 @@ def generate_excel(report,
             # print("max_row", max_row)
 
         if has_data:
-            #time
+            # time
+            time_len = len(time)
             for index in range(0, len(time)):
                 col = 'B'
                 row = str(table_row + 1 + index)
@@ -418,12 +427,13 @@ def generate_excel(report,
                 ws[col + row].alignment = c_c_alignment
                 ws[col + row] = time[index]
                 ws[col + row].border = f_border
-            row = str(table_row + 2 + index)
-            ws['B' + row].font = title_font
-            ws['B' + row].alignment = c_c_alignment
-            ws['B' + row] = "小计"
-            ws['B' + row].border = f_border
-            #data
+                if index == time_len - 1:
+                    row = str(table_row + 2 + index)
+                    ws['B' + row].font = title_font
+                    ws['B' + row].alignment = c_c_alignment
+                    ws['B' + row] = "小计"
+                    ws['B' + row].border = f_border
+            # data
             for index in range(0, ca_len):
                 # table_title
                 col = chr(ord('C') + index)
@@ -431,8 +441,8 @@ def generate_excel(report,
                 ws[col + str(table_row)].fill = table_fill
                 ws[col + str(table_row)].font = title_font
                 ws[col + str(table_row)].alignment = c_c_alignment
-                ws[col + str(table_row)] = reporting_period_data['names'][index] + \
-                    " (" + reporting_period_data['units'][index] + ")"
+                ws[col + str(table_row)] = (reporting_period_data['names'][index] + "(" +
+                                            reporting_period_data['units'][index] + ")")
                 ws[col + str(table_row)].border = f_border
 
                 # data
@@ -446,17 +456,18 @@ def generate_excel(report,
                     ws[col + row].alignment = c_c_alignment
                     ws[col + row] = round(reporting_period_data['values'][index][j], 0)
                     ws[col + row].border = f_border
-                # subtotals
-                row = str(table_row + 2 + j)
-                ws[col + row].font = title_font
-                ws[col + row].alignment = c_c_alignment
-                ws[col + row] = round(reporting_period_data['subtotals'][index], 0)
-                ws[col + row].border = f_border
+                    # subtotals
+                    if j == time_len - 1:
+                        row = str(table_row + 2 + j)
+                        ws[col + row].font = title_font
+                        ws[col + row].alignment = c_c_alignment
+                        ws[col + row] = round(reporting_period_data['subtotals'][index], 0)
+                        ws[col + row].border = f_border
 
                 # bar
                 bar = BarChart()
-                labels = Reference(ws, min_col=2, min_row=table_row + 1, max_row=max_row )
-                bar_data = Reference(ws, min_col=3 + index, min_row=table_row, max_row=max_row )  # openpyxl bug
+                labels = Reference(ws, min_col=2, min_row=table_row + 1, max_row=max_row)
+                bar_data = Reference(ws, min_col=3 + index, min_row=table_row, max_row=max_row)  # openpyxl bug
                 bar.add_data(bar_data, titles_from_data=True)
                 bar.set_categories(labels)
                 bar.height = 5.25  # cm 1.05*5 1.05cm = 30 pt
@@ -484,11 +495,7 @@ def generate_excel(report,
     # has_detail_data_flag = True
     # ca_len = len(reporting_period_data['names'])
 
-
-
     filename = str(uuid.uuid4()) + '.xlsx'
     wb.save(filename)
 
     return filename
-
-
