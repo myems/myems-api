@@ -2,9 +2,8 @@ import base64
 import uuid
 import os
 from openpyxl.chart import (
-    PieChart,
     BarChart,
-    Reference, LineChart, ScatterChart,
+    Reference,
 )
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
 from openpyxl.drawing.image import Image
@@ -190,7 +189,6 @@ def generate_excel(report,
         # ws['D6'] = '面积' +report['space']['area']
 
         category = reporting_period_data['names']
-        ca_len = len(category)
 
         #table_title
         ws['B7'].fill = table_fill
@@ -290,7 +288,6 @@ def generate_excel(report,
         ws['D13'] = str(report['space']['area']) +'M²'
 
         category = reporting_period_data['names']
-        ca_len = len(category)
 
         # table_title
         ws['B14'].fill = table_fill
