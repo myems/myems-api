@@ -55,6 +55,9 @@ class NotificationCollection:
                                    description='API.INVALID_END_DATETIME')
 
         # Verify User Session
+        if 'COOKIE' not in req.headers:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
         cookie_dict = dict()
         cookies = req.headers['COOKIE'].split(';')
         for cookie in cookies:
@@ -162,6 +165,9 @@ class NotificationItem:
                                    description='API.INVALID_NOTIFICATION_ID')
 
         # Verify User Session
+        if 'COOKIE' not in req.headers:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
         cookie_dict = dict()
         cookies = req.headers['COOKIE'].split(';')
         for cookie in cookies:
@@ -263,6 +269,9 @@ class NotificationItem:
         status = str.strip(new_values['data']['status'])
 
         # Verify User Session
+        if 'COOKIE' not in req.headers:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
         cookie_dict = dict()
         cookies = req.headers['COOKIE'].split(';')
         for cookie in cookies:
@@ -345,6 +354,9 @@ class NotificationItem:
                                    description='API.INVALID_NOTIFICATION_ID')
 
         # Verify User Session
+        if 'COOKIE' not in req.headers:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
         cookie_dict = dict()
         cookies = req.headers['COOKIE'].split(';')
         for cookie in cookies:
