@@ -171,7 +171,7 @@ View in Postman: import the file MyEMS.postman_collection.json with Postman
 
 [Email Server](#Email Server) | [GSM Modem](#GSM Modem)
 
-[User](#User) | [Privilege](#Privilege) | [Contact](#Contact)
+[User](#User) | [Privilege](#Privilege) | [Contact](#Contact)  | [Notification](#Notification)
 
 [Timezone](#Timezone)
 
@@ -969,6 +969,42 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"data":{"point_id":"3
 $ curl -i -X DELETE {{base_url}}/meters/{id}/points/{pid}
 ```
 
+
+### Notification
+NOTE: Login before call these APIs
+
+* GET a Notification by ID
+
+```bash
+$ curl -i -X GET {{base_url}}/notifications/{id}
+```
+Result
+
+| Name          | Data Type | Description                               |
+|---------------|-----------|-------------------------------------------|
+| id            | integer   | Notification ID                           |
+| created_datetime| string  | Created Datetime                           |
+| status        | string    | Notification Status (new, read, archived) | 
+| subject       | string    | Notification Subject                      | 
+| message       | string    | Notification Message                      |
+| url           | string    | Notification URL                          |
+
+* GET All Notifications
+```bash
+$ curl -i -X GET {{base_url}}/notifications
+```
+* DELETE Notification by ID
+```bash
+$ curl -i -X DELETE {{base_url}}/notifications/{id}
+```
+* PUT Update a Notification
+```bash
+$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"status":"read"}}' {{base_url}}/notifications/{id}
+```
+* DELETE Notification
+```bash
+$ curl -i -X DELETE {{base_url}}/notifications/{id}
+```
 
 ### Offline Meter
 * GET Offline Meter by ID

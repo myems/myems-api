@@ -3005,6 +3005,119 @@
 					]
 				},
 				{
+					"name": "Notification",
+					"item": [
+						{
+							"name": "GET Notifications",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "user_uuid",
+										"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+										"type": "text"
+									},
+									{
+										"key": "token",
+										"value": "02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/notifications?startdatetime=2021-01-01T00:00:00&enddatetime=2021-01-02T00:00:00&status=read",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "startdatetime",
+											"value": "2021-01-01T00:00:00"
+										},
+										{
+											"key": "enddatetime",
+											"value": "2021-01-02T00:00:00"
+										},
+										{
+											"key": "status",
+											"value": "read",
+											"description": "None (all), 'new', 'read', 'archived'"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET a Notification by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/notifications/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"notifications",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Update a Notification",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"data\":{\"status\":\"read\"}}"
+								},
+								"url": {
+									"raw": "{{base_url}}/notifications/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"notifications",
+										"1"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "read",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE a Notification by ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/notifications/2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"notifications",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Offline Meter",
 					"item": [
 						{
