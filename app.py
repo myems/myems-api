@@ -5,7 +5,7 @@ from core import energyflowdiagram, privilege, textmessage, distributioncircuit,
     costcenter, point, knowledgefile, meter, gsmmodem, tariff, user, storetype, timezone, \
     offlinemeterfile, version, contact, emailserver, combinedequipment, datasource, equipment, tenant, shopfloor, \
     webmessage, distributionsystem, store, emailmessage, tenanttype, wechatmessage, space, gateway, offlinemeter, \
-    rule, energycategory, sensor, energyitem
+    rule, energycategory, sensor, energyitem, notification
 from reports import advancedreport
 from reports import distributionsystem as distributionsystemreport
 from reports import energyflowdiagram as energyflowdiagramreport
@@ -241,6 +241,11 @@ api.add_route('/meters/{id_}/points',
               meter.MeterPointCollection())
 api.add_route('/meters/{id_}/points/{pid}',
               meter.MeterPointItem())
+
+api.add_route('/notifications',
+              notification.NotificationCollection())
+api.add_route('/notifications/{id_}',
+              notification.NotificationItem())
 
 api.add_route('/offlinemeters',
               offlinemeter.OfflineMeterCollection())
