@@ -114,7 +114,8 @@ class NotificationCollection:
             query = (" SELECT id, created_datetime_utc, status, subject, message, url "
                      " FROM tbl_notifications "
                      " WHERE user_id = %s AND "
-                     "       created_datetime_utc >= %s AND created_datetime_utc < %s "
+                     "       created_datetime_utc >= %s AND created_datetime_utc < %s AND"
+                     "       status != 'archived' "
                      " ORDER BY created_datetime_utc DESC ")
             cursor.execute(query, (user_id, start_datetime_utc, end_datetime_utc))
         else:
