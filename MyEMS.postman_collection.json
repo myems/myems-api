@@ -3013,18 +3013,20 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "user_uuid",
+										"key": "User-UUID",
 										"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+										"description": "Update this value after login",
 										"type": "text"
 									},
 									{
-										"key": "token",
+										"key": "Token",
 										"value": "02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48",
+										"description": "Update this value after login",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/notifications?startdatetime=2021-01-01T00:00:00&enddatetime=2021-01-02T00:00:00&status=read",
+									"raw": "{{base_url}}/notifications?startdatetime=2021-01-01T00:00:00&enddatetime=2021-01-02T00:00:00&status=new",
 									"host": [
 										"{{base_url}}"
 									],
@@ -3042,7 +3044,7 @@
 										},
 										{
 											"key": "status",
-											"value": "read",
+											"value": "new",
 											"description": "None (all), 'new', 'read', 'archived'"
 										}
 									]
@@ -3054,7 +3056,20 @@
 							"name": "GET a Notification by ID",
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "User-UUID",
+										"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+										"description": "Update this value after login",
+										"type": "text"
+									},
+									{
+										"key": "Token",
+										"value": "02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48",
+										"description": "Update this value after login",
+										"type": "text"
+									}
+								],
 								"url": {
 									"raw": "{{base_url}}/notifications/1",
 									"host": [
@@ -3072,7 +3087,20 @@
 							"name": "PUT Update a Notification",
 							"request": {
 								"method": "PUT",
-								"header": [],
+								"header": [
+									{
+										"key": "User-UUID",
+										"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+										"description": "Update this value after login",
+										"type": "text"
+									},
+									{
+										"key": "Token",
+										"value": "02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48",
+										"description": "Update this value after login",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\"data\":{\"status\":\"read\"}}"
@@ -3101,7 +3129,20 @@
 							"name": "DELETE a Notification by ID",
 							"request": {
 								"method": "DELETE",
-								"header": [],
+								"header": [
+									{
+										"key": "User-UUID",
+										"value": "dcdb67d1-6116-4987-916f-6fc6cf2bc0e4",
+										"description": "Update this value after login",
+										"type": "text"
+									},
+									{
+										"key": "Token",
+										"value": "02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48",
+										"description": "Update this value after login",
+										"type": "text"
+									}
+								],
 								"url": {
 									"raw": "{{base_url}}/notifications/2",
 									"host": [
