@@ -3026,7 +3026,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/notifications?startdatetime=2021-01-01T00:00:00&enddatetime=2021-01-02T00:00:00&status=new",
+									"raw": "{{base_url}}/notifications?startdatetime=2021-01-01T00:00:00&enddatetime=2021-01-02T00:00:00&status=unread",
 									"host": [
 										"{{base_url}}"
 									],
@@ -3044,7 +3044,7 @@
 										},
 										{
 											"key": "status",
-											"value": "new",
+											"value": "unread",
 											"description": "None (all), 'new', 'read', 'archived'"
 										}
 									]

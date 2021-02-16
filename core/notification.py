@@ -21,7 +21,7 @@ class NotificationCollection:
         end_datetime_local = req.params.get('enddatetime')
         if status is not None:
             status = str.strip(status)
-            if status not in ['new', 'read', 'archived']:
+            if status not in ['unread', 'read', 'archived']:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST', description='API.INVALID_STATUS')
 
         timezone_offset = int(config.utc_offset[1:3]) * 60 + int(config.utc_offset[4:6])
@@ -256,7 +256,7 @@ class NotificationItem:
         if 'status' not in new_values['data'].keys() or \
                 not isinstance(new_values['data']['status'], str) or \
                 len(str.strip(new_values['data']['status'])) == 0 or \
-                str.strip(new_values['data']['status']) not in ('new', 'read', 'archived'):
+                str.strip(new_values['data']['status']) not in ('unread', 'read', 'archived'):
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                    description='API.INVALID_STATUS')
         status = str.strip(new_values['data']['status'])
