@@ -971,7 +971,7 @@ $ curl -i -X DELETE {{base_url}}/meters/{id}/points/{pid}
 
 
 ### Notification
-NOTE: Login before call these APIs
+NOTE: Login before call these APIs, and then update User-UUID and Token in Headers
 
 * GET a Notification by ID
 
@@ -991,19 +991,19 @@ Result
 
 * GET All Notifications
 ```bash
-$ curl -i -X GET {{base_url}}/notifications
+$ curl -i -H "User-UUID: dcdb67d1-6116-4987-916f-6fc6cf2bc0e4" -H "Token: 02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48" -X GET {{base_url}}/notifications
 ```
 * DELETE Notification by ID
 ```bash
-$ curl -i -X DELETE {{base_url}}/notifications/{id}
+$ curl -i -H "User-UUID: dcdb67d1-6116-4987-916f-6fc6cf2bc0e4" -H "Token: 02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48" -X DELETE {{base_url}}/notifications/{id}
 ```
 * PUT Update a Notification
 ```bash
-$ curl -i -H "Content-Type: application/json" -X PUT -d '{"data":{"status":"read"}}' {{base_url}}/notifications/{id}
+$ curl -i -H "User-UUID: dcdb67d1-6116-4987-916f-6fc6cf2bc0e4" -H "Token: 02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48" -H "Content-Type: application/json" -X PUT -d '{"data":{"status":"read"}}' {{base_url}}/notifications/{id}
 ```
 * DELETE Notification
 ```bash
-$ curl -i -X DELETE {{base_url}}/notifications/{id}
+$ curl -i -H "User-UUID: dcdb67d1-6116-4987-916f-6fc6cf2bc0e4" -H "Token: 02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48" -X DELETE {{base_url}}/notifications/{id}
 ```
 
 ### Offline Meter

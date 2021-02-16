@@ -55,18 +55,14 @@ class NotificationCollection:
                                    description='API.INVALID_END_DATETIME')
 
         # Verify User Session
-        if 'COOKIE' not in req.headers:
+        token = req.headers.get('TOKEN')
+        user_uuid = req.headers.get('USER-UUID')
+        if token is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
-        cookie_dict = dict()
-        cookies = req.headers['COOKIE'].split(';')
-        for cookie in cookies:
-            kv = cookie.split('=')
-            cookie_dict[str.strip(kv[0])] = str.strip(kv[1])
-
-        if cookie_dict.get('user_uuid') is None or cookie_dict.get('token') is None:
+                                   description='API.TOKEN_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
+        if user_uuid is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.USER_UUID_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -74,7 +70,7 @@ class NotificationCollection:
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s")
-        cursor.execute(query, (cookie_dict.get('user_uuid'), cookie_dict.get('token'),))
+        cursor.execute(query, (user_uuid, token,))
         row = cursor.fetchone()
 
         if row is None:
@@ -97,7 +93,7 @@ class NotificationCollection:
         cursor.execute(" SELECT id "
                        " FROM tbl_users "
                        " WHERE uuid = %s ",
-                       (cookie_dict.get('user_uuid'),))
+                       (user_uuid,))
         row = cursor.fetchone()
         if row is None:
             if cursor:
@@ -166,18 +162,14 @@ class NotificationItem:
                                    description='API.INVALID_NOTIFICATION_ID')
 
         # Verify User Session
-        if 'COOKIE' not in req.headers:
+        token = req.headers.get('TOKEN')
+        user_uuid = req.headers.get('USER-UUID')
+        if token is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
-        cookie_dict = dict()
-        cookies = req.headers['COOKIE'].split(';')
-        for cookie in cookies:
-            kv = cookie.split('=')
-            cookie_dict[str.strip(kv[0])] = str.strip(kv[1])
-
-        if cookie_dict.get('user_uuid') is None or cookie_dict.get('token') is None:
+                                   description='API.TOKEN_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
+        if user_uuid is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.USER_UUID_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -185,7 +177,7 @@ class NotificationItem:
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s")
-        cursor.execute(query, (cookie_dict.get('user_uuid'), cookie_dict.get('token'),))
+        cursor.execute(query, (user_uuid, token,))
         row = cursor.fetchone()
 
         if row is None:
@@ -208,7 +200,7 @@ class NotificationItem:
         cursor.execute(" SELECT id "
                        " FROM tbl_users "
                        " WHERE uuid = %s ",
-                       (cookie_dict.get('user_uuid'),))
+                       (user_uuid,))
         row = cursor.fetchone()
         if row is None:
             if cursor:
@@ -270,18 +262,14 @@ class NotificationItem:
         status = str.strip(new_values['data']['status'])
 
         # Verify User Session
-        if 'COOKIE' not in req.headers:
+        token = req.headers.get('TOKEN')
+        user_uuid = req.headers.get('USER-UUID')
+        if token is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
-        cookie_dict = dict()
-        cookies = req.headers['COOKIE'].split(';')
-        for cookie in cookies:
-            kv = cookie.split('=')
-            cookie_dict[str.strip(kv[0])] = str.strip(kv[1])
-
-        if cookie_dict.get('user_uuid') is None or cookie_dict.get('token') is None:
+                                   description='API.TOKEN_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
+        if user_uuid is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.USER_UUID_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -289,7 +277,7 @@ class NotificationItem:
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s")
-        cursor.execute(query, (cookie_dict.get('user_uuid'), cookie_dict.get('token'),))
+        cursor.execute(query, (user_uuid, token,))
         row = cursor.fetchone()
 
         if row is None:
@@ -312,7 +300,7 @@ class NotificationItem:
         cursor.execute(" SELECT id "
                        " FROM tbl_users "
                        " WHERE uuid = %s ",
-                       (cookie_dict.get('user_uuid'),))
+                       (user_uuid,))
         row = cursor.fetchone()
         if row is None:
             if cursor:
@@ -355,18 +343,14 @@ class NotificationItem:
                                    description='API.INVALID_NOTIFICATION_ID')
 
         # Verify User Session
-        if 'COOKIE' not in req.headers:
+        token = req.headers.get('TOKEN')
+        user_uuid = req.headers.get('USER-UUID')
+        if token is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.COOKIE_NOT_FOUND_PLEASE_LOGIN')
-        cookie_dict = dict()
-        cookies = req.headers['COOKIE'].split(';')
-        for cookie in cookies:
-            kv = cookie.split('=')
-            cookie_dict[str.strip(kv[0])] = str.strip(kv[1])
-
-        if cookie_dict.get('user_uuid') is None or cookie_dict.get('token') is None:
+                                   description='API.TOKEN_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
+        if user_uuid is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.USER_UUID_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -374,7 +358,7 @@ class NotificationItem:
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s")
-        cursor.execute(query, (cookie_dict.get('user_uuid'), cookie_dict.get('token'),))
+        cursor.execute(query, (user_uuid, token,))
         row = cursor.fetchone()
 
         if row is None:
@@ -397,7 +381,7 @@ class NotificationItem:
         cursor.execute(" SELECT id "
                        " FROM tbl_users "
                        " WHERE uuid = %s ",
-                       (cookie_dict.get('user_uuid'),))
+                       (user_uuid,))
         row = cursor.fetchone()
         if row is None:
             if cursor:
