@@ -983,15 +983,15 @@ Result
 | Name          | Data Type | Description                               |
 |---------------|-----------|-------------------------------------------|
 | id            | integer   | Notification ID                           |
-| created_datetime| string  | Created Datetime                           |
-| status        | string    | Notification Status (new, read, archived) | 
+| created_datetime| string  | Created Datetime                          |
+| status        | string    | Notification Status (unread, read, archived)| 
 | subject       | string    | Notification Subject                      | 
 | message       | string    | Notification Message                      |
 | url           | string    | Notification URL                          |
 
 * GET All Notifications
 ```bash
-$ curl -i -H "User-UUID: dcdb67d1-6116-4987-916f-6fc6cf2bc0e4" -H "Token: 02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48" -X GET {{base_url}}/notifications
+$ curl -i -H "User-UUID: dcdb67d1-6116-4987-916f-6fc6cf2bc0e4" -H "Token: 02f93023a39c98e1d1bc9f5197a83dfc5ddc0d48" -X GET {{base_url}}/notifications?startdatetime={startdatetime}&enddatetime={enddatetime}&status={status}
 ```
 * DELETE Notification by ID
 ```bash
