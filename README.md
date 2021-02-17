@@ -28,6 +28,10 @@ openpyxl
 
 ## Installation
 
+In this step, you will install myems-api on Ubuntu for production or development.
+
+For macOS developers, please refer to [Installation on macOS (Chinese)](./installation_macos_zh.md)
+
 * Install anytree
 ```
 $ cd ~/tools
