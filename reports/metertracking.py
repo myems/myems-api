@@ -3,6 +3,7 @@ import simplejson as json
 import mysql.connector
 import config
 from anytree import Node, AnyNode, LevelOrderIter
+import excelexporters.metertracking
 
 
 class Reporting:
@@ -44,13 +45,17 @@ class Reporting:
         cursor.execute(" SELECT name "
                        " FROM tbl_spaces "
                        " WHERE id = %s ", (space_id,))
-        if cursor.fetchone() is None:
+        row = cursor.fetchone()
+
+        if row is None:
             if cursor:
                 cursor.close()
             if cnx:
                 cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_404, title='API.NOT_FOUND',
                                    description='API.SPACE_NOT_FOUND')
+        else:
+            space_name = row['name']
 
         ################################################################################################################
         # Step 2: build a space tree
@@ -102,5 +107,9 @@ class Reporting:
         ################################################################################################################
         # Step 4: construct the report
         ################################################################################################################
-
-        resp.body = json.dumps(meter_list)
+        result = {'meter_list': meter_list}
+        # export result to Excel file and then encode the file to base64 string
+        result['excel_bytes_base64'] = \
+            excelexporters.metertracking.export(result,
+                                                space_name)
+        resp.body = json.dumps(result)
