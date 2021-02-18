@@ -107,7 +107,7 @@ class Reporting:
         ################################################################################################################
         # Step 4: construct the report
         ################################################################################################################
-        result = {'meter_list': meter_list}
+        result = {'meters': meter_list}
         # export result to Excel file and then encode the file to base64 string
         result['excel_bytes_base64'] = \
             excelexporters.metertracking.export(result,
