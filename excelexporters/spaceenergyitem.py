@@ -304,8 +304,8 @@ def generate_excel(report,
             s1.dLbls.showPercent = True
             ws.add_chart(pie, 'D' + str(table_start_row_number))
 
-            if ca_len < 4:
-                current_row_number = current_row_number - ca_len + 4
+            if len(category_dict_values) < 4:
+                current_row_number = current_row_number - len(category_dict_values) + 4
 
             current_row_number += 1
 
