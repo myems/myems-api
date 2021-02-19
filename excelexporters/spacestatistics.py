@@ -231,48 +231,88 @@ def generate_excel(report,
         # table_data
 
         for i, value in enumerate(category):
-            row = i + 8
+            row = i*2 + 8
             ws['B' + str(row)].font = name_font
             ws['B' + str(row)].alignment = c_c_alignment
             ws['B' + str(row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + " )"
             ws['B' + str(row)].border = f_border
 
+            ws['B' + str(row + 1)].font = name_font
+            ws['B' + str(row + 1)].alignment = c_c_alignment
+            ws['B' + str(row + 1)] = "环比"
+            ws['B' + str(row + 1)].border = f_border
+
             ws['C' + str(row)].font = name_font
             ws['C' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['means'][i] or reporting_period_data['means'][i] == 0:
-                ws['C' + str(row)] = round(reporting_period_data['means'][i], 2)
+            ws['C' + str(row)] = round(reporting_period_data['means'][i], 2) \
+                if reporting_period_data['means'][i] is not None else ''
             ws['C' + str(row)].border = f_border
+
+            ws['C' + str(row + 1)].font = name_font
+            ws['C' + str(row + 1)].alignment = c_c_alignment
+            ws['C' + str(row + 1)] = str(round(reporting_period_data['means_increment_rate'][i] * 100, 2)) + "%" \
+                if reporting_period_data['means_increment_rate'][i] is not None else '0.00%'
+            ws['C' + str(row + 1)].border = f_border
 
             ws['D' + str(row)].font = name_font
             ws['D' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['medians'][i] or reporting_period_data['medians'][i] == 0:
-                ws['D' + str(row)] = round(reporting_period_data['medians'][i], 2)
+            ws['D' + str(row)] = round(reporting_period_data['medians'][i], 2) \
+                if reporting_period_data['medians'][i] is not None else ''
             ws['D' + str(row)].border = f_border
+
+            ws['D' + str(row + 1)].font = name_font
+            ws['D' + str(row + 1)].alignment = c_c_alignment
+            ws['D' + str(row + 1)] = str(round(reporting_period_data['medians_increment_rate'][i] * 100, 2)) + "%" \
+                if reporting_period_data['medians_increment_rate'][i] is not None else '0.00%'
+            ws['D' + str(row + 1)].border = f_border
 
             ws['E' + str(row)].font = name_font
             ws['E' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['minimums'][i] or reporting_period_data['minimums'][i] == 0:
-                ws['E' + str(row)] = round(reporting_period_data['minimums'][i], 2)
+            ws['E' + str(row)] = round(reporting_period_data['minimums'][i], 2) \
+                if reporting_period_data['minimums'][i] is not None else ''
             ws['E' + str(row)].border = f_border
+
+            ws['E' + str(row + 1)].font = name_font
+            ws['E' + str(row + 1)].alignment = c_c_alignment
+            ws['E' + str(row + 1)] = str(round(reporting_period_data['minimums_increment_rate'][i] * 100, 2)) + "%" \
+                if reporting_period_data['minimums_increment_rate'][i] is not None else '0.00%'
+            ws['E' + str(row + 1)].border = f_border
 
             ws['F' + str(row)].font = name_font
             ws['F' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['maximums'][i] or reporting_period_data['maximums'][i] == 0:
-                ws['F' + str(row)] = round(reporting_period_data['maximums'][i], 2)
+            ws['F' + str(row)] = round(reporting_period_data['maximums'][i], 2) \
+                if reporting_period_data['maximums'][i] is not None else ''
             ws['F' + str(row)].border = f_border
+
+            ws['F' + str(row + 1)].font = name_font
+            ws['F' + str(row + 1)].alignment = c_c_alignment
+            ws['F' + str(row + 1)] = str(round(reporting_period_data['maximums_increment_rate'][i] * 100, 2)) + "%" \
+                if reporting_period_data['maximums_increment_rate'][i] is not None else '0.00%'
+            ws['F' + str(row + 1)].border = f_border
 
             ws['G' + str(row)].font = name_font
             ws['G' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['stdevs'][i] or reporting_period_data['stdevs'][i] == 0:
-                ws['G' + str(row)] = round(reporting_period_data['stdevs'][i], 2)
+            ws['G' + str(row)] = round(reporting_period_data['stdevs'][i], 2) \
+                if reporting_period_data['stdevs'][i] is not None else ''
             ws['G' + str(row)].border = f_border
+
+            ws['G' + str(row + 1)].font = name_font
+            ws['G' + str(row + 1)].alignment = c_c_alignment
+            ws['G' + str(row + 1)] = str(round(reporting_period_data['stdevs_increment_rate'][i] * 100, 2)) + "%" \
+                if reporting_period_data['stdevs_increment_rate'][i] is not None else '0.00%'
+            ws['G' + str(row + 1)].border = f_border
 
             ws['H' + str(row)].font = name_font
             ws['H' + str(row)].alignment = c_c_alignment
-            if reporting_period_data['variances'][i] or reporting_period_data['variances'][i] == 0:
-                ws['H' + str(row)] = round(reporting_period_data['variances'][i], 2)
+            ws['H' + str(row)] = round(reporting_period_data['variances'][i], 2) \
+                if reporting_period_data['variances'][i] is not None else ''
             ws['H' + str(row)].border = f_border
 
+            ws['H' + str(row + 1)].font = name_font
+            ws['H' + str(row + 1)].alignment = c_c_alignment
+            ws['H' + str(row + 1)] = str(round(reporting_period_data['variances_increment_rate'][i] * 100, 2)) + "%" \
+                if reporting_period_data['variances_increment_rate'][i] is not None else '0.00%'
+            ws['H' + str(row + 1)].border = f_border
     #################################################
     # First: 统计分析
     # 13: title
