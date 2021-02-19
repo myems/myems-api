@@ -3,10 +3,9 @@ import simplejson as json
 import mysql.connector
 import config
 from datetime import datetime, timedelta, timezone
-
-import excelexporters.tenantstatistics
 from core import utilities
 from decimal import Decimal
+import excelexporters.tenantstatistics
 
 
 class Reporting:
