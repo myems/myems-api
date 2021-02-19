@@ -70,7 +70,7 @@ def generate_excel(report,
     ws = wb.active
 
     # Row height
-    ws.row_dimensions[1].height = 118
+    ws.row_dimensions[1].height = 102
     for i in range(2, 2000 + 1):
         ws.row_dimensions[i].height = 30
 
@@ -79,14 +79,14 @@ def generate_excel(report,
 
     ws.column_dimensions['B'].width = 25.0
 
-    for i in range(ord('C'), ord('I')):
-        ws.column_dimensions[chr(i)].width = 18.0
+    for i in range(ord('C'), ord('L')):
+        ws.column_dimensions[chr(i)].width = 15.0
 
     # Font
     name_font = Font(name='Constantia', size=15, bold=True)
-    name_small_font = Font(name='Constantia', size=12, bold=True)
+    name_small_font = Font(name='Constantia', size=10, bold=True)
     title_font = Font(name='宋体', size=15, bold=True)
-    title_small_font = Font(name='宋体', size=12, bold=True)
+    title_small_font = Font(name='宋体', size=10, bold=True)
     data_font = Font(name='Franklin Gothic Book', size=11)
 
     table_fill = PatternFill(fill_type='solid', fgColor='1F497D')
@@ -125,35 +125,17 @@ def generate_excel(report,
                               indent=0)
     # Img
     img = Image("excelexporters/myems.png")
+    img.width = img.width * 0.85
+    img.height = img.height * 0.85
     # img = Image("myems.png")
     ws.add_image(img, 'B1')
 
     # Title
+    ws.merge_cells('B3:I3')
     ws['B3'].font = name_font
-    ws['B3'].alignment = b_r_alignment
-    ws['B3'] = 'Name:'
-    ws['C3'].border = b_border
-    ws['C3'].alignment = b_c_alignment
-    ws['C3'].font = name_font
-    ws['C3'] = name
-
-    ws['D3'].font = name_font
-    ws['D3'].alignment = b_r_alignment
-    ws['D3'] = 'Period:'
-    ws['E3'].border = b_border
-    ws['E3'].alignment = b_c_alignment
-    ws['E3'].font = name_font
-    ws['E3'] = period_type
-
-    ws['F3'].font = name_font
-    ws['F3'].alignment = b_r_alignment
-    ws['F3'] = 'Date:'
-    ws.merge_cells("G3:J3")
-    for i in range(ord('G'), ord('K')):
-        ws[chr(i) + '3'].border = b_border
-    ws['G3'].alignment = b_c_alignment
-    ws['G3'].font = name_font
-    ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
+    ws['B3'].alignment = b_c_alignment
+    ws['B3'] = 'Name: ' + name + '     Period: ' + period_type + \
+               '     Date: ' + reporting_start_datetime_local + "__" + reporting_end_datetime_local
 
     if "reporting_period" not in report.keys() or \
             "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
@@ -366,7 +348,7 @@ def generate_excel(report,
                                      max_row=current_row_number - 1)
                 pie.add_data(pie_data, titles_from_data=True)
                 pie.set_categories(labels)
-                pie.height = 5.25
+                pie.height = 5.85
                 pie.width = 8
                 col = chr(ord('C') + i)
                 pie.title = ws[col + str(current_row_number - space_len - 1)].value
@@ -375,11 +357,15 @@ def generate_excel(report,
                 s1.dLbls.showCatName = False
                 s1.dLbls.showVal = True
                 s1.dLbls.showPercent = True
-                chart_col = chr(ord('B') + 2 * i)
-                chart_cell = chart_col + str(current_row_number)
+                chart_cell = ''
+                if i % 2 == 0:
+                    chart_cell = 'B' + str(current_row_number)
+                else:
+                    chart_cell = 'E' + str(current_row_number)
+                    current_row_number += 6
                 ws.add_chart(pie, chart_cell)
 
-            current_row_number += 6
+            current_row_number += 7
 
         #######################
 
@@ -408,7 +394,7 @@ def generate_excel(report,
 
             chart_start_row_number = current_row_number
 
-            current_row_number += ca_len * 5
+            current_row_number += ca_len * 6
             table_start_row_number = current_row_number
 
             ws['B' + str(current_row_number)].fill = table_fill
@@ -494,14 +480,16 @@ def generate_excel(report,
                 bar_data = Reference(ws, min_col=3 + i, min_row=table_start_row_number, max_row=table_end_row_number)
                 bar.add_data(bar_data, titles_from_data=True)
                 bar.set_categories(labels)
-                bar.height = 5.25
+                bar.height = 5.85
                 bar.width = format_time_width_number * len(time) if len(time) > min_len_number else min_width_number
+                if bar.width > 24:
+                    bar.width = 24
                 bar.dLbls = DataLabelList()
-                bar.dLbls.showVal = True
+                bar.dLbls.showVal = False
                 bar.dLbls.showPercent = True
                 chart_col = 'B'
                 chart_cell = chart_col + str(chart_start_row_number)
-                chart_start_row_number += 5
+                chart_start_row_number += 6
                 ws.add_chart(bar, chart_cell)
 
     filename = str(uuid.uuid4()) + '.xlsx'
