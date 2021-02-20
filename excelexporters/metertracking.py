@@ -139,32 +139,32 @@ def generate_excel(report, space_name):
 
     current_row_number = 4
     for i in range(0,len(report['meters'])):
-        if space_name == report['meters'][i]['space_name']:
-            ws['B' + str(current_row_number)].font = title_font
-            ws['B' + str(current_row_number)].border = f_border
-            ws['B' + str(current_row_number)].alignment = c_c_alignment
-            ws['B' + str(current_row_number)] = report['meters'][i]['meter_name']
 
-            ws['C' + str(current_row_number)].font = title_font
-            ws['C' + str(current_row_number)].border = f_border
-            ws['C' + str(current_row_number)].alignment = c_c_alignment
-            ws['C' + str(current_row_number)] = report['meters'][i]['space_name']
 
-            ws['D' + str(current_row_number)].font = title_font
-            ws['D' + str(current_row_number)].border = f_border
-            ws['D' + str(current_row_number)].alignment = c_c_alignment
-            ws['D' + str(current_row_number)] = report['meters'][i]['cost_center_name']
+        ws['B' + str(current_row_number)].font = title_font
+        ws['B' + str(current_row_number)].border = f_border
+        ws['B' + str(current_row_number)].alignment = c_c_alignment
+        ws['B' + str(current_row_number)] = report['meters'][i]['meter_name']
 
-            ws['E' + str(current_row_number)].font = title_font
-            ws['E' + str(current_row_number)].border = f_border
-            ws['E' + str(current_row_number)].alignment = c_c_alignment
-            ws['E' + str(current_row_number)] = report['meters'][i]['energy_category_name']
+        ws['C' + str(current_row_number)].font = title_font
+        ws['C' + str(current_row_number)].border = f_border
+        ws['C' + str(current_row_number)].alignment = c_c_alignment
+        ws['C' + str(current_row_number)] = report['meters'][i]['space_name']
 
-            ws['F' + str(current_row_number)].font = title_font
-            ws['F' + str(current_row_number)].border = f_border
-            ws['F' + str(current_row_number)].alignment = c_c_alignment
-            ws['F' + str(current_row_number)] = report['meters'][i]['description']
+        ws['D' + str(current_row_number)].font = title_font
+        ws['D' + str(current_row_number)].border = f_border
+        ws['D' + str(current_row_number)].alignment = c_c_alignment
+        ws['D' + str(current_row_number)] = report['meters'][i]['cost_center_name']
 
+        ws['E' + str(current_row_number)].font = title_font
+        ws['E' + str(current_row_number)].border = f_border
+        ws['E' + str(current_row_number)].alignment = c_c_alignment
+        ws['E' + str(current_row_number)] = report['meters'][i]['energy_category_name']
+
+        ws['F' + str(current_row_number)].font = title_font
+        ws['F' + str(current_row_number)].border = f_border
+        ws['F' + str(current_row_number)].alignment = c_c_alignment
+        ws['F' + str(current_row_number)] = report['meters'][i]['description']
         current_row_number += 1
 
     filename = str(uuid.uuid4()) + '.xlsx'
