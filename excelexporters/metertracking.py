@@ -137,97 +137,33 @@ def generate_excel(report, space_name):
     ws['F3'].alignment = b_c_alignment
     ws['F3'] = ' 描述'
 
-    #Converted to excel
-    def pa(i,current_row_number):
-        ws['B' + str(current_row_number)].font = title_font
-        ws['B' + str(current_row_number)].border = f_border
-        ws['B' + str(current_row_number)].alignment = c_c_alignment
-        ws['B' + str(current_row_number)] = report['meters'][i]['meter_name']
-
-        ws['C' + str(current_row_number)].font = title_font
-        ws['C' + str(current_row_number)].border = f_border
-        ws['C' + str(current_row_number)].alignment = c_c_alignment
-        ws['C' + str(current_row_number)] = report['meters'][i]['space_name']
-
-        ws['D' + str(current_row_number)].font = title_font
-        ws['D' + str(current_row_number)].border = f_border
-        ws['D' + str(current_row_number)].alignment = c_c_alignment
-        ws['D' + str(current_row_number)] = report['meters'][i]['cost_center_name']
-
-        ws['E' + str(current_row_number)].font = title_font
-        ws['E' + str(current_row_number)].border = f_border
-        ws['E' + str(current_row_number)].alignment = c_c_alignment
-        ws['E' + str(current_row_number)] = report['meters'][i]['energy_category_name']
-
-        ws['F' + str(current_row_number)].font = title_font
-        ws['F' + str(current_row_number)].border = f_border
-        ws['F' + str(current_row_number)].alignment = c_c_alignment
-        ws['F' + str(current_row_number)] = report['meters'][i]['description']
-
-
     current_row_number = 4
     for i in range(0,len(report['meters'])):
-        if space_name == "远洋太古里":
-            if report['meters'][i]['space_name'] == "租区"or"主力店" or "燃气餐饮" or "零售" or "电餐饮" or "高照度" or "其他业态"\
-                    or "公区商场" or "给排水" or "扶梯直梯" or "照明及插座" or "空调水" or "空调风" or "特殊功能房间" or "其他用电设备"\
-                    or "潜水泵、消防泵等" or "厨房一体化污水设备" or "无障碍升降平台" or "直梯" or "扶梯" or "商场普通照明" or "商场应急照明" or "室外景观照明" or "活动临时电"\
-                    or "制冷站" or "锅炉房"or "新风机" or "排风机" or "风机盘管" or "卫生间" or "消防控制室" or "雨水处理机房" or "电视屏幕墙控制机房" \
-                    or "地下室弱电进线室" or "商业生活水泵房" or "水景预留机房" or "数据中心" or "电热水器" or "厨房保障电源":
-                pa(i, current_row_number)
-
-        elif space_name == "租区":
-            if report['meters'][i]['space_name']=="主力店" or "燃气餐饮" or "零售" or "电餐饮"or "高照度" or "其他业态":
-               pa(i,current_row_number)
-
-        elif space_name == "公区商场":
-            if report['meters'][i]['space_name'] == "给排水" or "扶梯直梯" or "照明及插座" or "空调水" or "空调风" or "特殊功能房间" or "其他用电设备" \
-                    or "潜水泵、消防泵等" or "厨房一体化污水设备" \
-                    or "无障碍升降平台" or "直梯" or "扶梯" \
-                    or "商场普通照明" or "商场应急照明" or "室外景观照明" or "活动临时电" \
-                    or "制冷站" or "锅炉房" \
-                    or "新风机" or "排风机" or "风机盘管" \
-                    or "卫生间" or "消防控制室" or "雨水处理机房" or "电视屏幕墙控制机房" or "地下室弱电进线室" or "商业生活水泵房" or "水景预留机房" or "数据中心" \
-                    or "电热水器" or "厨房保障电源" or "公区车库" or "车库通风" or "车库照明" or "应急照明" or "普通照明":
-                pa(i,current_row_number)
-
-        elif space_name == "给排水":
-            if report['meters'][i]['space_name'] =="潜水泵、消防泵等" or "厨房一体化污水设备":
-                pa(i,current_row_number)
-
-        elif space_name == "扶梯直梯":
-            if report['meters'][i]['space_name'] =="无障碍升降平台" or "直梯" or "扶梯" :
-                pa(i,current_row_number)
-
-        elif space_name == "照明及插座":
-            if report['meters'][i]['space_name'] =="商场普通照明" or "商场应急照明" or "室外景观照明" or "活动临时电":
-                pa(i,current_row_number)
-
-        elif space_name == "空调水":
-            if report['meters'][i]['space_name'] =="制冷站" or "锅炉房":
-                pa(i,current_row_number)
-
-        elif space_name == "空调风":
-            if report['meters'][i]['space_name'] =="新风机" or "排风机" or "风机盘管":
-                pa(i,current_row_number)
-
-        elif space_name == "特殊功能房间":
-            if report['meters'][i]['space_name'] =="卫生间" or "消防控制室" or "雨水处理机房" or "电视屏幕墙控制机房" or "地下室弱电进线室" or "商业生活水泵房" or "水景预留机房" or "数据中心":
-                pa(i,current_row_number)
-
-        elif space_name == "其他用电设备":
-            if report['meters'][i]['space_name'] =="电热水器" or "厨房保障电源":
-                pa(i,current_row_number)
-
-        elif space_name == "公区车库":
-            if report['meters'][i]['space_name'] =="车库通风" or "车库照明" or "应急照明" or "普通照明":
-                pa(i,current_row_number)
-
-        elif space_name == "车库照明":
-            if report['meters'][i]['space_name'] == "应急照明" or "普通照明":
-                pa(i,current_row_number)
-
         if space_name == report['meters'][i]['space_name']:
-            pa(i,current_row_number)
+            ws['B' + str(current_row_number)].font = title_font
+            ws['B' + str(current_row_number)].border = f_border
+            ws['B' + str(current_row_number)].alignment = c_c_alignment
+            ws['B' + str(current_row_number)] = report['meters'][i]['meter_name']
+
+            ws['C' + str(current_row_number)].font = title_font
+            ws['C' + str(current_row_number)].border = f_border
+            ws['C' + str(current_row_number)].alignment = c_c_alignment
+            ws['C' + str(current_row_number)] = report['meters'][i]['space_name']
+
+            ws['D' + str(current_row_number)].font = title_font
+            ws['D' + str(current_row_number)].border = f_border
+            ws['D' + str(current_row_number)].alignment = c_c_alignment
+            ws['D' + str(current_row_number)] = report['meters'][i]['cost_center_name']
+
+            ws['E' + str(current_row_number)].font = title_font
+            ws['E' + str(current_row_number)].border = f_border
+            ws['E' + str(current_row_number)].alignment = c_c_alignment
+            ws['E' + str(current_row_number)] = report['meters'][i]['energy_category_name']
+
+            ws['F' + str(current_row_number)].font = title_font
+            ws['F' + str(current_row_number)].border = f_border
+            ws['F' + str(current_row_number)].alignment = c_c_alignment
+            ws['F' + str(current_row_number)] = report['meters'][i]['description']
 
         current_row_number += 1
 
