@@ -138,8 +138,7 @@ def generate_excel(report, space_name):
     ws['F3'] = ' 描述'
 
     current_row_number = 4
-    for i in range(0,len(report['meters'])):
-
+    for i in range(0, len(report['meters'])):
 
         ws['B' + str(current_row_number)].font = title_font
         ws['B' + str(current_row_number)].border = f_border
@@ -171,6 +170,3 @@ def generate_excel(report, space_name):
     wb.save(filename)
 
     return filename
-
-
-
