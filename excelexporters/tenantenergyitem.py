@@ -295,82 +295,6 @@ def generate_excel(report,
 
             current_row_number += 1
 
-        #####################################
-
-        has_child_flag = True
-        if "child_space" not in report.keys() or "energy_item_names" not in report['child_space'].keys() or \
-                len(report['child_space']["energy_item_names"]) == 0:
-            has_child_flag = False
-
-        if has_child_flag:
-            child = report['child_space']
-
-            ws['B' + str(current_row_number)].font = title_font
-            ws['B' + str(current_row_number)] = name + ' 子空间数据'
-
-            current_row_number += 1
-
-            ws['B' + str(current_row_number)].fill = table_fill
-            ws['B' + str(current_row_number)].border = f_border
-            ca_len = len(child['energy_item_names'])
-
-            for i in range(0, ca_len):
-                row = chr(ord('C') + i)
-                ws[row + str(current_row_number)].fill = table_fill
-                ws[row + str(current_row_number)].font = name_small_font
-                ws[row + str(current_row_number)].alignment = c_c_alignment
-                ws[row + str(current_row_number)].border = f_border
-                ws[row + str(current_row_number)] = \
-                    reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
-
-            space_len = len(child['child_space_names_array'][0])
-
-            for i in range(0, space_len):
-                current_row_number += 1
-                row = str(current_row_number)
-
-                ws['B' + row].font = name_font
-                ws['B' + row].alignment = c_c_alignment
-                ws['B' + row] = child['child_space_names_array'][0][i]
-                ws['B' + row].border = f_border
-
-                for j in range(0, ca_len):
-                    col = chr(ord('C') + j)
-                    ws[col + row].font = name_font
-                    ws[col + row].alignment = c_c_alignment
-                    ws[col + row] = child['subtotals_array'][j][i]
-                    ws[col + row].border = f_border
-
-            current_row_number += 1
-
-            # Pie
-            for i in range(0, ca_len):
-                pie = PieChart()
-                labels = Reference(ws, min_col=2, min_row=current_row_number - space_len,
-                                   max_row=current_row_number - 1)
-                pie_data = Reference(ws, min_col=3 + i, min_row=current_row_number - space_len - 1,
-                                     max_row=current_row_number - 1)
-                pie.add_data(pie_data, titles_from_data=True)
-                pie.set_categories(labels)
-                pie.height = 5.85
-                pie.width = 8
-                col = chr(ord('C') + i)
-                pie.title = ws[col + str(current_row_number - space_len - 1)].value
-                s1 = pie.series[0]
-                s1.dLbls = DataLabelList()
-                s1.dLbls.showCatName = False
-                s1.dLbls.showVal = True
-                s1.dLbls.showPercent = True
-                chart_cell = ''
-                if i % 2 == 0:
-                    chart_cell = 'B' + str(current_row_number)
-                else:
-                    chart_cell = 'E' + str(current_row_number)
-                    current_row_number += 6
-                ws.add_chart(pie, chart_cell)
-
-            current_row_number += 7
-
         #######################
 
         has_values_data = True
@@ -509,4 +433,3 @@ def group_by_category(category_list):
             category_dict[value] = list()
         category_dict[value].append(i)
     return category_dict
-
