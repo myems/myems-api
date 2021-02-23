@@ -3,6 +3,8 @@ import simplejson as json
 import mysql.connector
 import config
 from datetime import datetime, timedelta, timezone
+
+import excelexporters.storestatistics
 from core import utilities
 from decimal import Decimal
 
@@ -66,7 +68,7 @@ class Reporting:
             try:
                 base_start_datetime_utc = datetime.strptime(base_start_datetime_local,
                                                             '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                          timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_START_DATETIME")
@@ -77,7 +79,7 @@ class Reporting:
             try:
                 base_end_datetime_utc = datetime.strptime(base_end_datetime_local,
                                                           '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                        timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_END_DATETIME")
@@ -95,7 +97,7 @@ class Reporting:
             try:
                 reporting_start_datetime_utc = datetime.strptime(reporting_start_datetime_local,
                                                                  '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                               timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_START_DATETIME")
@@ -108,7 +110,7 @@ class Reporting:
             try:
                 reporting_end_datetime_utc = datetime.strptime(reporting_end_datetime_local,
                                                                '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                             timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_END_DATETIME")
@@ -609,4 +611,10 @@ class Reporting:
             "values": parameters_data['values']
         }
 
+        # export result to Excel file and then encode the file to base64 string
+        result['excel_bytes_base64'] = excelexporters.storestatistics.export(result,
+                                                                             store['name'],
+                                                                             reporting_start_datetime_local,
+                                                                             reporting_end_datetime_local,
+                                                                             period_type)
         resp.body = json.dumps(result)
