@@ -5,6 +5,7 @@ import config
 from datetime import datetime, timedelta, timezone
 from core import utilities
 from decimal import Decimal
+import excelexporters.tenantstatistics
 
 
 class Reporting:
@@ -66,7 +67,7 @@ class Reporting:
             try:
                 base_start_datetime_utc = datetime.strptime(base_start_datetime_local,
                                                             '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                          timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_START_DATETIME")
@@ -77,7 +78,7 @@ class Reporting:
             try:
                 base_end_datetime_utc = datetime.strptime(base_end_datetime_local,
                                                           '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                        timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_BASE_PERIOD_END_DATETIME")
@@ -95,7 +96,7 @@ class Reporting:
             try:
                 reporting_start_datetime_utc = datetime.strptime(reporting_start_datetime_local,
                                                                  '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                               timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_START_DATETIME")
@@ -108,7 +109,7 @@ class Reporting:
             try:
                 reporting_end_datetime_utc = datetime.strptime(reporting_end_datetime_local,
                                                                '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc) - \
-                    timedelta(minutes=timezone_offset)
+                                             timedelta(minutes=timezone_offset)
             except ValueError:
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description="API.INVALID_REPORTING_PERIOD_END_DATETIME")
@@ -224,7 +225,7 @@ class Reporting:
                               "      tbl_points p, tbl_sensors_points sp "
                               " WHERE t.id = %s AND t.id = ts.tenant_id AND ts.sensor_id = s.id "
                               "       AND s.id = sp.sensor_id AND sp.point_id = p.id "
-                              " ORDER BY p.id ", (tenant['id'], ))
+                              " ORDER BY p.id ", (tenant['id'],))
         rows_points = cursor_system.fetchall()
         if rows_points is not None and len(rows_points) > 0:
             for row in rows_points:
@@ -236,7 +237,7 @@ class Reporting:
         cursor_system.execute(" SELECT p.id, p.name, p.units, p.object_type  "
                               " FROM tbl_tenants t, tbl_tenants_points tp, tbl_points p "
                               " WHERE t.id = %s AND t.id = tp.tenant_id AND tp.point_id = p.id "
-                              " ORDER BY p.id ", (tenant['id'], ))
+                              " ORDER BY p.id ", (tenant['id'],))
         rows_points = cursor_system.fetchall()
         if rows_points is not None and len(rows_points) > 0:
             for row in rows_points:
@@ -608,5 +609,11 @@ class Reporting:
             "timestamps": parameters_data['timestamps'],
             "values": parameters_data['values']
         }
+        # export result to Excel file and then encode the file to base64 string
+        result['excel_bytes_base64'] = excelexporters.tenantstatistics.export(result,
+                                                                              tenant['name'],
+                                                                              reporting_start_datetime_local,
+                                                                              reporting_end_datetime_local,
+                                                                              period_type)
 
         resp.body = json.dumps(result)

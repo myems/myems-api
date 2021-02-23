@@ -103,7 +103,7 @@ def generate_excel(report, space_name):
                               shrink_to_fit=False,
                               indent=0)
     for i in range(ord('B'), ord('G')):
-        ws.column_dimensions[chr(i)].width = 40.0
+        ws.column_dimensions[chr(i)].width = 25.0
 
     # Img
     ws.merge_cells("B1:F1")

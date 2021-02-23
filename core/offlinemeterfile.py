@@ -71,10 +71,14 @@ class OfflineMeterFileCollection:
                                    description='API.FAILED_TO_UPLOAD_OFFLINE_METER_FILE')
 
         # Verify User Session
-        cookies = req.headers['SET-COOKIE'].split('=')
-        if 'user_uuid' not in cookies or 'token' not in cookies:
+        token = req.headers.get('TOKEN')
+        user_uuid = req.headers.get('USER-UUID')
+        if token is None:
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.TOKEN_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
+        if user_uuid is None:
+            raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
+                                   description='API.USER_UUID_NOT_FOUND_IN_HEADERS_PLEASE_LOGIN')
 
         cnx = mysql.connector.connect(**config.myems_user_db)
         cursor = cnx.cursor()
@@ -82,31 +86,40 @@ class OfflineMeterFileCollection:
         query = (" SELECT utc_expires "
                  " FROM tbl_sessions "
                  " WHERE user_uuid = %s AND token = %s")
-        cursor.execute(query, (cookies[1], cookies[3],))
+        cursor.execute(query, (user_uuid, token,))
         row = cursor.fetchone()
 
         if row is None:
-            cursor.close()
-            cnx.disconnect()
+            if cursor:
+                cursor.close()
+            if cnx:
+                cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.INVALID_SESSION_PLEASE_RE_LOGIN')
         else:
             utc_expires = row[0]
             if datetime.utcnow() > utc_expires:
-                cursor.close()
-                cnx.disconnect()
+                if cursor:
+                    cursor.close()
+                if cnx:
+                    cnx.disconnect()
                 raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
                                        description='API.USER_SESSION_TIMEOUT')
 
         cursor.execute(" SELECT id "
                        " FROM tbl_users "
                        " WHERE uuid = %s ",
-                       (cookies[1],))
-        if cursor.fetchone() is None:
-            cursor.close()
-            cnx.disconnect()
+                       (user_uuid,))
+        row = cursor.fetchone()
+        if row is None:
+            if cursor:
+                cursor.close()
+            if cnx:
+                cnx.disconnect()
             raise falcon.HTTPError(falcon.HTTP_400, title='API.BAD_REQUEST',
-                                   description='API.INVALID_COOKIES_PLEASE_RE_LOGIN')
+                                   description='API.INVALID_USER_PLEASE_RE_LOGIN')
+        else:
+            user_id = row[0]
 
         cnx = mysql.connector.connect(**config.myems_historical_db)
         cursor = cnx.cursor()
