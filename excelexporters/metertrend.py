@@ -3,6 +3,7 @@ import uuid
 import os
 from openpyxl.chart import (
     PieChart,
+    LineChart,
     BarChart,
     Reference,
 )
@@ -70,19 +71,19 @@ def generate_excel(report,
     ws = wb.active
 
     # Row height
-    ws.row_dimensions[1].height = 118
+    ws.row_dimensions[1].height = 102
+    for i in range(2, 5 + 1):
+        ws.row_dimensions[i].height = 42
 
-    for i in range(2, 6 + 1):
-        ws.row_dimensions[i].height = 30
-
-    ws.row_dimensions[7].height = 60
-    ws.row_dimensions[3].height = 50
+    # for i in range(2, 6 + 1):
+    #     ws.row_dimensions[i].height = 30
 
     # Col width
     ws.column_dimensions['A'].width = 1.5
 
-    ws.column_dimensions['B'].width = 20.0
-    for i in range(ord('C'), ord('C')+16):
+    ws.column_dimensions['B'].width = 25.0
+
+    for i in range(ord('C'), ord('V')):
         ws.column_dimensions[chr(i)].width = 15.0
 
     # Font
@@ -124,11 +125,17 @@ def generate_excel(report,
                               wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
+
     # Img
     img = Image("excelexporters/myems.png")
+    img.width = img.width * 0.85
+    img.height = img.height * 0.85
+    # img = Image("myems.png")
     ws.add_image(img, 'B1')
 
     # Title
+    ws.row_dimensions[3].height = 60
+
     ws['B3'].font = name_font
     ws['B3'].alignment = b_r_alignment
     ws['B3'] = 'Name:'
@@ -189,17 +196,19 @@ def generate_excel(report,
         ws['B6'].font = title_font
         ws['B6'] = name + ' 趋势'
 
+        ws.row_dimensions[7].height = 60
         ws['B7'].fill = table_fill
+        ws['B7'].font = title_font
         ws['B7'].border = f_border
         ws['B7'].alignment = c_c_alignment
-        ws['B7'] = '时间'
+        ws['B7'] = '日期时间'
         time = times[0]
         has_data = False
         max_row = 0
         if len(time) > 0:
             has_data = True
             max_row = 8 + len(time)
-            print("max_row", max_row)
+            # print("max_row", max_row)
             temp_max_row = max_row
         if has_data:
             for i in range(0, len(time)):
@@ -230,32 +239,36 @@ def generate_excel(report,
                     # col = chr(ord('B') + i)
                     ws[col + row].font = title_font
                     ws[col + row].alignment = c_c_alignment
-                    ws[col + row] = round(reporting_period_data['values'][i][j], 0)
+                    ws[col + row] = round(reporting_period_data['values'][i][j], 3)
                     ws[col + row].border = f_border
-                # bar
-                # 39~: bar
-                bar = BarChart()
-                labels = Reference(ws, min_col=2, min_row=8, max_row=max_row + 1)
-                bar_data = Reference(ws, min_col=3 + i, min_row=7, max_row=max_row + 1)  # openpyxl bug
-                bar.add_data(bar_data, titles_from_data=True)
-                bar.set_categories(labels)
-                bar.height = 5.25  # cm 1.05*5 1.05cm = 30 pt
-                bar.width = 36
+                # line
+                # 39~: line
+                line = LineChart()
+                line.title = '趋势值 - ' + reporting_period_data['names'][i]
+                labels = Reference(ws, min_col=2, min_row=8, max_row=max_row-1)
+                line_data = Reference(ws, min_col=3 + i, min_row=7, max_row=max_row-1)
+                line.add_data(line_data, titles_from_data=True)
+                line.set_categories(labels)
+                # line_data = line.series[0]
+                # line_data.marker.symbol = "circle"
+                line_data.smooth = True
+                line.height = 8.25  # cm 1.05*5 1.05cm = 30 pt
+                line.width = 36
                 # pie.title = "Pies sold by category"
-                bar.dLbls = DataLabelList()
-                # bar.dLbls.showCatName = True  # label show
-                bar.dLbls.showVal = True  # val show
-                bar.dLbls.showPercent = True  # percent show
+                line.dLbls = DataLabelList()
+                # line.dLbls.showCatName = True  # label show
+                line.dLbls.showVal = False  # val show
+                line.dLbls.showPercent = False  # percent show
                 # s1 = CharacterProperties(sz=1800)     # font size *100
                 chart_col = chr(ord('B'))
-                chart_cell = chart_col + str(max_row + 2 + 10*i)
+                chart_cell = chart_col + str(max_row + 2 + 6*i)
                 print("chart_cell", chart_cell)
-                ws.add_chart(bar, chart_cell)
+                ws.add_chart(line, chart_cell)
     else:
         pass
 
-    for i in range(8, temp_max_row + 1 + 1):
-        ws.row_dimensions[i].height = 20
+    for i in range(8, temp_max_row + 1 + 1 + + ca_len * 6):
+        ws.row_dimensions[i].height = 42
 
     filename = str(uuid.uuid4()) + '.xlsx'
     wb.save(filename)
