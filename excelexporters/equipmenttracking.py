@@ -103,10 +103,10 @@ def generate_excel(report, space_name):
                               shrink_to_fit=False,
                               indent=0)
     for i in range(ord('B'), ord('F')):
-        ws.column_dimensions[chr(i)].width = 50.0
+        ws.column_dimensions[chr(i)].width = 30.0
 
     # Img
-    ws.merge_cells("B1:E1")
+    ws.merge_cells("B1:D1")
     ws.merge_cells("B2:E2")
     img = Image("excelexporters/myems.png")
     ws.add_image(img, 'B1')
