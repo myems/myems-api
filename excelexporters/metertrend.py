@@ -252,11 +252,13 @@ def generate_excel(report,
                 # line_data = line.series[0]
                 # line_data.marker.symbol = "circle"
                 line_data.smooth = True
+                line.x_axis.crosses = 'min'
                 line.height = 8.25  # cm 1.05*5 1.05cm = 30 pt
                 line.width = 36
                 # pie.title = "Pies sold by category"
                 line.dLbls = DataLabelList()
                 # line.dLbls.showCatName = True  # label show
+                line.dLbls.dLblPos = 't'
                 line.dLbls.showVal = False  # val show
                 line.dLbls.showPercent = False  # percent show
                 # s1 = CharacterProperties(sz=1800)     # font size *100
