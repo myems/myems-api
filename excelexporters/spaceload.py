@@ -3,6 +3,7 @@ import uuid
 import os
 from openpyxl.chart import (
     PieChart,
+    LineChart,
     BarChart,
     Reference,
 )
@@ -68,20 +69,21 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
     ws = wb.active
 
     # Row height
-    ws.row_dimensions[1].height = 118
+    ws.row_dimensions[1].height = 102
     for i in range(2, 2000 + 1):
-        ws.row_dimensions[i].height = 30
+        ws.row_dimensions[i].height = 42
 
     # Col width
     ws.column_dimensions['A'].width = 1.5
 
-    for i in range(ord('B'), ord('I')):
-        ws.column_dimensions[chr(i)].width = 18
+    ws.column_dimensions['B'].width = 25.0
+
+    for i in range(ord('C'), ord('L')):
+        ws.column_dimensions[chr(i)].width = 15.0
 
     # Font
     name_font = Font(name='Constantia', size=15, bold=True)
     title_font = Font(name='宋体', size=15, bold=True)
-    table_title_font = Font(name='宋体', size=10, bold=True)
     data_font = Font(name='Franklin Gothic Book', size=11)
 
     table_fill = PatternFill(fill_type='solid', fgColor='1F497D')
@@ -97,33 +99,38 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
     b_c_alignment = Alignment(vertical='bottom',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     c_c_alignment = Alignment(vertical='center',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     b_r_alignment = Alignment(vertical='bottom',
                               horizontal='right',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     c_r_alignment = Alignment(vertical='bottom',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
 
     # Img
     img = Image("excelexporters/myems.png")
+    img.width = img.width * 0.85
+    img.height = img.height * 0.85
+    # img = Image("myems.png")
     ws.add_image(img, 'B1')
 
     # Title
+    ws.row_dimensions[3].height = 60
+
     ws['B3'].font = name_font
     ws['B3'].alignment = b_r_alignment
     ws['B3'] = 'Name:'
@@ -143,12 +150,10 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
     ws['F3'].font = name_font
     ws['F3'].alignment = b_r_alignment
     ws['F3'] = 'Date:'
-    ws.merge_cells("G3:J3")
-    for i in range(ord('G'), ord('K')):
-        ws[chr(i) + '3'].border = b_border
     ws['G3'].alignment = b_c_alignment
     ws['G3'].font = name_font
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
+    ws.merge_cells("G3:H3")
 
     if "reporting_period" not in report.keys() or \
             "timestamps" not in report['reporting_period'].keys() or len(report['reporting_period']['timestamps']) == 0:
@@ -175,7 +180,9 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
         current_row_number += 1
 
+        ws.row_dimensions[current_row_number].height = 60
         ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].border = f_border
         for i in range(0, ca_len):
             col = chr(ord('C') + i)
             ws[col + str(current_row_number)].fill = table_fill
@@ -236,7 +243,9 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
         current_row_number += 1
 
+        ws.row_dimensions[current_row_number].height = 60
         ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].border = f_border
         for i in range(0, ca_len):
             col = chr(ord('C') + i)
             ws[col + str(current_row_number)].fill = table_fill
@@ -297,7 +306,9 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
         current_row_number += 1
 
+        ws.row_dimensions[current_row_number].height = 60
         ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].border = f_border
         for i in range(0, ca_len):
             col = chr(ord('C') + i)
             ws[col + str(current_row_number)].fill = table_fill
@@ -362,13 +373,14 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         chart_start_number = current_row_number
 
         if has_sub_averages_data_flag:
-            current_row_number = (current_row_number + ca_len * 5)
+            current_row_number = (current_row_number + ca_len * 6)
 
         if has_sub_maximums_data_flag:
-            current_row_number = (current_row_number + ca_len * 5)
+            current_row_number = (current_row_number + ca_len * 6)
 
         table_start_number = current_row_number
 
+        ws.row_dimensions[current_row_number].height = 60
         ws['B' + str(current_row_number)].fill = table_fill
         ws['B' + str(current_row_number)].font = title_font
         ws['B' + str(current_row_number)].alignment = c_c_alignment
@@ -380,7 +392,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         for i in range(0, ca_len):
             if has_sub_averages_data_flag:
                 ws[col + str(current_row_number)].fill = table_fill
-                ws[col + str(current_row_number)].font = table_title_font
+                ws[col + str(current_row_number)].font = title_font
                 ws[col + str(current_row_number)].alignment = c_c_alignment
                 ws[col + str(current_row_number)].border = f_border
                 ws[col + str(current_row_number)] = reporting_period_data['names'][i] + \
@@ -389,7 +401,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
             if has_sub_maximums_data_flag:
                 ws[col + str(current_row_number)].fill = table_fill
-                ws[col + str(current_row_number)].font = table_title_font
+                ws[col + str(current_row_number)].font = title_font
                 ws[col + str(current_row_number)].alignment = c_c_alignment
                 ws[col + str(current_row_number)].border = f_border
                 ws[col + str(current_row_number)] = reporting_period_data['names'][i] + \
@@ -434,31 +446,39 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             labels = Reference(ws, min_col=2, min_row=table_start_number + 1, max_row=table_end_number)
 
             if has_sub_averages_data_flag:
-                bar = BarChart()
+                line = LineChart()
+                line.title = '报告期 平均负荷 - ' + ws.cell(column=current_chart_col_number, row=table_start_number).value
                 datas = Reference(ws, min_col=current_chart_col_number, min_row=table_start_number,
                                   max_row=table_end_number)
-                bar.add_data(datas, titles_from_data=True)
-                bar.set_categories(labels)
-                bar.height = 5.25
-                bar.width = len(time)
-                bar.dLbls = DataLabelList()
-                bar.dLbls.showVal = True
-                ws.add_chart(bar, "B" + str(current_chart_row_number))
-                current_chart_row_number += 5
+                line.add_data(datas, titles_from_data=True)
+                line.set_categories(labels)
+                line_data = line.series[0]
+                line_data.marker.symbol = "circle"
+                line_data.smooth = False
+                line.height = 8.25
+                line.width = 24
+                line.dLbls = DataLabelList()
+                line.dLbls.showVal = True
+                ws.add_chart(line, "B" + str(current_chart_row_number))
+                current_chart_row_number += 6
                 current_chart_col_number += 1
 
             if has_sub_maximums_data_flag:
-                bar = BarChart()
+                line = LineChart()
+                line.title = '报告期 最大负荷 - ' + ws.cell(column=current_chart_col_number, row=table_start_number).value
                 datas = Reference(ws, min_col=current_chart_col_number, min_row=table_start_number,
                                   max_row=table_end_number)
-                bar.add_data(datas, titles_from_data=True)
-                bar.set_categories(labels)
-                bar.height = 5.25
-                bar.width = len(time)
-                bar.dLbls = DataLabelList()
-                bar.dLbls.showVal = True
-                ws.add_chart(bar, "B" + str(current_chart_row_number))
-                current_chart_row_number += 5
+                line.add_data(datas, titles_from_data=True)
+                line.set_categories(labels)
+                line_data = line.series[0]
+                line_data.marker.symbol = "circle"
+                line_data.smooth = False
+                line.height = 8.25
+                line.width = 24
+                line.dLbls = DataLabelList()
+                line.dLbls.showVal = True
+                ws.add_chart(line, "B" + str(current_chart_row_number))
+                current_chart_row_number += 6
                 current_chart_col_number += 1
 
     filename = str(uuid.uuid4()) + '.xlsx'
