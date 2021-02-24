@@ -339,13 +339,17 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 line.set_categories(labels)
                 line_data = line.series[0]
                 line_data.marker.symbol = "circle"
+                line_data.smooth = True
+                line.x_axis.crosses = 'min'
                 # line_data.smooth = True
                 line.height = 8.25  # cm 1.05*5 1.05cm = 30 pt
                 line.width = 24
                 # pie.title = "Pies sold by category"
                 line.dLbls = DataLabelList()
                 # line.dLbls.showCatName = True  # 标签显示
-                line.dLbls.showVal = False  # 数量显示
+                line.dLbls = DataLabelList()
+                line.dLbls.dLblPos = 't'
+                line.dLbls.showVal = True  # 数量显示
                 line.dLbls.showPercent = False  # 百分比显示
                 # s1 = CharacterProperties(sz=1800)     # 图表中字体大小 *100
                 chart_col = chr(ord('B') + 2 * i)
