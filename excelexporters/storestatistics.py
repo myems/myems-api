@@ -1,13 +1,14 @@
 import base64
-import uuid
 import os
+import uuid
+
+from openpyxl import Workbook
 from openpyxl.chart import (
     LineChart,
     Reference,
 )
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
 from openpyxl.drawing.image import Image
-from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
 
 
 ####################################################################################################################
@@ -183,8 +184,6 @@ def generate_excel(report,
     if has_energy_data_flag:
         ws['B6'].font = title_font
         ws['B6'] = name + ' 统计分析'
-        # ws['D6'].font = title_font
-        # ws['D6'] = '面积' +report['space']['area']
 
         category = reporting_period_data['names']
 
@@ -228,7 +227,7 @@ def generate_excel(report,
         # table_data
 
         for i, value in enumerate(category):
-            row = i*2 + 8
+            row = i * 2 + 8
             ws['B' + str(row)].font = name_font
             ws['B' + str(row)].alignment = c_c_alignment
             ws['B' + str(row)] = reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + " )"
@@ -332,7 +331,7 @@ def generate_excel(report,
         ws['B' + str(row_title)].font = title_font
         ws['B' + str(row_title)] = name + ' 单位面积值'
         ws['D' + str(row_title)].font = title_font
-        ws['D' + str(row_title)] = str(report['space']['area']) + 'M²'
+        ws['D' + str(row_title)] = str(report['store']['area']) + 'M²'
 
         category = reporting_period_data['names']
 
@@ -454,22 +453,22 @@ def generate_excel(report,
         # row_st == row_statistical analysis table
         row_sat = 12 + 3 * ca_len
 
-        ws['B' + str(row_sat+row_title)].font = title_font
-        ws['B' + str(row_sat+row_title)] = name + ' 详细数据'
+        ws['B' + str(row_sat + row_title)].font = title_font
+        ws['B' + str(row_sat + row_title)] = name + ' 详细数据'
         # table_title
-        ws['B' + str(row_sat+1+row_title)].fill = table_fill
-        ws['B' + str(row_sat+1+row_title)].font = name_font
-        ws['B' + str(row_sat+1+row_title)].alignment = c_c_alignment
-        ws['B' + str(row_sat+1+row_title)] = "时间"
-        ws['B' + str(row_sat+1+row_title)].border = f_border
+        ws['B' + str(row_sat + 1 + row_title)].fill = table_fill
+        ws['B' + str(row_sat + 1 + row_title)].font = name_font
+        ws['B' + str(row_sat + 1 + row_title)].alignment = c_c_alignment
+        ws['B' + str(row_sat + 1 + row_title)] = "时间"
+        ws['B' + str(row_sat + 1 + row_title)].border = f_border
 
         for i in range(0, ca_len):
             col = chr(ord('C') + i)
 
-            ws[col + str(row_sat+1+row_title)].font = name_font
-            ws[col + str(row_sat+1+row_title)].alignment = c_c_alignment
-            ws[col + str(row_sat+1+row_title)] = names[i] + " - (" + reporting_period_data['units'][i] + ")"
-            ws[col + str(row_sat+1+row_title)].border = f_border
+            ws[col + str(row_sat + 1 + row_title)].font = name_font
+            ws[col + str(row_sat + 1 + row_title)].alignment = c_c_alignment
+            ws[col + str(row_sat + 1 + row_title)] = names[i] + " - (" + reporting_period_data['units'][i] + ")"
+            ws[col + str(row_sat + 1 + row_title)].border = f_border
         # table_date
         for i in range(0, time_len):
             rows = i + row_sat + 2 + 10 * ca_len
@@ -506,7 +505,6 @@ def generate_excel(report,
 
         # LineChart
         for i in range(0, ca_len):
-
             lc = LineChart()
             lc.title = "报告期消耗" + " - " + names[i] + "(" + reporting_period_data['units'][i] + ")"
             lc.style = 10
