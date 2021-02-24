@@ -183,8 +183,6 @@ def generate_excel(report,
     if has_energy_data_flag:
         ws['B6'].font = title_font
         ws['B6'] = name + ' 统计分析'
-        # ws['D6'].font = title_font
-        # ws['D6'] = '面积' +report['space']['area']
 
         category = reporting_period_data['names']
 
@@ -435,7 +433,7 @@ def generate_excel(report,
     # Third: 详细数据
     # row_sat+row_title~ row_sat+row_title+time_len: line
     # row_sat+1+row_title: table title
-    # i + row_sat + 2 + 10 * ca_len~: table_data
+    # i + row_sat + 2 + 9 * ca_len~: table_data
     ########################################################
     has_timestamps_flag = True
     if "timestamps" not in reporting_period_data.keys() or \
@@ -450,7 +448,7 @@ def generate_excel(report,
         ca_len = len(names)
         time_len = len(timestamps)
         # title
-        row_title = 10 * ca_len
+        row_title = 9 * ca_len
         # row_st == row_statistical analysis table
         row_sat = 12 + 3 * ca_len
 
@@ -472,7 +470,7 @@ def generate_excel(report,
             ws[col + str(row_sat+1+row_title)].border = f_border
         # table_date
         for i in range(0, time_len):
-            rows = i + row_sat + 2 + 10 * ca_len
+            rows = i + row_sat + 2 + 9 * ca_len
 
             ws['B' + str(rows)].font = name_font
             ws['B' + str(rows)].alignment = c_c_alignment
@@ -489,7 +487,7 @@ def generate_excel(report,
                 ws[col + str(rows)].border = f_border
 
         # 小计
-        row_subtotals = row_sat + 2 + time_len + 10 * ca_len
+        row_subtotals = row_sat + 2 + time_len + 9 * ca_len
         ws['B' + str(row_subtotals)].font = name_font
         ws['B' + str(row_subtotals)].alignment = c_c_alignment
         ws['B' + str(row_subtotals)] = "小计"
@@ -523,7 +521,7 @@ def generate_excel(report,
             ser = lc.series[0]
             ser.marker.symbol = "diamond"
             ser.marker.size = 5
-            ws.add_chart(lc, 'B' + str(row_sat + 10 * i))
+            ws.add_chart(lc, 'B' + str(row_sat + 9 * i))
 
     filename = str(uuid.uuid4()) + '.xlsx'
     wb.save(filename)
