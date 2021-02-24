@@ -186,7 +186,7 @@ def generate_excel(report,
         category = reporting_period_data['names']
         ca_len = len(category)
 
-        ws.row_dimensions[current_row_number].height = 60
+        ws.row_dimensions[current_row_number].height = 75
         ws['B' + str(current_row_number)].fill = table_fill
         ws['B' + str(current_row_number)].border = f_border
 
@@ -238,14 +238,14 @@ def generate_excel(report,
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_saving'] / 1000, 2)
 
         col = chr(ord(col) + 1)
 
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_saving'] / 1000, 2)
 
         col = chr(ord(col) + 1)
 
@@ -269,14 +269,14 @@ def generate_excel(report,
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_per_unit_area_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_per_unit_area_saving'] / 1000, 2)
 
         col = chr(ord(col) + 1)
 
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_per_unit_area_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_per_unit_area_saving'] / 1000, 2)
 
         col = chr(ord(col) + 1)
 
@@ -347,7 +347,7 @@ def generate_excel(report,
             ws['C' + str(current_row_number)].font = name_font
             ws['C' + str(current_row_number)].alignment = c_c_alignment
             ws['C' + str(current_row_number)].border = f_border
-            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgce_saving'][i], 2)
+            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgce_saving'][i] / 1000, 3)
 
             current_row_number += 1
 
@@ -359,7 +359,7 @@ def generate_excel(report,
         current_row_number += 1
 
         pie = PieChart()
-        pie.title = '吨标准煤(TCE)占比'
+        pie.title = name + ' 吨标准煤(TCE)占比'
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
         pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
@@ -401,7 +401,7 @@ def generate_excel(report,
             ws['C' + str(current_row_number)].font = name_font
             ws['C' + str(current_row_number)].alignment = c_c_alignment
             ws['C' + str(current_row_number)].border = f_border
-            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgco2e_saving'][i], 2)
+            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgco2e_saving'][i] / 1000, 3)
 
             current_row_number += 1
 
@@ -413,7 +413,7 @@ def generate_excel(report,
         current_row_number += 1
 
         pie = PieChart()
-        pie.title = '吨二氧化碳排放(TCO2E)占比'
+        pie.title = name + ' 吨二氧化碳排放(TCO2E)占比'
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
         pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
