@@ -513,12 +513,14 @@ def generate_excel(report,
                 line.set_categories(labels)
                 line_data = line.series[0]
                 line_data.marker.symbol = "circle"
-                line_data.smooth = False
+                line_data.smooth = True
+                line.x_axis.crosses = 'min'
                 line.height = 8.25
                 line.width = format_time_width_number * len(time) if len(time) > min_len_number else min_width_number
                 if line.width > 24:
                     line.width = 24
                 line.dLbls = DataLabelList()
+                line.dLbls.dLblPos = 't'
                 line.dLbls.showVal = True
                 line.dLbls.showPercent = False
                 chart_col = 'B'
