@@ -280,7 +280,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ca_len = len(category)
 
         ws['B11'].font = title_font
-        ws['B11'] = name + '能耗详情'
+        ws['B11'] = name + '详细数据'
 
         ws.row_dimensions[18].height = 60
 
@@ -288,7 +288,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ws['B18'].font = title_font
         ws['B18'].border = f_border
         ws['B18'].alignment = c_c_alignment
-        ws['B18'] = '时间'
+        ws['B18'] = '日期时间'
         time = times
         has_data = False
         max_row = 0
@@ -328,33 +328,31 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                     ws[col + row].alignment = c_c_alignment
                     ws[col + row] = round(reporting_period_data['values'][j], 2)
                     ws[col + row].border = f_border
-                # line
-                # 13~: line
-                line = LineChart()
-                line.title = '报告期消耗 - ' + report['meter']['energy_category_name'] + \
-                    " (" + report['meter']['unit_of_measure'] + ")"
-                labels = Reference(ws, min_col=2, min_row=19, max_row=max_row)
-                bar_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row)  # openpyxl bug
-                line.add_data(bar_data, titles_from_data=True)
-                line.set_categories(labels)
-                line_data = line.series[0]
-                line_data.marker.symbol = "circle"
-                line_data.smooth = True
-                line.x_axis.crosses = 'min'
-                # line_data.smooth = True
-                line.height = 8.25  # cm 1.05*5 1.05cm = 30 pt
-                line.width = 24
-                # pie.title = "Pies sold by category"
-                line.dLbls = DataLabelList()
-                # line.dLbls.showCatName = True  # 标签显示
-                line.dLbls = DataLabelList()
-                line.dLbls.dLblPos = 't'
-                line.dLbls.showVal = True  # 数量显示
-                line.dLbls.showPercent = False  # 百分比显示
-                # s1 = CharacterProperties(sz=1800)     # 图表中字体大小 *100
-                chart_col = chr(ord('B') + 2 * i)
-                chart_cell = chart_col + str(max_row + 2)
-                ws.add_chart(line, "B12")
+            # line
+            # 13~: line
+            line = LineChart()
+            line.title = '报告期消耗 - ' + report['meter']['energy_category_name'] + \
+                " (" + report['meter']['unit_of_measure'] + ")"
+            labels = Reference(ws, min_col=2, min_row=19, max_row=max_row)
+            bar_data = Reference(ws, min_col=3, min_row=18, max_row=max_row)
+            line.add_data(bar_data, titles_from_data=True)
+            line.set_categories(labels)
+            line_data = line.series[0]
+            line_data.marker.symbol = "circle"
+            line_data.smooth = True
+            line.x_axis.crosses = 'min'
+            # line_data.smooth = True
+            line.height = 8.25  # cm 1.05*5 1.05cm = 30 pt
+            line.width = 24
+            # pie.title = "Pies sold by category"
+            line.dLbls = DataLabelList()
+            # line.dLbls.showCatName = True  # 标签显示
+            line.dLbls = DataLabelList()
+            line.dLbls.dLblPos = 't'
+            line.dLbls.showVal = True  # 数量显示
+            line.dLbls.showPercent = False  # 百分比显示
+            # s1 = CharacterProperties(sz=1800)     # 图表中字体大小 *100
+            ws.add_chart(line, "B12")
 
             col = 'B'
             row = str(19 + len(time))
