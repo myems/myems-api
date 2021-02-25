@@ -397,7 +397,6 @@ def generate_excel(report,
                 ws['H' + str(row)] = round(reporting_period_data['variances_per_unit_area'][i], 2)
             ws['H' + str(row)].border = f_border
 
-
     #######################################################
     if has_energy_data_flag:
         ws['B20'].font = title_font
@@ -493,7 +492,6 @@ def generate_excel(report,
             ws['H' + str(row)] = str(round(reporting_period_data['variances_increment_rate'][i] * 100, 2)) + '%' \
                 if reporting_period_data['variances_increment_rate'][i] is not None else '-'
             ws['H' + str(row)].border = f_border
-
 
     ################################################
     # Fourth:
