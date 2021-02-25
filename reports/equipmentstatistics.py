@@ -259,12 +259,12 @@ class Reporting:
                 rows_equipment_hourly = cursor_energy.fetchall()
 
                 rows_equipment_periodically, \
-                base[energy_category_id]['mean'], \
-                base[energy_category_id]['median'], \
-                base[energy_category_id]['minimum'], \
-                base[energy_category_id]['maximum'], \
-                base[energy_category_id]['stdev'], \
-                base[energy_category_id]['variance'] = \
+                    base[energy_category_id]['mean'], \
+                    base[energy_category_id]['median'], \
+                    base[energy_category_id]['minimum'], \
+                    base[energy_category_id]['maximum'], \
+                    base[energy_category_id]['stdev'], \
+                    base[energy_category_id]['variance'] = \
                     utilities.statistics_hourly_data_by_period(rows_equipment_hourly,
                                                                base_start_datetime_utc,
                                                                base_end_datetime_utc,
@@ -319,12 +319,12 @@ class Reporting:
                 rows_equipment_hourly = cursor_energy.fetchall()
 
                 rows_equipment_periodically, \
-                reporting[energy_category_id]['mean'], \
-                reporting[energy_category_id]['median'], \
-                reporting[energy_category_id]['minimum'], \
-                reporting[energy_category_id]['maximum'], \
-                reporting[energy_category_id]['stdev'], \
-                reporting[energy_category_id]['variance'] = \
+                    reporting[energy_category_id]['mean'], \
+                    reporting[energy_category_id]['median'], \
+                    reporting[energy_category_id]['minimum'], \
+                    reporting[energy_category_id]['maximum'], \
+                    reporting[energy_category_id]['stdev'], \
+                    reporting[energy_category_id]['variance'] = \
                     utilities.statistics_hourly_data_by_period(rows_equipment_hourly,
                                                                reporting_start_datetime_utc,
                                                                reporting_end_datetime_utc,
