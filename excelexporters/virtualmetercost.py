@@ -60,7 +60,6 @@ def export(report, name, reporting_start_datetime_local, reporting_end_datetime_
 
 
 def generate_excel(report, name, reporting_start_datetime_local, reporting_end_datetime_local, period_type):
-
     wb = Workbook()
 
     # todo
@@ -310,8 +309,6 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws['B' + str(end_data_row_number + 1)] = '总计'
             ws['B' + str(end_data_row_number + 1)].border = f_border
 
-
-
             for i in range(0, ca_len):
 
                 col = chr(ord('C') + i)
@@ -349,7 +346,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             line_data.smooth = True
             line.x_axis.crosses = 'min'
             line.title = '报告期成本 - ' + report['virtual_meter']['energy_category_name'] + \
-                " (" + report['virtual_meter']['unit_of_measure'] + ")"
+                         " (" + report['virtual_meter']['unit_of_measure'] + ")"
             line.dLbls = DataLabelList()
             line.dLbls.dLblPos = 't'
             line.dLbls.showVal = True
