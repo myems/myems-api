@@ -2,6 +2,7 @@ import base64
 import uuid
 import os
 from openpyxl.chart import (
+    LineChart,
     PieChart,
     BarChart,
     Reference,
@@ -70,23 +71,21 @@ def generate_excel(report,
     ws = wb.active
 
     # Row height
-    ws.row_dimensions[1].height = 118
+    ws.row_dimensions[1].height = 102
     for i in range(2, 2000 + 1):
-        ws.row_dimensions[i].height = 30
+        ws.row_dimensions[i].height = 42
 
     # Col width
     ws.column_dimensions['A'].width = 1.5
 
     ws.column_dimensions['B'].width = 25.0
 
-    for i in range(ord('C'), ord('I')):
-        ws.column_dimensions[chr(i)].width = 25.0
+    for i in range(ord('C'), ord('L')):
+        ws.column_dimensions[chr(i)].width = 15.0
 
     # Font
     name_font = Font(name='Constantia', size=15, bold=True)
-    name_small_font = Font(name='Constantia', size=10, bold=True)
     title_font = Font(name='宋体', size=15, bold=True)
-    title_small_font = Font(name='宋体', size=10, bold=True)
     data_font = Font(name='Franklin Gothic Book', size=11)
 
     table_fill = PatternFill(fill_type='solid', fgColor='1F497D')
@@ -102,33 +101,38 @@ def generate_excel(report,
     b_c_alignment = Alignment(vertical='bottom',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     c_c_alignment = Alignment(vertical='center',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     b_r_alignment = Alignment(vertical='bottom',
                               horizontal='right',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     c_r_alignment = Alignment(vertical='bottom',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
+
     # Img
     img = Image("excelexporters/myems.png")
+    img.width = img.width * 0.85
+    img.height = img.height * 0.85
     # img = Image("myems.png")
     ws.add_image(img, 'B1')
 
     # Title
+    ws.row_dimensions[3].height = 60
+
     ws['B3'].font = name_font
     ws['B3'].alignment = b_r_alignment
     ws['B3'] = 'Name:'
@@ -148,12 +152,10 @@ def generate_excel(report,
     ws['F3'].font = name_font
     ws['F3'].alignment = b_r_alignment
     ws['F3'] = 'Date:'
-    ws.merge_cells("G3:J3")
-    for i in range(ord('G'), ord('K')):
-        ws[chr(i) + '3'].border = b_border
     ws['G3'].alignment = b_c_alignment
     ws['G3'].font = name_font
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
+    ws.merge_cells("G3:H3")
 
     if "reporting_period" not in report.keys() or \
             "names" not in report['reporting_period'].keys() or len(report['reporting_period']['names']) == 0:
@@ -184,13 +186,15 @@ def generate_excel(report,
         category = reporting_period_data['names']
         ca_len = len(category)
 
+        ws.row_dimensions[current_row_number].height = 75.0
         ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].border = f_border
 
         col = 'C'
 
         for i in range(0, ca_len):
             ws[col + str(current_row_number)].fill = table_fill
-            ws[col + str(current_row_number)].font = name_small_font
+            ws[col + str(current_row_number)].font = name_font
             ws[col + str(current_row_number)].alignment = c_c_alignment
             ws[col + str(current_row_number)].border = f_border
             ws[col + str(current_row_number)] = \
@@ -199,7 +203,7 @@ def generate_excel(report,
             col = chr(ord(col) + 1)
 
         ws[col + str(current_row_number)].fill = table_fill
-        ws[col + str(current_row_number)].font = name_small_font
+        ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
         ws[col + str(current_row_number)] = '吨标准煤 (基线-实际) (TCE)'
@@ -207,7 +211,7 @@ def generate_excel(report,
         col = chr(ord(col) + 1)
 
         ws[col + str(current_row_number)].fill = table_fill
-        ws[col + str(current_row_number)].font = name_small_font
+        ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
         ws[col + str(current_row_number)] = '吨二氧化碳排放 (基线-实际) (TCO2E)'
@@ -234,14 +238,14 @@ def generate_excel(report,
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_saving'] / 1000, 2)
 
         col = chr(ord(col) + 1)
 
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_saving'] / 1000, 2)
 
         col = chr(ord(col) + 1)
 
@@ -265,14 +269,15 @@ def generate_excel(report,
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_per_unit_area_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgco2e_per_unit_area_saving']
+                                                  / 1000, 2)
 
         col = chr(ord(col) + 1)
 
         ws[col + str(current_row_number)].font = name_font
         ws[col + str(current_row_number)].alignment = c_c_alignment
         ws[col + str(current_row_number)].border = f_border
-        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_per_unit_area_saving'], 2)
+        ws[col + str(current_row_number)] = round(reporting_period_data['total_in_kgce_per_unit_area_saving'] / 1000, 2)
 
         col = chr(ord(col) + 1)
 
@@ -322,10 +327,12 @@ def generate_excel(report,
         table_start_row_number = current_row_number
         chart_start_row_number = current_row_number
 
+        ws.row_dimensions[current_row_number].height = 60
         ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].border = f_border
 
         ws['C' + str(current_row_number)].fill = table_fill
-        ws['C' + str(current_row_number)].font = name_small_font
+        ws['C' + str(current_row_number)].font = name_font
         ws['C' + str(current_row_number)].alignment = c_c_alignment
         ws['C' + str(current_row_number)].border = f_border
         ws['C' + str(current_row_number)] = '吨标准煤(TCE)占比'
@@ -341,7 +348,7 @@ def generate_excel(report,
             ws['C' + str(current_row_number)].font = name_font
             ws['C' + str(current_row_number)].alignment = c_c_alignment
             ws['C' + str(current_row_number)].border = f_border
-            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgce_saving'][i], 2)
+            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgce_saving'][i] / 1000, 3)
 
             current_row_number += 1
 
@@ -353,12 +360,12 @@ def generate_excel(report,
         current_row_number += 1
 
         pie = PieChart()
-        pie.title = '吨标准煤(TCE)占比'
+        pie.title = name + ' 吨标准煤(TCE)占比'
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
         pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
         pie.set_categories(labels)
-        pie.height = 5.25
+        pie.height = 7.25
         pie.width = 9
         s1 = pie.series[0]
         s1.dLbls = DataLabelList()
@@ -374,10 +381,12 @@ def generate_excel(report,
         table_start_row_number = current_row_number
         chart_start_row_number = current_row_number
 
+        ws.row_dimensions[current_row_number].height = 60
         ws['B' + str(current_row_number)].fill = table_fill
+        ws['B' + str(current_row_number)].border = f_border
 
         ws['C' + str(current_row_number)].fill = table_fill
-        ws['C' + str(current_row_number)].font = name_small_font
+        ws['C' + str(current_row_number)].font = name_font
         ws['C' + str(current_row_number)].alignment = c_c_alignment
         ws['C' + str(current_row_number)].border = f_border
         ws['C' + str(current_row_number)] = '吨二氧化碳排放(TCO2E)占比'
@@ -393,7 +402,7 @@ def generate_excel(report,
             ws['C' + str(current_row_number)].font = name_font
             ws['C' + str(current_row_number)].alignment = c_c_alignment
             ws['C' + str(current_row_number)].border = f_border
-            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgco2e_saving'][i], 2)
+            ws['C' + str(current_row_number)] = round(reporting_period_data['subtotals_in_kgco2e_saving'][i] / 1000, 3)
 
             current_row_number += 1
 
@@ -405,12 +414,12 @@ def generate_excel(report,
         current_row_number += 1
 
         pie = PieChart()
-        pie.title = '吨二氧化碳排放(TCO2E)占比'
+        pie.title = name + ' 吨二氧化碳排放(TCO2E)占比'
         labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
         pie_data = Reference(ws, min_col=3, min_row=table_start_row_number, max_row=table_end_row_number)
         pie.add_data(pie_data, titles_from_data=True)
         pie.set_categories(labels)
-        pie.height = 5.25
+        pie.height = 7.25
         pie.width = 9
         s1 = pie.series[0]
         s1.dLbls = DataLabelList()
@@ -446,9 +455,10 @@ def generate_excel(report,
 
         chart_start_row_number = current_row_number
 
-        current_row_number += ca_len * 5
+        current_row_number += ca_len * 6
         table_start_row_number = current_row_number
 
+        ws.row_dimensions[current_row_number].height = 60
         ws['B' + str(current_row_number)].fill = table_fill
         ws['B' + str(current_row_number)].font = title_font
         ws['B' + str(current_row_number)].alignment = c_c_alignment
@@ -525,22 +535,29 @@ def generate_excel(report,
             min_width_number = 11.5
 
         for i in range(0, ca_len):
-            bar = BarChart()
-            bar.title = \
+            line = LineChart()
+            line.title = '报告期节约 - ' + \
                 reporting_period_data['names'][i] + " (" + reporting_period_data['units'][i] + ")"
             labels = Reference(ws, min_col=2, min_row=table_start_row_number + 1, max_row=table_end_row_number)
-            bar_data = Reference(ws, min_col=3 + i, min_row=table_start_row_number, max_row=table_end_row_number)
-            bar.add_data(bar_data, titles_from_data=True)
-            bar.set_categories(labels)
-            bar.height = 5.25
-            bar.width = format_time_width_number * len(time) if len(time) > min_len_number else min_width_number
-            bar.dLbls = DataLabelList()
-            bar.dLbls.showVal = True
-            bar.dLbls.showPercent = True
+            line_data = Reference(ws, min_col=3 + i, min_row=table_start_row_number, max_row=table_end_row_number)
+            line.add_data(line_data, titles_from_data=True)
+            line.set_categories(labels)
+            line_data = line.series[0]
+            line_data.marker.symbol = "circle"
+            line_data.smooth = True
+            line.x_axis.crosses = 'min'
+            line.height = 8.25
+            line.width = format_time_width_number * len(time) if len(time) > min_len_number else min_width_number
+            if line.width > 24:
+                line.width = 24
+            line.dLbls = DataLabelList()
+            line.dLbls.dLblPos = 't'
+            line.dLbls.showVal = True
+            line.dLbls.showPercent = False
             chart_col = 'B'
             chart_cell = chart_col + str(chart_start_row_number)
-            chart_start_row_number += 5
-            ws.add_chart(bar, chart_cell)
+            chart_start_row_number += 6
+            ws.add_chart(line, chart_cell)
 
     filename = str(uuid.uuid4()) + '.xlsx'
     wb.save(filename)
