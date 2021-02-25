@@ -309,7 +309,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws['B' + str(end_data_row_number + 1)] = '总计'
             ws['B' + str(end_data_row_number + 1)].border = f_border
 
-            line = LineChart()
+
 
             for i in range(0, ca_len):
 
@@ -338,11 +338,11 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + str(end_data_row_number + 1)] = round(reporting_period_data['total_in_category'], 2)
                 ws[col + str(end_data_row_number + 1)].border = f_border
 
-                line_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row)
-                line.series.append(Series(line_data, title_from_data=True))
-
+            line = LineChart()
             line.title = '报告期成本 - ' + report['meter']['energy_category_name'] + \
                 " (" + report['meter']['unit_of_measure'] + ")"
+            line_data = Reference(ws, min_col=3, min_row=18, max_row=max_row)
+            line.series.append(Series(line_data, title_from_data=True))
             labels = Reference(ws, min_col=2, min_row=19, max_row=max_row)
             line.set_categories(labels)
             line_data = line.series[0]
