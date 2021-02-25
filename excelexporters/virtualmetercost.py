@@ -231,7 +231,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
         ws[tce_col + '8'].font = name_font
         ws[tce_col + '8'].alignment = c_c_alignment
-        ws[tce_col + '8'] = round(reporting_period_data['total_in_kgce'], 2)
+        ws[tce_col + '8'] = round(reporting_period_data['total_in_kgce'] / 1000, 2)
         ws[tce_col + '8'].border = f_border
 
         ws[tce_col + '9'].font = name_font
@@ -250,7 +250,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
         ws[tco2e_col + '8'].font = name_font
         ws[tco2e_col + '8'].alignment = c_c_alignment
-        ws[tco2e_col + '8'] = round(reporting_period_data['total_in_kgco2e'], 2)
+        ws[tco2e_col + '8'] = round(reporting_period_data['total_in_kgco2e'] / 1000, 2)
         ws[tco2e_col + '8'].border = f_border
 
         ws[tco2e_col + '9'].font = name_font
@@ -310,7 +310,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             ws['B' + str(end_data_row_number + 1)] = '总计'
             ws['B' + str(end_data_row_number + 1)].border = f_border
 
-            line = LineChart()
+
 
             for i in range(0, ca_len):
 
@@ -339,16 +339,15 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
                 ws[col + str(end_data_row_number + 1)] = round(reporting_period_data['total_in_category'], 2)
                 ws[col + str(end_data_row_number + 1)].border = f_border
 
-                line_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row)
-                line.series.append(Series(line_data, title_from_data=True))
-
+            line = LineChart()
             labels = Reference(ws, min_col=2, min_row=19, max_row=max_row)
+            line_data = Reference(ws, min_col=3, min_row=18, max_row=max_row)
+            line.series.append(Series(line_data, title_from_data=True))
             line.set_categories(labels)
             line_data = line.series[0]
             line_data.marker.symbol = "circle"
             line_data.smooth = True
             line.x_axis.crosses = 'min'
-
             line.title = '报告期成本 - ' + report['virtual_meter']['energy_category_name'] + \
                 " (" + report['virtual_meter']['unit_of_measure'] + ")"
             line.dLbls = DataLabelList()
