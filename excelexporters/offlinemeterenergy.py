@@ -1,16 +1,15 @@
 import base64
-import os
 import uuid
-
-from openpyxl import Workbook
+import os
 from openpyxl.chart import (
     BarChart,
+    LineChart,
     Reference,
-    Series,
 )
-from openpyxl.chart.label import DataLabelList
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 from openpyxl.drawing.image import Image
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
+from openpyxl import Workbook
+from openpyxl.chart.label import DataLabelList
 
 
 ####################################################################################################################
@@ -57,23 +56,27 @@ def export(result, name, reporting_start_datetime_local, reporting_end_datetime_
 
 
 def generate_excel(report, name, reporting_start_datetime_local, reporting_end_datetime_local, period_type):
-    wb = Workbook()
 
-    # todo
+    wb = Workbook()
     ws = wb.active
 
     # Row height
-    ws.row_dimensions[1].height = 118
-    for i in range(2, 11 + 1):
-        ws.row_dimensions[i].height = 30
+    ws.row_dimensions[1].height = 102
+    for i in range(2, 2000 + 1):
+        ws.row_dimensions[i].height = 42
 
-    for i in range(12, 43 + 1):
-        ws.row_dimensions[i].height = 30
+    # for i in range(2, 11 + 1):
+    #     ws.row_dimensions[i].height = 30
+    #
+    # for i in range(12, 43 + 1):
+    #     ws.row_dimensions[i].height = 30
 
     # Col width
     ws.column_dimensions['A'].width = 1.5
 
-    for i in range(ord('B'), ord('I')):
+    ws.column_dimensions['B'].width = 25.0
+
+    for i in range(ord('C'), ord('L')):
         ws.column_dimensions[chr(i)].width = 15.0
 
     # Font
@@ -94,33 +97,38 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
     b_c_alignment = Alignment(vertical='bottom',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     c_c_alignment = Alignment(vertical='center',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     b_r_alignment = Alignment(vertical='bottom',
                               horizontal='right',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
     c_r_alignment = Alignment(vertical='bottom',
                               horizontal='center',
                               text_rotation=0,
-                              wrap_text=False,
+                              wrap_text=True,
                               shrink_to_fit=False,
                               indent=0)
 
     # Img
     img = Image("excelexporters/myems.png")
+    img.width = img.width * 0.85
+    img.height = img.height * 0.85
+    # img = Image("myems.png")
     ws.add_image(img, 'B1')
 
     # Title
+    ws.row_dimensions[3].height = 60
+
     ws['B3'].font = name_font
     ws['B3'].alignment = b_r_alignment
     ws['B3'] = 'Name:'
@@ -140,11 +148,11 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
     ws['F3'].font = name_font
     ws['F3'].alignment = b_r_alignment
     ws['F3'] = 'Date:'
-    ws.merge_cells("G3:H3")
     ws['G3'].border = b_border
     ws['G3'].alignment = b_c_alignment
     ws['G3'].font = name_font
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
+    ws.merge_cells("G3:H3")
 
     if "reporting_period" not in report.keys() or \
             "values" not in report['reporting_period'].keys() or len(report['reporting_period']['values']) == 0:
@@ -153,22 +161,25 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
         return filename
 
-    ###############################
+    ################################
 
-    has_cost_data_flag = True
+    has_energy_data_flag = True
 
     if "values" not in report['reporting_period'].keys() or len(report['reporting_period']['values']) == 0:
-        has_cost_data_flag = False
+        has_energy_data_flag = False
 
-    if has_cost_data_flag:
+    if has_energy_data_flag:
         ws['B6'].font = title_font
-        ws['B6'] = name + '报告期消耗'
+        ws['B6'] = name + '能耗分析'
 
         reporting_period_data = report['reporting_period']
         category = report['offline_meter']['energy_category_name']
         ca_len = len(category)
 
+        ws.row_dimensions[7].height = 60
+
         ws['B7'].fill = table_fill
+        ws['B7'].border = f_border
 
         ws['B8'].font = title_font
         ws['B8'].alignment = c_c_alignment
@@ -180,11 +191,12 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ws['B9'] = '环比'
         ws['B9'].border = f_border
 
-        col = 'B'
+        col = ''
 
         for i in range(0, ca_len):
             col = chr(ord('C') + i)
-
+            row = '7'
+            cell = col + row
             ws[col + '7'].fill = table_fill
             ws[col + '7'].font = name_font
             ws[col + '7'].alignment = c_c_alignment
@@ -194,7 +206,7 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
             ws[col + '8'].font = name_font
             ws[col + '8'].alignment = c_c_alignment
-            ws[col + '8'] = round(reporting_period_data['total_in_category'], 0)
+            ws[col + '8'] = round(reporting_period_data['total_in_category'], 2)
             ws[col + '8'].border = f_border
 
             ws[col + '9'].font = name_font
@@ -210,12 +222,12 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ws[tce_col + '7'].fill = table_fill
         ws[tce_col + '7'].font = name_font
         ws[tce_col + '7'].alignment = c_c_alignment
-        ws[tce_col + '7'] = "TCE"
+        ws[tce_col + '7'] = "吨标准煤 (TCE)"
         ws[tce_col + '7'].border = f_border
 
         ws[tce_col + '8'].font = name_font
         ws[tce_col + '8'].alignment = c_c_alignment
-        ws[tce_col + '8'] = round(reporting_period_data['total_in_kgce'], 0)
+        ws[tce_col + '8'] = round(reporting_period_data['total_in_kgce'] / 1000, 2)
         ws[tce_col + '8'].border = f_border
 
         ws[tce_col + '9'].font = name_font
@@ -229,12 +241,12 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ws[tco2e_col + '7'].fill = table_fill
         ws[tco2e_col + '7'].font = name_font
         ws[tco2e_col + '7'].alignment = c_c_alignment
-        ws[tco2e_col + '7'] = "TCO2E"
+        ws[tco2e_col + '7'] = "吨二氧化碳排放 (TCO2E)"
         ws[tco2e_col + '7'].border = f_border
 
         ws[tco2e_col + '8'].font = name_font
         ws[tco2e_col + '8'].alignment = c_c_alignment
-        ws[tco2e_col + '8'] = round(reporting_period_data['total_in_kgco2e'], 0)
+        ws[tco2e_col + '8'] = round(reporting_period_data['total_in_kgco2e'] / 1000, 2)
         ws[tco2e_col + '8'].border = f_border
 
         ws[tco2e_col + '9'].font = name_font
@@ -242,25 +254,28 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
         ws[tco2e_col + '9'] = str(round(reporting_period_data['increment_rate'] * 100, 2)) + "%" \
             if reporting_period_data['increment_rate'] is not None else "-"
         ws[tco2e_col + '9'].border = f_border
-
     else:
         for i in range(6, 9 + 1):
-            ws.rows_dimensions[i].height = 0.1
+            ws.row_dimensions[i].height = 0.1
 
-    ######################################
+    #################################################
 
-    has_cost_detail_flag = True
+    has_energy_detail_flag = True
     reporting_period_data = report['reporting_period']
-    category = report['offline_meter']['energy_category_name']
-    ca_len = len(category)
     times = reporting_period_data['timestamps']
 
-    if "values" not in reporting_period_data.keys() or len(reporting_period_data['values']) == 0:
-        has_cost_detail_flag = False
+    if "values" not in report['reporting_period'].keys() or len(report['reporting_period']['values']) == 0:
+        has_energy_detail_flag = False
 
-    if has_cost_detail_flag:
+    if has_energy_detail_flag:
+        reporting_period_data = report['reporting_period']
+        category = report['offline_meter']['energy_category_name']
+        ca_len = len(category)
+
         ws['B11'].font = title_font
         ws['B11'] = name + '详细数据'
+
+        ws.row_dimensions[18].height = 60
 
         ws['B18'].fill = table_fill
         ws['B18'].font = title_font
@@ -275,28 +290,16 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
             max_row = 18 + len(time)
 
         if has_data:
-
-            end_data_flag = 19
-
             for i in range(0, len(time)):
                 col = 'B'
-                end_data_flag = 19 + i
-                row = str(end_data_flag)
+                row = str(19 + i)
 
                 ws[col + row].font = title_font
                 ws[col + row].alignment = c_c_alignment
                 ws[col + row] = time[i]
                 ws[col + row].border = f_border
 
-            ws['B' + str(end_data_flag + 1)].font = title_font
-            ws['B' + str(end_data_flag + 1)].alignment = c_c_alignment
-            ws['B' + str(end_data_flag + 1)] = '总计'
-            ws['B' + str(end_data_flag + 1)].border = f_border
-
-            bar = BarChart()
-
             for i in range(0, ca_len):
-
                 col = chr(ord('C') + i)
 
                 ws[col + '18'].fill = table_fill
@@ -311,31 +314,49 @@ def generate_excel(report, name, reporting_start_datetime_local, reporting_end_d
 
                 for j in range(0, time_len):
                     row = str(19 + j)
-
                     ws[col + row].font = title_font
                     ws[col + row].alignment = c_c_alignment
-                    ws[col + row] = round(reporting_period_data['values'][j], 0)
+                    ws[col + row] = round(reporting_period_data['values'][j], 2)
                     ws[col + row].border = f_border
 
-                ws[col + str(end_data_flag + 1)].font = title_font
-                ws[col + str(end_data_flag + 1)].alignment = c_c_alignment
-                ws[col + str(end_data_flag + 1)] = round(reporting_period_data['total_in_category'], 0)
-                ws[col + str(end_data_flag + 1)].border = f_border
-
-                bar_data = Reference(ws, min_col=3 + i, min_row=18, max_row=max_row)
-                bar.series.append(Series(bar_data, title_from_data=True))
-
+            line = LineChart()
+            line.title = '报告期消耗 - ' + report['offline_meter']['energy_category_name'] + \
+                " (" + report['offline_meter']['unit_of_measure'] + ")"
             labels = Reference(ws, min_col=2, min_row=19, max_row=max_row)
-            bar.set_categories(labels)
-            bar.dLbls = DataLabelList()
-            bar.dLbls.showVal = True
-            bar.height = 5.25
-            bar.width = len(time)
-            ws.add_chart(bar, "B12")
+            bar_data = Reference(ws, min_col=3, min_row=18, max_row=max_row)
+            line.add_data(bar_data, titles_from_data=True)
+            line.set_categories(labels)
+            line_data = line.series[0]
+            line_data.marker.symbol = "circle"
+            line_data.smooth = True
+            line.x_axis.crosses = 'min'
+            line.height = 8.25
+            line.width = 24
+            line.dLbls = DataLabelList()
+            line.dLbls = DataLabelList()
+            line.dLbls.dLblPos = 't'
+            line.dLbls.showVal = True
+            line.dLbls.showPercent = False
+            ws.add_chart(line, "B12")
+
+            col = 'B'
+            row = str(19 + len(time))
+
+            ws[col + row].font = title_font
+            ws[col + row].alignment = c_c_alignment
+            ws[col + row] = '总计'
+            ws[col + row].border = f_border
+
+            for i in range(0, ca_len):
+                col = chr(ord(col) + 1)
+                ws[col + row].font = title_font
+                ws[col + row].alignment = c_c_alignment
+                ws[col + row] = round(reporting_period_data['total_in_category'], 2)
+                ws[col + row].border = f_border
+
     else:
         for i in range(11, 43 + 1):
             ws.row_dimensions[i].height = 0.0
-
     filename = str(uuid.uuid4()) + '.xlsx'
     wb.save(filename)
 
