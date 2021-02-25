@@ -149,9 +149,10 @@ def generate_excel(report,
     ws['F3'].font = name_font
     ws['F3'].alignment = b_r_alignment
     ws['F3'] = 'Date:'
-    ws.merge_cells("G3:J3")
-    for i in range(ord('G'), ord('J') + 1):
+    ws.merge_cells("G3:I3")
+    for i in range(ord('G'), ord('I') + 1):
         ws[chr(i) + '3'].border = b_border
+
     ws['G3'].alignment = b_c_alignment
     ws['G3'].font = name_font
     ws['G3'] = reporting_start_datetime_local + "__" + reporting_end_datetime_local
@@ -319,7 +320,7 @@ def generate_excel(report,
         pie.add_data(pie_data, titles_from_data=True)
         pie.set_categories(labels)
         pie.height = 5.25
-        pie.width = 9
+        pie.width = 8
         s1 = pie.series[0]
         s1.dLbls = DataLabelList()
         s1.dLbls.showCatName = False
@@ -385,7 +386,7 @@ def generate_excel(report,
         pie.add_data(pie_data, titles_from_data=True)
         pie.set_categories(labels)
         pie.height = 5.25
-        pie.width = 9
+        pie.width = 8
         s1 = pie.series[0]
         s1.dLbls = DataLabelList()
         s1.dLbls.showCatName = False
@@ -512,8 +513,8 @@ def generate_excel(report,
                 bar_data = Reference(ws, min_col=3 + i, min_row=table_start_row_number, max_row=table_end_row_number)
                 bar.add_data(bar_data, titles_from_data=True)
                 bar.set_categories(labels)
-                bar.height = 5.25
-                bar.width = len(time)
+                bar.height = 4.9
+                bar.width = 16
                 bar.dLbls = DataLabelList()
                 bar.dLbls.showVal = True
                 bar.dLbls.showPercent = True
