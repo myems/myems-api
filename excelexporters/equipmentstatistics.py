@@ -239,7 +239,7 @@ def generate_excel(report,
 
             ws['C' + str(row)].font = name_font
             ws['C' + str(row)].alignment = c_c_alignment
-            ws['C' + str(row)] = round(reporting_period_data['means'][i], 2) \
+            ws['C' + str(row)] = reporting_period_data['means'][i] \
                 if reporting_period_data['means'][i] is not None else ''
             ws['C' + str(row)].border = f_border
             ws['C' + str(row)].number_format = '0.00'
@@ -252,7 +252,7 @@ def generate_excel(report,
 
             ws['D' + str(row)].font = name_font
             ws['D' + str(row)].alignment = c_c_alignment
-            ws['D' + str(row)] = round(reporting_period_data['medians'][i], 2) \
+            ws['D' + str(row)] = reporting_period_data['medians'][i] \
                 if reporting_period_data['medians'][i] is not None else ''
             ws['D' + str(row)].border = f_border
             ws['D' + str(row)].number_format = '0.00'
@@ -265,7 +265,7 @@ def generate_excel(report,
 
             ws['E' + str(row)].font = name_font
             ws['E' + str(row)].alignment = c_c_alignment
-            ws['E' + str(row)] = round(reporting_period_data['minimums'][i], 2) \
+            ws['E' + str(row)] = reporting_period_data['minimums'][i] \
                 if reporting_period_data['minimums'][i] is not None else ''
             ws['E' + str(row)].border = f_border
             ws['E' + str(row)].number_format = '0.00'
@@ -278,7 +278,7 @@ def generate_excel(report,
 
             ws['F' + str(row)].font = name_font
             ws['F' + str(row)].alignment = c_c_alignment
-            ws['F' + str(row)] = round(reporting_period_data['maximums'][i], 2) \
+            ws['F' + str(row)] = reporting_period_data['maximums'][i] \
                 if reporting_period_data['maximums'][i] is not None else ''
             ws['F' + str(row)].border = f_border
             ws['F' + str(row)].number_format = '0.00'
@@ -291,7 +291,7 @@ def generate_excel(report,
 
             ws['G' + str(row)].font = name_font
             ws['G' + str(row)].alignment = c_c_alignment
-            ws['G' + str(row)] = round(reporting_period_data['stdevs'][i], 2) \
+            ws['G' + str(row)] = reporting_period_data['stdevs'][i] \
                 if reporting_period_data['stdevs'][i] is not None else ''
             ws['G' + str(row)].border = f_border
             ws['G' + str(row)].number_format = '0.00'
@@ -304,7 +304,7 @@ def generate_excel(report,
 
             ws['H' + str(row)].font = name_font
             ws['H' + str(row)].alignment = c_c_alignment
-            ws['H' + str(row)] = round(reporting_period_data['variances'][i], 2) \
+            ws['H' + str(row)] = reporting_period_data['variances'][i] \
                 if reporting_period_data['variances'][i] is not None else ''
             ws['H' + str(row)].border = f_border
             ws['H' + str(row)].number_format = '0.00'
@@ -370,7 +370,7 @@ def generate_excel(report,
 
                 ws[col + str(rows)].font = name_font
                 ws[col + str(rows)].alignment = c_c_alignment
-                ws[col + str(rows)] = round(values[index][i], 2)
+                ws[col + str(rows)] = values[index][i]
                 ws[col + str(rows)].number_format = '0.00'
                 ws[col + str(rows)].border = f_border
 
@@ -386,7 +386,7 @@ def generate_excel(report,
 
             ws[col + str(row_subtotals)].font = name_font
             ws[col + str(row_subtotals)].alignment = c_c_alignment
-            ws[col + str(row_subtotals)] = round(reporting_period_data['subtotals'][i], 2)
+            ws[col + str(row_subtotals)] = reporting_period_data['subtotals'][i]
             ws[col + str(row_subtotals)].border = f_border
             ws[col + str(row_subtotals)].number_format = '0.00'
 
@@ -397,7 +397,7 @@ def generate_excel(report,
             lc.title = "报告期消耗" + " - " + names[i] + "(" + reporting_period_data['units'][i] + ")"
             lc.style = 10
             lc.height = 8.40  # cm 1.05*8 1.05cm = 30 pt
-            lc.width = 31
+            lc.width = 23.28
             lc.x_axis.majorTickMark = 'in'
             lc.y_axis.majorTickMark = 'in'
             times = Reference(ws, min_col=2, min_row=row_ddt + 2,
