@@ -125,7 +125,7 @@ def generate_excel(report, space_name):
     ws['D3'].border = f_border
     ws['D3'].font = name_font
     ws['D3'].alignment = b_c_alignment
-    ws['D3'] = '成本中心:'
+    ws['D3'] = '成本中心'
 
     ws['E3'].border = f_border
     ws['E3'].alignment = b_c_alignment
