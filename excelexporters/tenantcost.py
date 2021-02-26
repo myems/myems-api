@@ -209,7 +209,7 @@ def generate_excel(report,
 
             ws[col + '8'].font = name_font
             ws[col + '8'].alignment = c_c_alignment
-            ws[col + '8'] = round(reporting_period_data['subtotals'][i], 0)
+            ws[col + '8'] = round(reporting_period_data['subtotals'][i], 2)
             ws[col + '8'].border = f_border
 
             ws[col + '9'].font = name_font
@@ -232,7 +232,7 @@ def generate_excel(report,
 
         ws[end_col + '8'].font = name_font
         ws[end_col + '8'].alignment = c_c_alignment
-        ws[end_col + '8'] = round(reporting_period_data['total'], 0)
+        ws[end_col + '8'] = round(reporting_period_data['total'], 2)
         ws[end_col + '8'].border = f_border
 
         ws[end_col + '9'].font = name_font
@@ -281,7 +281,7 @@ def generate_excel(report,
         ws['C14'].font = title_font
         ws['C14'].alignment = c_c_alignment
         ws['C14'].border = f_border
-        ws['C14'] = round(reporting_period_data['toppeaks'][0], 0)
+        ws['C14'] = round(reporting_period_data['toppeaks'][0], 2)
 
         ws['B15'].font = title_font
         ws['B15'].alignment = c_c_alignment
@@ -291,7 +291,7 @@ def generate_excel(report,
         ws['C15'].font = title_font
         ws['C15'].alignment = c_c_alignment
         ws['C15'].border = f_border
-        ws['C15'] = round(reporting_period_data['onpeaks'][0], 0)
+        ws['C15'] = round(reporting_period_data['onpeaks'][0], 2)
 
         ws['B16'].font = title_font
         ws['B16'].alignment = c_c_alignment
@@ -301,7 +301,7 @@ def generate_excel(report,
         ws['C16'].font = title_font
         ws['C16'].alignment = c_c_alignment
         ws['C16'].border = f_border
-        ws['C16'] = round(reporting_period_data['midpeaks'][0], 0)
+        ws['C16'] = round(reporting_period_data['midpeaks'][0], 2)
 
         ws['B17'].font = title_font
         ws['B17'].alignment = c_c_alignment
@@ -311,7 +311,7 @@ def generate_excel(report,
         ws['C17'].font = title_font
         ws['C17'].alignment = c_c_alignment
         ws['C17'].border = f_border
-        ws['C17'] = round(reporting_period_data['offpeaks'][0], 0)
+        ws['C17'] = round(reporting_period_data['offpeaks'][0], 2)
 
         pie = PieChart()
         labels = Reference(ws, min_col=2, min_row=14, max_row=17)
@@ -477,7 +477,7 @@ def generate_excel(report,
 
                     ws[col + str(current_row_number)].font = title_font
                     ws[col + str(current_row_number)].alignment = c_c_alignment
-                    value = round(reporting_period_data['values'][j][i], 0)
+                    value = round(reporting_period_data['values'][j][i], 2)
                     every_day_total += value
                     ws[col + str(current_row_number)] = value
                     ws[col + str(current_row_number)].border = f_border
@@ -485,7 +485,7 @@ def generate_excel(report,
                 end_col = chr(ord(col) + 1)
                 ws[end_col + str(current_row_number)].font = title_font
                 ws[end_col + str(current_row_number)].alignment = c_c_alignment
-                ws[end_col + str(current_row_number)] = round(every_day_total, 0)
+                ws[end_col + str(current_row_number)] = round(every_day_total, 2)
                 ws[end_col + str(current_row_number)].border = f_border
 
                 current_row_number += 1
@@ -503,7 +503,7 @@ def generate_excel(report,
                 col = chr(ord('C') + i)
                 ws[col + str(current_row_number)].font = title_font
                 ws[col + str(current_row_number)].alignment = c_c_alignment
-                ws[col + str(current_row_number)] = round(reporting_period_data['subtotals'][i], 0)
+                ws[col + str(current_row_number)] = round(reporting_period_data['subtotals'][i], 2)
                 ws[col + str(current_row_number)].border = f_border
 
                 # bar
@@ -512,8 +512,8 @@ def generate_excel(report,
                 bar_data = Reference(ws, min_col=3 + i, min_row=table_start_row_number, max_row=table_end_row_number)
                 bar.add_data(bar_data, titles_from_data=True)
                 bar.set_categories(labels)
-                bar.height = 5.25
-                bar.width = len(time)
+                bar.height = 4.9
+                bar.width = 20
                 bar.dLbls = DataLabelList()
                 bar.dLbls.showVal = True
                 bar.dLbls.showPercent = True
@@ -524,7 +524,7 @@ def generate_excel(report,
             end_col = chr(ord(col) + 1)
             ws[end_col + str(current_row_number)].font = title_font
             ws[end_col + str(current_row_number)].alignment = c_c_alignment
-            ws[end_col + str(current_row_number)] = round(reporting_period_data['total'], 0)
+            ws[end_col + str(current_row_number)] = round(reporting_period_data['total'], 2)
             ws[end_col + str(current_row_number)].border = f_border
 
             current_row_number += 1
